@@ -7,5 +7,6 @@
         public required User User { get; set; }
         public required decimal MontlyPlafon { get; set; }
         public required decimal AnnualPlafon { get; set; }
+
     }
 }
