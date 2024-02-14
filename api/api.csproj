@@ -18,4 +18,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\BankAccounts\" />
+    <Folder Include="Dtos\CreditCards\" />
+    <Folder Include="Dtos\Earnings\" />
+    <Folder Include="Dtos\Expenses\" />
+    <Folder Include="Dtos\FinanceGoals\" />
+    <Folder Include="Dtos\MortgageLoans\" />
+    <Folder Include="Dtos\Transactions\" />
+    <Folder Include="Dtos\Tags\" />
+    <Folder Include="Dtos\PersonalCredits\" />
+  </ItemGroup>
+
 </Project>

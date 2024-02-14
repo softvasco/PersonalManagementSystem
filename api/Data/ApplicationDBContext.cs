@@ -20,6 +20,8 @@ namespace api.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<PersonalCredit> PersonalCredits { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<MortgageLoan> MortgageLoans { get; set; }
+        public DbSet<FinanceGoal> FinanceGoals { get; set; }
 
     }
 }
