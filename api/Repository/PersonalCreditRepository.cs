@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Repository
 {
-    public class PersonalCreditRepository : IExpenseRepository
+    public class PersonalCreditRepository : IPersonalCreditRepository
     {
         private readonly ApplicationDBContext _context;
 
