@@ -22,7 +22,7 @@ namespace api.Data
             modelBuilder.Entity<Category>().HasData(
                new Category { Id = 1, Name = "Casa", Description = "Despesas da casa", MontlyPlafon = 0, AnnualPlafon = 0, StartDate = DateTime.Now, EndDate = null, User = userVasco! },
                new Category { Id = 2, Name = "Carro", Description = "Despesas do carro", MontlyPlafon = 0, AnnualPlafon = 0, StartDate = DateTime.Now, EndDate = null, User = userVasco! },
-               new Category { Id = 3, Name = "Pessoal", Description = "Despesas pessoais", MontlyPlafon = 0, AnnualPlafon = 0, StartDate = DateTime.Now, EndDate = null, User = userVasco! },
+               new Category { Id = 3, Name = "Pessoal", Description = "Despesas pessoais", MontlyPlafon = 0, AnnualPlafon = 0, StartDate = DateTime.Now, EndDate = null, User = userVasco! }
            );
         }
 
