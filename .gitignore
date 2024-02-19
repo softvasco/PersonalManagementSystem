@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-api/Data/ApplicationDBContext.cs
+api/Data/
 
 # User-specific files
 *.rsuser
