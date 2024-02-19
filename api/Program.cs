@@ -33,6 +33,7 @@ builder.Services.AddScoped<IPersonalCreditRepository, PersonalCreditRepository>(
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 
 var app = builder.Build();
 
