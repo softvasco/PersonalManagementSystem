@@ -7,5 +7,7 @@
         public required User User { get; set; }
         public required decimal Installment { get; set; }
         public required decimal OutstandingBalance { get; set; }
+        public required decimal TAN { get; set; }
+        public required decimal InitialDebt { get; set; }
     }
 }
