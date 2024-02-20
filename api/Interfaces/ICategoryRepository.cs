@@ -4,7 +4,6 @@ namespace api.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<Category> GetByName(string name);
         Task<Category> CreateAsync(Category category);
     }
 }

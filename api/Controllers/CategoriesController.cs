@@ -21,12 +21,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByName([FromHeader] string categoryName)
-        {
-            return Ok(await _categoryRepository.GetByName(categoryName));
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto createCategoryDto)
         {

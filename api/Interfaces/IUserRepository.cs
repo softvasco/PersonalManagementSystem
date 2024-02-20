@@ -4,7 +4,6 @@ namespace api.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetByEmail(string username);
-        Task<User> CreateAsync(User user);
+        Task<User> CreateAsync(User userModel);
     }
 }

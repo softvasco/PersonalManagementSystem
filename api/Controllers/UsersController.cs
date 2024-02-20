@@ -20,12 +20,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByEmail([FromHeader] string username)
-        {
-            return Ok(await _userRepository.GetByEmail(username));
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
         {

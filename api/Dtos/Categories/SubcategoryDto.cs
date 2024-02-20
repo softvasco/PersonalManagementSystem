@@ -2,20 +2,16 @@
 
 namespace api.Dtos.Categories
 {
-    public class CreateCategoryDto
+    public class SubcategoryDto
     {
         [Required]
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
-        public int UserID { get; set; }
-
         public decimal? MontlyPlafon { get; set; }
-
+        [Required]
         public decimal? AnnualPlafon { get; set; }
-
-        public List<SubcategoryDto> Subcategories { get; set; }
     }
 
 }

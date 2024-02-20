@@ -9,6 +9,6 @@ namespace api.Dtos.Users
         [Required]
         public string Email { get; set; }
         [Required]
-        public string UserName { get; set; }
+        public string Username { get; set; }
     }
 }

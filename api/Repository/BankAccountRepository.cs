@@ -1,16 +1,16 @@
-﻿using api.Data;
-using api.Interfaces;
-using api.Models;
+﻿//using api.Data;
+//using api.Interfaces;
+//using api.Models;
 
-namespace api.Repository
-{
-    public class BankAccountRepository : IBankAccountRepository
-    {
-        private readonly ApplicationDBContext _context;
+//namespace api.Repository
+//{
+//    public class BankAccountRepository : IBankAccountRepository
+//    {
+//        private readonly ApplicationDBContext _context;
 
-        public BankAccountRepository(ApplicationDBContext context)
-        {
-            _context = context;
-        }
-    }
-}
+//        public BankAccountRepository(ApplicationDBContext context)
+//        {
+//            _context = context;
+//        }
+//    }
+//}

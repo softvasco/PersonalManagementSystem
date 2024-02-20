@@ -13,14 +13,18 @@ namespace api.Repository
             _context = context;
         }
 
-        public Task<Category> CreateAsync(Category category)
+        public async Task<Category> CreateAsync(Category category)
         {
-            throw new NotImplementedException();
+            if (!_context.Users.Any(x => x.Id == category.UserId))
+                throw new Exception("User does not exists!");
+
+            if (_context.Categories.Any(x => x.Name == category.Name && x.UserId == category.UserId))
+                throw new Exception("User already exists!");
+
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
+            return category;
         }
 
-        public Task<Category> GetByName(string name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

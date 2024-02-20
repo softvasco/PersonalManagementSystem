@@ -1,7 +1,6 @@
 ﻿using api.Data;
 using api.Interfaces;
 using api.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
@@ -14,13 +13,11 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<User> GetByEmail(string username)
-        {
-            return await _context.Users.FirstAsync(x => x.UserName == username);
-        }
-
         public async Task<User> CreateAsync(User user)
         {
+            if (_context.Users.Any(x => x.Username == user.Username || x.Email == x.Email))
+                throw new Exception("User already exists!");
+
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;

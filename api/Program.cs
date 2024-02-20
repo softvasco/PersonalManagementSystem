@@ -24,24 +24,20 @@ builder.Services.AddDbContextFactory<ApplicationDBContext>(options =>
 
 builder.Services.AddDbContextFactory<ApplicationDBContext>();
 
-builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+//builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
-builder.Services.AddScoped<IEarningRepository, EarningRepository>();
-builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
-builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
-builder.Services.AddScoped<IMortgageLoanRepository, MortgageLoanRepository>();
-builder.Services.AddScoped<IPersonalCreditRepository, PersonalCreditRepository>();
-builder.Services.AddScoped<ITagRepository, TagRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+//builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+//builder.Services.AddScoped<IEarningRepository, EarningRepository>();
+//builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+//builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
+//builder.Services.AddScoped<IMortgageLoanRepository, MortgageLoanRepository>();
+//builder.Services.AddScoped<IPersonalCreditRepository, PersonalCreditRepository>();
+//builder.Services.AddScoped<ITagRepository, TagRepository>();
+//builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
-
-builder.Services.AddScoped<SeedService>();
+//builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 
 var app = builder.Build();
-
-await InitializeDB(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -57,10 +53,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-static async Task InitializeDB(IServiceProvider serviceProvider)
-{
-    using var scope = serviceProvider.CreateAsyncScope();
-    var seedService = scope.ServiceProvider.GetService<SeedService>();
-    await seedService.SeedDatabaseAsync();
-}

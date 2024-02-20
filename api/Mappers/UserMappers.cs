@@ -11,7 +11,7 @@ namespace api.Mappers
             {
                 Name = createUserDto.Name,
                 Email = createUserDto.Email,
-                UserName = createUserDto.UserName
+                Username = createUserDto.Username
             };
         }
     }

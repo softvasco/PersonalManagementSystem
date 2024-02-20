@@ -9,13 +9,11 @@ namespace api.Mappers
         {
             return new Category
             {
-                AnnualPlafon = createCategoryDto.AnnualPlafon,
-                Description = createCategoryDto.Description,
-                MontlyPlafon = createCategoryDto.MontlyPlafon,
                 Name = createCategoryDto.Name,
-                User = createCategoryDto.User,
-                StartDate = createCategoryDto.StartDate,
-                ClosedDate = createCategoryDto.ClosedDate,
+                Description = createCategoryDto.Description,
+                AnnualPlafond = createCategoryDto.AnnualPlafon,
+                UserId = createCategoryDto.UserID,
+                MonthlyPlafond = createCategoryDto.MontlyPlafon
             };
         }
     }
