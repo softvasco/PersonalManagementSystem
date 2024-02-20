@@ -13,7 +13,17 @@ namespace api.Mappers
                 Description = createCategoryDto.Description,
                 AnnualPlafond = createCategoryDto.AnnualPlafon,
                 UserId = createCategoryDto.UserID,
-                MonthlyPlafond = createCategoryDto.MontlyPlafon
+                MonthlyPlafond = createCategoryDto.MontlyPlafon,
+                PaymentPercentagePerUser = createCategoryDto.PaymentPercentagePerUser,
+                Subcategories = createCategoryDto.Subcategories.Select(s => new Category
+                {
+                    Name = s.Name,
+                    Description = s.Description,
+                    AnnualPlafond = s.AnnualPlafon,
+                    MonthlyPlafond = s.MontlyPlafon,
+                    PaymentPercentagePerUser = s.PaymentPercentagePerUser,
+                    UserId = s.UserID,
+                }).ToList()
             };
         }
     }

@@ -8,7 +8,7 @@
 //        public DateTime? EndDate { get; set; }
 //        public decimal MontlyPlafon { get; set; }
 //        public decimal AnnualPlafon { get; set; }
-//        public decimal Percentage { get; set; }
+//        public decimal PaymentPercentagePerUser { get; set; }
 
 //        public Category Category { get; set; }
 //        public int CategoryId { get; set; }

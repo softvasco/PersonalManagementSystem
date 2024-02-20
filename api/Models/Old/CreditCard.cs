@@ -9,7 +9,7 @@
 //        public decimal Installment { get; set; }
 //        public decimal OutstandingBalance { get; set; }
 //        public decimal Plafon { get; set; }
-//        public decimal Percentage { get; set; }
+//        public decimal PaymentPercentagePerUser { get; set; }
 //        public DateTime StartDate { get; set; }
 //        public DateTime? EndDate { get; set; }
 //        public string? IBAN { get; set; }

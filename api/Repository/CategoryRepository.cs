@@ -19,7 +19,7 @@ namespace api.Repository
                 throw new Exception("User does not exists!");
 
             if (_context.Categories.Any(x => x.Name == category.Name && x.UserId == category.UserId))
-                throw new Exception("User already exists!");
+                throw new Exception("Category already exists!");
 
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();

@@ -8,6 +8,6 @@
 //        public int UserId { get; set; }
 //        public decimal Installment { get; set; }
 //        public decimal OutstandingBalance { get; set; }
-//        public decimal Percentage { get; set; }
+//        public decimal PaymentPercentagePerUser { get; set; }
 //    }
 //}
