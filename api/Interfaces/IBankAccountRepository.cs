@@ -4,7 +4,6 @@ namespace api.Interfaces
 {
     public interface IBankAccountRepository
     {
-        //Task<Category> GetByName(string name);
-        //Task<Category> CreateAsync(Category category);
+        Task<BankAccount> CreateAsync(BankAccount bankAccountModel);
     }
 }

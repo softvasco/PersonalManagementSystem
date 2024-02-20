@@ -25,10 +25,10 @@ builder.Services.AddDbContextFactory<ApplicationDBContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
+builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+builder.Services.AddScoped<IDebitCardRepository, DebitCardRepository>();
 
-//builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
-
-//builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 //builder.Services.AddScoped<IEarningRepository, EarningRepository>();
 //builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 

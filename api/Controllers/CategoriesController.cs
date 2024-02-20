@@ -1,5 +1,4 @@
 using api.Dtos.Categories;
-using api.Dtos.Users;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;

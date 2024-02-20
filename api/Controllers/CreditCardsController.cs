@@ -1,42 +1,35 @@
-//using api.Dtos.Categories;
-//using api.Dtos.Users;
-//using api.Interfaces;
-//using api.Mappers;
-//using Microsoft.AspNetCore.Mvc;
+using api.Dtos.CreditCards;
+using api.Interfaces;
+using api.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace api.Controllers
-//{
-//    [ApiController]
-//    [Route("[controller]")]
-//    public class CreditCardsController : ControllerBase
-//    {
-//        private readonly ILogger<UsersController> _logger;
-//        private readonly ICategoryRepository _categoryRepository;
+namespace api.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class CreditCardsController : ControllerBase
+    {
+        private readonly ILogger<CreditCardsController> _logger;
+        private readonly ICreditCardRepository _creditCardRepository;
 
-//        public CreditCardsController(
-//            ICategoryRepository categoryRepository,
-//            ILogger<UsersController> logger)
-//        {
-//            _categoryRepository = categoryRepository;
-//            _logger = logger;
-//        }
+        public CreditCardsController(
+            ICreditCardRepository creditCardRepository,
+            ILogger<CreditCardsController> logger)
+        {
+            _creditCardRepository = creditCardRepository;
+            _logger = logger;
+        }
 
-//        //[HttpGet]
-//        //public async Task<IActionResult> GetByName([FromHeader] string categoryName)
-//        //{
-//        //    return Ok(await _categoryRepository.GetByName(categoryName));
-//        //}
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateCreditCardsDto createCreditCardsDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-//        //[HttpPost]
-//        //public async Task<IActionResult> Create([FromBody] CreateCategoryDto createCategoryDto)
-//        //{
-//        //    if (!ModelState.IsValid)
-//        //        return BadRequest(ModelState);
+            var creditCardModel = createCreditCardsDto.ToCreditCardFromCreateCreditCardDto();
 
-//        //    var userModel = createCategoryDto.ToCategoryFromCreateCategoryDto();
+            return Ok(await _creditCardRepository.CreateAsync(creditCardModel));
+        }
 
-//        //    return Ok(await _categoryRepository.CreateAsync(userModel));
-//        //}
-
-//    }
-//}
+    }
+}
