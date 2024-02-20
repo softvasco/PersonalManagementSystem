@@ -1,13 +1,15 @@
-﻿namespace api.Models
+﻿
+namespace api.Models
 {
     public class Earning : BaseEntity
     {
-        public required User User { get; set; }
-        public required string Name { get; set; }
-        public string? Description { get; set; }
-        public required DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public required decimal Amount { get; set; }
-        public required int Period { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public User User { get; set; }
+        public DateTime OpenDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
+        public decimal GrossAmountWithTaxes { get; set; }
+        public decimal NetAmount { get; set; }
+        public int Period { get; set; }
     }
 }

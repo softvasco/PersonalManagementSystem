@@ -1,3 +1,4 @@
+using api;
 using api.Data;
 using api.Interfaces;
 using api.Repository;
@@ -16,11 +17,12 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
+builder.Services.AddDbContextFactory<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddDbContextFactory<ApplicationDBContext>();
 
 builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -35,7 +37,11 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 
+builder.Services.AddScoped<SeedService>();
+
 var app = builder.Build();
+
+await InitializeDB(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -51,3 +57,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static async Task InitializeDB(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateAsyncScope();
+    var seedService = scope.ServiceProvider.GetService<SeedService>();
+    await seedService.SeedDatabaseAsync();
+}

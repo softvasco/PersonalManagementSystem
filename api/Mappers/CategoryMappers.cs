@@ -13,7 +13,9 @@ namespace api.Mappers
                 Description = createCategoryDto.Description,
                 MontlyPlafon = createCategoryDto.MontlyPlafon,
                 Name = createCategoryDto.Name,
-                User = createCategoryDto.User
+                User = createCategoryDto.User,
+                StartDate = createCategoryDto.StartDate,
+                ClosedDate = createCategoryDto.ClosedDate,
             };
         }
     }

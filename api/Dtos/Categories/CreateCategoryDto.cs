@@ -15,5 +15,7 @@ namespace api.Dtos.Categories
         public decimal MontlyPlafon { get; set; }
         [Required]
         public decimal AnnualPlafon { get; set; }
+        public DateTime StartDate { get; internal set; }
+        public DateTime? ClosedDate { get; internal set; }
     }
 }

@@ -2,13 +2,13 @@
 {
     public class FinanceGoal : BaseEntity
     {
-        public required string Name { get; set; }
-        public required string Description { get; set; }
-        public required DateTime StartDate { get; set; }
-        public required DateTime EndDate { get; set; }
-        public required decimal OutstandingAmount { get; set; }
-        public required decimal CurrentDebtAmount { get; set; }
-        public required decimal Goal { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public decimal OutstandingAmount { get; set; }
+        public decimal CurrentDebtAmount { get; set; }
+        public decimal Goal { get; set; }
 
         public User User { get; set; }
     }
