@@ -27,9 +27,9 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userModel = createCategoryDto.ToCategoryFromCreateCategoryDto();
+            var categoryModel = createCategoryDto.ToCategoryFromCreateCategoryDto();
 
-            return Ok(await _categoryRepository.CreateAsync(userModel));
+            return Ok(await _categoryRepository.CreateAsync(categoryModel));
         }
 
     }

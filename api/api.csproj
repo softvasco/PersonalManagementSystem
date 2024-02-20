@@ -23,7 +23,6 @@
     <Folder Include="Dtos\CreditCards\" />
     <Folder Include="Dtos\Earnings\" />
     <Folder Include="Dtos\Expenses\" />
-    <Folder Include="Dtos\FinanceGoals\" />
     <Folder Include="Dtos\MortgageLoans\" />
     <Folder Include="Dtos\Transactions\" />
     <Folder Include="Dtos\Tags\" />

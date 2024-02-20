@@ -22,23 +22,21 @@ builder.Services.AddDbContextFactory<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-//builder.Services.AddDbContextFactory<ApplicationDBContext>();
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
 
 //builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 
 //builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 //builder.Services.AddScoped<IEarningRepository, EarningRepository>();
 //builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
-//builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
+
 //builder.Services.AddScoped<IMortgageLoanRepository, MortgageLoanRepository>();
 //builder.Services.AddScoped<IPersonalCreditRepository, PersonalCreditRepository>();
-//builder.Services.AddScoped<ITagRepository, TagRepository>();
 //builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-//builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+
 
 var app = builder.Build();
 

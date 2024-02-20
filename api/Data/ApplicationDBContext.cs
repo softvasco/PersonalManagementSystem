@@ -12,15 +12,13 @@ namespace api.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<FinanceGoal> FinanceGoals { get; set; }
 
-        //public DbSet<SubCategory> SubCategories { get; set; }
         //public DbSet<MortgageLoan> MortgageLoans { get; set; }
-        //public DbSet<FinanceGoal> FinanceGoals { get; set; }
         //public DbSet<BankAccount> BankAccounts { get; set; }
         //public DbSet<DebitCard> DebitCards { get; set; }
         //public DbSet<TransactionFile> TransactionFiles { get; set; }
-        ////public DbSet<Transaction> Transactions { get; set; }
-        //public DbSet<Tag> Tags { get; set; }
+        //public DbSet<Transaction> Transactions { get; set; }
         //public DbSet<PersonalCredit> PersonalCredits { get; set; }
         //public DbSet<CreditCard> CreditCards { get; set; }
         //public DbSet<Expense> Expenses { get; set; }
