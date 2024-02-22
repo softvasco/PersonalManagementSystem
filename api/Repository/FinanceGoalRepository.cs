@@ -18,7 +18,7 @@ namespace api.Repository
             if (!_context.Users.Any(x => x.Id == financeGoalModel.UserId))
                 throw new Exception("User does not exists!");
 
-            if (_context.FinanceGoals.Any(x => x.Name == financeGoalModel.Name && x.UserId == financeGoalModel.UserId))
+            if (_context.FinanceGoals.Any(x => x.Code == financeGoalModel.Code && x.UserId == financeGoalModel.UserId && x.EndGoalDate == null))
                 throw new Exception("Finance Goal already exists!");
 
             await _context.FinanceGoals.AddAsync(financeGoalModel);

@@ -11,10 +11,13 @@ namespace api.Mappers
             {
                 Name = createFinanceGoalDto.Name,
                 Description = createFinanceGoalDto.Description,
+                Code = createFinanceGoalDto.Code,
                 CurrentDebtAmount = createFinanceGoalDto.CurrentDebtAmount,
                 OutstandingAmount = createFinanceGoalDto.OutstandingAmount,
                 UserId = createFinanceGoalDto.UserId,
-                Goal = createFinanceGoalDto.Goal
+                Goal = createFinanceGoalDto.Goal,
+                StartGoalDate = createFinanceGoalDto.StartGoalDate,
+                EndGoalDate = createFinanceGoalDto.EndGoalDate
             };
         }
     }
