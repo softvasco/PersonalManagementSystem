@@ -6,22 +6,22 @@ namespace api.Dtos.BankAccounts
     {
         [Required]
         public string Name { get; set; } = string.Empty;
-        [Required]
-        public string Number { get; set; } = string.Empty;
-        [Required]
-        public string Swift { get; set; } = string.Empty;
+        
+        public string? Number { get; set; } = string.Empty;
+        
+        public string? Swift { get; set; } = string.Empty;
         [Required]
         public string Code { get; set; } = string.Empty;
-        [Required]
-        public string Description { get; set; } = string.Empty;
-        [Required]
-        public string IBAN { get; set; } = string.Empty;
-        [Required]
-        public string NIB { get; set; } = string.Empty;
-        [Required]
+        
+        public string? Description { get; set; } = string.Empty;
+        
+        public string? IBAN { get; set; } = string.Empty;
+        
+        public string? NIB { get; set; } = string.Empty;
+        
         public decimal Balance { get; set; }
-        [Required]
-        public DateTime OpenDate { get; set; }
+        
+        public DateTime? OpenDate { get; set; }
         public DateTime? CloseDate { get; set; }
 
         [Required]

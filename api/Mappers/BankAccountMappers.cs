@@ -7,11 +7,14 @@ namespace api.Mappers
     {
         public static async Task<BankAccount> ToBankAccountFromCreateBankAccountDtoAsync(this CreateBankAccountDto createBankAccountDto)
         {
-            byte[] fileContent;
+            byte[]? fileContent = null;
             using (var memoryStream = new MemoryStream())
             {
-                await createBankAccountDto.File.CopyToAsync(memoryStream);
-                fileContent = memoryStream.ToArray();
+                if (createBankAccountDto.File is not null)
+                {
+                    await createBankAccountDto.File.CopyToAsync(memoryStream);
+                    fileContent = memoryStream.ToArray();
+                }
             }
 
             return new BankAccount

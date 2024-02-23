@@ -54,7 +54,7 @@ namespace api.Controllers
 
                 return Created();
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
