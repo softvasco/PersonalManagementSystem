@@ -4,16 +4,16 @@ using api.Models;
 
 namespace api.Repository
 {
-    public class TransactionRepository : ITransactionRepository
+    public class GiftCardRepository : IGiftCardRepository
     {
         private readonly ApplicationDBContext _context;
 
-        public TransactionRepository(ApplicationDBContext context)
+        public GiftCardRepository(ApplicationDBContext context)
         {
             _context = context;
         }
 
-        public Task<Transaction> CreateAsync(Transaction transaction)
+        public Task<GiftCard> CreateAsync(GiftCard giftCard)
         {
             throw new NotImplementedException();
         }

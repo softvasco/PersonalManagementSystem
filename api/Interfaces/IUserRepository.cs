@@ -4,6 +4,6 @@ namespace api.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> CreateAsync(User userModel);
+        Task<User> CreateAsync(User user);
     }
 }

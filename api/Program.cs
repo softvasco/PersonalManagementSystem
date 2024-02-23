@@ -1,4 +1,4 @@
-using api;
+
 using api.Data;
 using api.Interfaces;
 using api.Repository;
@@ -28,15 +28,8 @@ builder.Services.AddScoped<IFinanceGoalRepository, FinanceGoalRepository>();
 builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 builder.Services.AddScoped<IDebitCardRepository, DebitCardRepository>();
-
-//builder.Services.AddScoped<IEarningRepository, EarningRepository>();
-//builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
-
-//builder.Services.AddScoped<IMortgageLoanRepository, MortgageLoanRepository>();
-//builder.Services.AddScoped<IPersonalCreditRepository, PersonalCreditRepository>();
-//builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-
-
+builder.Services.AddScoped<IGiftCardRepository, GiftCardRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 var app = builder.Build();
 

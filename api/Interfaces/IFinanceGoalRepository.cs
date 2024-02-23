@@ -4,6 +4,6 @@ namespace api.Interfaces
 {
     public interface IFinanceGoalRepository
     {
-        Task<FinanceGoal> CreateAsync(FinanceGoal financeGoalModel);
+        Task<FinanceGoal> CreateAsync(FinanceGoal financeGoal);
     }
 }

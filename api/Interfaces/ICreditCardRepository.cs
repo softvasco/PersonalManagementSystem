@@ -4,6 +4,6 @@ namespace api.Interfaces
 {
     public interface ICreditCardRepository
     {
-        Task<CreditCard> CreateAsync(CreditCard creditCardModel);
+        Task<CreditCard> CreateAsync(CreditCard creditCard);
     }
 }

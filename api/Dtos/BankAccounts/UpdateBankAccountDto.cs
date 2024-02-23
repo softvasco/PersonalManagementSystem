@@ -1,22 +1,31 @@
-﻿namespace api.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace api.Dtos.BankAccounts
 {
-    public class BankAccount : BaseEntity
+    public class UpdateBankAccountDto
     {
+        [Required]
         public string Name { get; set; } = string.Empty;
+        [Required]
         public string Number { get; set; } = string.Empty;
+        [Required]
         public string Swift { get; set; } = string.Empty;
+        [Required]
         public string Code { get; set; } = string.Empty;
+        [Required]
         public string Description { get; set; } = string.Empty;
+        [Required]
         public string IBAN { get; set; } = string.Empty;
+        [Required]
         public string NIB { get; set; } = string.Empty;
+        [Required]
         public decimal Balance { get; set; }
+        [Required]
         public DateTime OpenDate { get; set; }
         public DateTime? CloseDate { get; set; }
-        
 
-        public User User { get; set; }
+        [Required]
         public int UserId { get; set; }
 
-        public byte[] FileContent { get; set; } = [];
     }
 }

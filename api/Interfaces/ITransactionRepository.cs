@@ -4,7 +4,6 @@ namespace api.Interfaces
 {
     public interface ITransactionRepository
     {
-        //Task<Category> GetByName(string name);
-        //Task<Category> CreateAsync(Category category);
+        Task<Transaction> CreateAsync(Transaction transaction);
     }
 }
