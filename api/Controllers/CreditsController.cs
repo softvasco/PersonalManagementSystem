@@ -11,26 +11,16 @@ namespace api.Controllers
     public class CreditsController : ControllerBase
     {
         private readonly ILogger<CreditsController> _logger;
-        //private readonly ICategoryRepository _categoryRepository;
+        private readonly ICreditsRepository _creditsRepository;
 
         public CreditsController(
-            //ICategoryRepository categoryRepository,
+            ICreditsRepository creditsRepository,
             ILogger<CreditsController> logger)
         {
-            //_categoryRepository = categoryRepository;
             _logger = logger;
+            _creditsRepository = creditsRepository;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreateCategoryDto createCategoryDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    var userModel = createCategoryDto.ToCategoryFromCreateCategoryDto();
-
-        //    return Ok(await _categoryRepository.CreateAsync(userModel));
-        //}
-
+       
     }
 }

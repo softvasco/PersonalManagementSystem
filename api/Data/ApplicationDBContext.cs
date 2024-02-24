@@ -14,8 +14,9 @@ namespace api.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<FinanceGoal> FinanceGoals { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
-        public DbSet<DebitCard> DebitCards { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<Credit> Credits { get; set; }
+        public DbSet<DebitCard> DebitCards { get; set; }
         public DbSet<GiftCard> GiftCards { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
