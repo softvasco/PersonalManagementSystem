@@ -2,8 +2,6 @@ using api.Dtos.BankAccounts;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -31,7 +29,7 @@ namespace api.Controllers
                 var bankAccount = await _bankAccountRepository.GetByCodeAsync(code);
                 return Ok(bankAccount);
             }
-            catch (NotFoundException nfe)
+            catch (NotFoundException)
             {
                 return NotFound();
             }

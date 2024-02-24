@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos.CreditCards
+namespace api.Dtos.BankAccounts
 {
-    public class CreateCreditCardsDto
+    public class UpdateCreditCardDto
     {
         [Required]
         public string Name { get; set; } = string.Empty;
