@@ -2,16 +2,14 @@
 
 namespace api.Dtos.DebitCards
 {
-    public class CreateDebitCardsDto
+    public class CreateDebitCardDto
     {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [Required]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         [Required]
-        public string Description { get; set; }
-        [Required]
-        public string IBAN { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
         public decimal Balance { get; set; }
         [Required]

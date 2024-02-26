@@ -5,7 +5,7 @@ namespace api.Mappers
 {
     public static class DebitCardMappers
     {
-        public static DebitCard ToDebitCardFromCreateDebitCardDto(this CreateDebitCardsDto createDebitCardsDto)
+        public static DebitCard ToDebitCardFromCreateDebitCardDto(this CreateDebitCardDto createDebitCardsDto)
         {
             return new DebitCard
             {
@@ -15,9 +15,37 @@ namespace api.Mappers
                 Balance = createDebitCardsDto.Balance,
                 CloseDate = createDebitCardsDto.CloseDate,
                 OpenDate = createDebitCardsDto.OpenDate,
-                IBAN = createDebitCardsDto.IBAN,
                 UserId = createDebitCardsDto.UserId
             };
         }
+
+        public static DebitCard ToDebitCardFromCreateDebitCardDto(this UpdateDebitCardDto updateDebitCardDto)
+        {
+            return new DebitCard
+            {
+                Name = updateDebitCardDto.Name,
+                Code = updateDebitCardDto.Code,
+                Description = updateDebitCardDto.Description,
+                Balance = updateDebitCardDto.Balance,
+                CloseDate = updateDebitCardDto.CloseDate,
+                OpenDate = updateDebitCardDto.OpenDate,
+                UserId = updateDebitCardDto.UserId
+            };
+        }
+
+        public static DebitCardDto ToDebitCardDtoFromDebitCard(this DebitCard debitCard)
+        {
+            return new DebitCardDto
+            {
+                Name = debitCard.Name,
+                Code = debitCard.Code,
+                Description = debitCard.Description,
+                Balance = debitCard.Balance,
+                CloseDate = debitCard.CloseDate,
+                OpenDate = debitCard.OpenDate,
+                UserId = debitCard.UserId
+            };
+        }
+
     }
 }

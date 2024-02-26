@@ -1,7 +1,9 @@
-using api.Dtos.CreditCards;
+using api.Dtos.BankAccounts;
 using api.Dtos.DebitCards;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -21,15 +23,85 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetByCodeAsync(string code)
+        {
+            try
+            {
+                var debitCard = await _debitCardRepository.GetByCodeAsync(code);
+                return Ok(debitCard);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateDebitCardsDto createDebitCardsDto)
+        public async Task<IActionResult> Create([FromBody] CreateDebitCardDto createDebitCardsDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var debitCardModel = createDebitCardsDto.ToDebitCardFromCreateDebitCardDto();
+            try
+            {
+                var debitCardModel = createDebitCardsDto.ToDebitCardFromCreateDebitCardDto();
+                await _debitCardRepository.CreateAsync(debitCardModel);
 
-            return Ok(await _debitCardRepository.CreateAsync(debitCardModel));
+                return Created();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateDebitCardDto updateDebitCardDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var debitCard = updateDebitCardDto.ToDebitCardFromCreateDebitCardDto();
+                await _debitCardRepository.UpdateAsync(id, debitCard);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var debitCard = await _debitCardRepository.DeleteAsync(id);
+
+            if (debitCard == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
 
     }

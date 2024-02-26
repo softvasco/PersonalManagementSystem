@@ -3,9 +3,9 @@ namespace api.Models
 {
     public class FinanceGoal : BaseEntity
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Code { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
         public decimal OutstandingAmount { get; set; }
         public decimal CurrentDebtAmount { get; set; }
         public decimal Goal { get; set; }

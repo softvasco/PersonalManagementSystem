@@ -1,6 +1,6 @@
-﻿namespace api.Models
+﻿namespace api.Dtos.DebitCards
 {
-    public class DebitCard : BaseEntity
+    public class DebitCardDto
     {
         public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
@@ -8,9 +8,6 @@
         public decimal Balance { get; set; }
         public DateTime OpenDate { get; set; }
         public DateTime? CloseDate { get; set; }
-
-
-        public User User { get; set; }
         public int UserId { get; set; }
     }
 }
