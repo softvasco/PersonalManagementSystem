@@ -1,5 +1,4 @@
-﻿
-namespace api.Models
+﻿namespace api.Models
 {
     public class FinanceGoal : BaseEntity
     {
@@ -12,8 +11,8 @@ namespace api.Models
         public DateTime StartGoalDate { get; set; }
         public DateTime? EndGoalDate { get; set; }
 
-        public User User { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; } 
 
     }
 }

@@ -18,7 +18,19 @@ namespace api.Data
         public DbSet<Credit> Credits { get; set; }
         public DbSet<DebitCard> DebitCards { get; set; }
         public DbSet<GiftCard> GiftCards { get; set; }
+        public DbSet<Earning> Earnings { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Categories)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            base.OnModelCreating(modelBuilder);
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

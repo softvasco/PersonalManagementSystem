@@ -1,0 +1,29 @@
+﻿
+using System.ComponentModel.DataAnnotations;
+
+namespace api.Dtos.Earnings
+{
+    public class EarningDto
+    {
+        [Required]
+        public string Code { get; set; } = string.Empty;
+        [Required]
+        public string? Description { get; set; } = string.Empty;
+        [Required]
+        public List<int> Months { get; set; } = new List<int>();
+        [Required]
+        public int PayDay { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        public decimal Percentage { get; set; }
+        [Required]
+        public string DestinationAccountOrCardCode { get; set; } = string.Empty;
+        [Required]
+        public int UserId { get; set; }
+        
+    }
+}

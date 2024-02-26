@@ -11,10 +11,10 @@ namespace api.Controllers
     public class CreditsController : ControllerBase
     {
         private readonly ILogger<CreditsController> _logger;
-        private readonly ICreditsRepository _creditsRepository;
+        private readonly ICreditRepository _creditsRepository;
 
         public CreditsController(
-            ICreditsRepository creditsRepository,
+            ICreditRepository creditsRepository,
             ILogger<CreditsController> logger)
         {
             _logger = logger;

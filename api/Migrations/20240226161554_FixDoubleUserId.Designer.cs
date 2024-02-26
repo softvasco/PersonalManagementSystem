@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240226161554_FixDoubleUserId")]
+    partial class FixDoubleUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +115,7 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ParentCategoryId")
+                    b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -310,6 +313,10 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PayDay")
                         .HasColumnType("int");
 
@@ -445,9 +452,6 @@ namespace api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<byte[]>("Attachment")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -469,7 +473,7 @@ namespace api.Migrations
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SourceAccountOrCardCode")
+                    b.Property<string>("SourceAccount")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")
@@ -478,14 +482,14 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Userid")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EarningId");
 
-                    b.HasIndex("Userid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -539,14 +543,12 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "ParentCategory")
                         .WithMany("Subcategories")
-                        .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParentCategoryId");
 
                     b.HasOne("api.Models.User", "User")
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ParentCategory");
@@ -628,7 +630,7 @@ namespace api.Migrations
 
                     b.HasOne("api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("Userid")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Interfaces
 {
-    public interface ICreditsRepository
+    public interface ICreditRepository
     {
         Task<Credit> CreateAsync(Credit credit);
         Task<Credit> DeleteAsync(int id);

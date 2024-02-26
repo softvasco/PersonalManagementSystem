@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240226163543_AddEarningIdToTransactionTable")]
+    partial class AddEarningIdToTransactionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,6 +313,10 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PayDay")
                         .HasColumnType("int");
 
@@ -445,9 +452,6 @@ namespace api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<byte[]>("Attachment")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -460,6 +464,9 @@ namespace api.Migrations
                     b.Property<int?>("EarningId")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("FileContent")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<decimal>("FinalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -469,7 +476,7 @@ namespace api.Migrations
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SourceAccountOrCardCode")
+                    b.Property<string>("SourceAccount")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")

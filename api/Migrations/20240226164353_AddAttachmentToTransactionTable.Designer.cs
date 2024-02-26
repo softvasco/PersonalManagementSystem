@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240226164353_AddAttachmentToTransactionTable")]
+    partial class AddAttachmentToTransactionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -469,7 +472,7 @@ namespace api.Migrations
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SourceAccountOrCardCode")
+                    b.Property<string>("SourceAccount")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")

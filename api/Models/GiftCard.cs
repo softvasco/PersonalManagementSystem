@@ -8,9 +8,9 @@
         public decimal Balance { get; set; }
         public DateTime OpenDate { get; set; }
         public DateTime? CloseDate { get; set; }
-        
 
-        public User User { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; }
+
     }
 }

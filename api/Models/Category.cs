@@ -7,12 +7,13 @@
         public decimal? MonthlyPlafond { get; set; }
         public decimal? AnnualPlafond { get; set; }
 
-        public User User { get; set; } = new User();
         public int UserId { get; set; }
+        public User User { get; set; } 
 
-        public Category ParentCategory { get; set; } = new Category();
-        public int? ParentCategoryId { get; set; }
-        public ICollection<Category> Subcategories { get; set; } = new List<Category>();
+        public Category ParentCategory { get; set; }
+        public int ParentCategoryId { get; set; }
+
+        public ICollection<Category> Subcategories { get; set; } 
 
     }
 }
