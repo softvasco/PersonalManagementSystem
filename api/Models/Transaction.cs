@@ -2,7 +2,7 @@
 {
     public class Transaction : BaseEntity
     {
-        public string? Descrition { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public int State { get; set; }
         public DateTime OperationDate { get; set; }
         public string? SourceAccountOrCardCode { get; set; } = string.Empty;

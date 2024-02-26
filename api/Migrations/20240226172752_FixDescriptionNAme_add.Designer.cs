@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240226163805_RemoveNameOfEarning")]
-    partial class RemoveNameOfEarning
+    [Migration("20240226172752_FixDescriptionNAme_add")]
+    partial class FixDescriptionNAme_add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -448,6 +448,9 @@ namespace api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<byte[]>("Attachment")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -460,9 +463,6 @@ namespace api.Migrations
                     b.Property<int?>("EarningId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("FileContent")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<decimal>("FinalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -472,7 +472,7 @@ namespace api.Migrations
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SourceAccount")
+                    b.Property<string>("SourceAccountOrCardCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")

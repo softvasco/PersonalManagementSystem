@@ -68,7 +68,7 @@ namespace api.Repository
                     await _context.Transactions.AddAsync(new Transaction
                     {
                         OperationDate = indexData,
-                        Descrition = earning.Description,
+                        Description = earning.Description,
                         State = (int)TransactionState.Pending,
                         Userid = earning.UserId,
                         EarningId = earning.Id,

@@ -19,7 +19,7 @@ namespace api.Migrations
                 defaultValue: 0m);
 
             migrationBuilder.AddColumn<string>(
-                name: "Descrition",
+                name: "Description",
                 table: "Transactions",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -132,7 +132,7 @@ namespace api.Migrations
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
-                name: "Descrition",
+                name: "Description",
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
