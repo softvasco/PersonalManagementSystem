@@ -20,5 +20,7 @@ namespace api.Dtos.BankAccounts
         [Required]
         public int UserId { get; set; }
 
+        public IFormFile? File { get; set; } = null;
+
     }
 }

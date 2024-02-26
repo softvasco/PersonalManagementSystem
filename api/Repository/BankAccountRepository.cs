@@ -101,6 +101,10 @@ namespace api.Repository
             existingBankAccount.Code = bankAccount.Code;
             existingBankAccount.Name = bankAccount.Name;
             existingBankAccount.Swift = bankAccount.Swift;
+            
+            //Only update for a newer file. 
+            if(bankAccount.FileContent != null)
+                existingBankAccount.FileContent = bankAccount.FileContent;
 
             try
             {

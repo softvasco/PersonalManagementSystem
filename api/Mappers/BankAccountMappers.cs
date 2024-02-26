@@ -34,8 +34,18 @@ namespace api.Mappers
             };
         }
 
-        public static BankAccount ToBankAccountFromUpdateBankAccountDto(this UpdateBankAccountDto updateBankAccountDto)
+        public static async Task<BankAccount> ToBankAccountFromUpdateBankAccountDto(this UpdateBankAccountDto updateBankAccountDto)
         {
+            byte[]? fileContent = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                if (updateBankAccountDto.File is not null)
+                {
+                    await updateBankAccountDto.File.CopyToAsync(memoryStream);
+                    fileContent = memoryStream.ToArray();
+                }
+            }
+
             return new BankAccount
             {
                 Name = updateBankAccountDto.Name,
@@ -48,7 +58,8 @@ namespace api.Mappers
                 UserId = updateBankAccountDto.UserId,
                 NIB = updateBankAccountDto.NIB,
                 Swift = updateBankAccountDto.Swift,
-                Number = updateBankAccountDto.Number
+                Number = updateBankAccountDto.Number,
+                FileContent = fileContent
             };
         }
     

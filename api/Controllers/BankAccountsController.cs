@@ -63,14 +63,14 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateBankAccountDto updateBankAccountDto)
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var bankAccount = updateBankAccountDto.ToBankAccountFromUpdateBankAccountDto();
+                var bankAccount = await updateBankAccountDto.ToBankAccountFromUpdateBankAccountDto();
                 await _bankAccountRepository.UpdateAsync(id, bankAccount);
 
                 return Ok();
