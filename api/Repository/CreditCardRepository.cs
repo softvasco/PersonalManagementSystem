@@ -22,6 +22,7 @@ namespace api.Repository
         {
             var existingCreditCard = await _context
                 .CreditCards
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
 
             if (existingCreditCard == null)
@@ -36,6 +37,7 @@ namespace api.Repository
         {
             var userExists = await _context
                 .Users
+                .AsNoTracking()
                 .AnyAsync(x => x.Id == creditCard.UserId && x.IsActive);
 
             if (!userExists)
@@ -45,6 +47,7 @@ namespace api.Repository
 
             var creditCardExists = await _context
                 .CreditCards
+                .AsNoTracking()
                 .AnyAsync(x => x.Code == creditCard.Code
                     && x.UserId == creditCard.UserId
                     && x.IsActive);
@@ -64,6 +67,7 @@ namespace api.Repository
         {
             var creditCard = await _context
                 .CreditCards
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (creditCard is null)
@@ -82,6 +86,7 @@ namespace api.Repository
         {
             var existingCreditCard = await _context
                 .CreditCards
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingCreditCard == null)
@@ -99,7 +104,9 @@ namespace api.Repository
             existingCreditCard.IBAN = creditCard.IBAN;
             existingCreditCard.NIB = creditCard.NIB;
             existingCreditCard.Code = creditCard.Code;
-            existingCreditCard.Name = creditCard.Name;
+            existingCreditCard.CloseExtractDay = creditCard.CloseExtractDay;
+            existingCreditCard.RefNumber = creditCard.RefNumber;
+            existingCreditCard.EntityNumber = creditCard.EntityNumber;
 
             try
             {

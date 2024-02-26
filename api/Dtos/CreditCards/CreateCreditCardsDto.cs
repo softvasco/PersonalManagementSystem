@@ -5,8 +5,6 @@ namespace api.Dtos.CreditCards
     public class CreateCreditCardsDto
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
-        [Required]
         public string Code { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public string? IBAN { get; set; } = string.Empty;
@@ -17,6 +15,8 @@ namespace api.Dtos.CreditCards
         public DateTime? CloseDate { get; set; }
         [Required]
         public int UserId { get; set; }
-
+        public int? CloseExtractDay { get; set; } = 0;
+        public string EntityNumber { get; set; } = string.Empty;
+        public string RefNumber { get; set; } = string.Empty;
     }
 }

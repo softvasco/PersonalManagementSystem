@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
@@ -15,10 +16,16 @@ namespace api.Repository
 
         public async Task<FinanceGoal> CreateAsync(FinanceGoal financeGoalModel)
         {
-            if (!_context.Users.Any(x => x.Id == financeGoalModel.UserId))
+            if (!_context
+                .Users
+                .AsNoTracking()
+                .Any(x => x.Id == financeGoalModel.UserId && x.IsActive))
                 throw new Exception("User does not exists!");
 
-            if (_context.FinanceGoals.Any(x => x.Code == financeGoalModel.Code && x.UserId == financeGoalModel.UserId && x.EndGoalDate == null))
+            if (_context
+                .FinanceGoals
+                .AsNoTracking()
+                .Any(x => x.Code == financeGoalModel.Code && x.UserId == financeGoalModel.UserId && x.EndGoalDate == null && x.IsActive))
                 throw new Exception("Finance Goal already exists!");
 
             await _context.FinanceGoals.AddAsync(financeGoalModel);

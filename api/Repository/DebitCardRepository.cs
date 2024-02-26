@@ -21,6 +21,7 @@ namespace api.Repository
         {
             var userExists = await _context
                         .Users
+                        .AsNoTracking()
                         .AnyAsync(x => x.Id == debitCard.UserId && x.IsActive);
 
             if (!userExists)
@@ -30,6 +31,7 @@ namespace api.Repository
 
             var debitCardExists = await _context
                .DebitCards
+               .AsNoTracking()
                .AnyAsync(x => x.Code == debitCard.Code
                    && x.UserId == debitCard.UserId
                    && x.IsActive);
@@ -49,6 +51,7 @@ namespace api.Repository
         {
             var debitCard = await _context
                .DebitCards
+               .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (debitCard is null)
@@ -67,6 +70,7 @@ namespace api.Repository
         {
             var existingDebitCard = await _context
                .DebitCards
+               .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
 
             if (existingDebitCard == null)
@@ -81,6 +85,7 @@ namespace api.Repository
         {
             var existingDebitCard = await _context
                .DebitCards
+               .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingDebitCard == null)
@@ -96,7 +101,6 @@ namespace api.Repository
                 existingDebitCard.IsActive = false;
             existingDebitCard.Balance = debitCard.Balance;
             existingDebitCard.Code = debitCard.Code;
-            existingDebitCard.Name = debitCard.Name;
 
             try
             {

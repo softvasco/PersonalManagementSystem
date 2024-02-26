@@ -9,7 +9,6 @@ namespace api.Mappers
         {
             return new DebitCard
             {
-                Name = createDebitCardsDto.Name,
                 Code = createDebitCardsDto.Code,
                 Description = createDebitCardsDto.Description,
                 Balance = createDebitCardsDto.Balance,
@@ -23,7 +22,6 @@ namespace api.Mappers
         {
             return new DebitCard
             {
-                Name = updateDebitCardDto.Name,
                 Code = updateDebitCardDto.Code,
                 Description = updateDebitCardDto.Description,
                 Balance = updateDebitCardDto.Balance,
@@ -37,7 +35,6 @@ namespace api.Mappers
         {
             return new DebitCardDto
             {
-                Name = debitCard.Name,
                 Code = debitCard.Code,
                 Description = debitCard.Description,
                 Balance = debitCard.Balance,

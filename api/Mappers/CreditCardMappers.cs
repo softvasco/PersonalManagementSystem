@@ -15,9 +15,12 @@ namespace api.Mappers
                 Code = creditCard.Code,
                 Description = creditCard.Description,
                 IBAN = creditCard.IBAN,
-                Name = creditCard.Name,
                 NIB = creditCard.NIB,
-                OpenDate = creditCard.OpenDate
+                OpenDate = creditCard.OpenDate,
+                UserId = creditCard.UserId,
+                CloseExtractDay = creditCard.CloseExtractDay,
+                EntityNumber = creditCard.EntityNumber,
+                RefNumber = creditCard.RefNumber,
             };
         }
 
@@ -25,14 +28,17 @@ namespace api.Mappers
         {
             return new CreditCard
             {
-                Name = createCreditCardsDto.Name,
                 Code = createCreditCardsDto.Code,
                 Description = createCreditCardsDto.Description,
                 Balance = createCreditCardsDto.Balance,
                 CloseDate = createCreditCardsDto.CloseDate,
                 OpenDate = createCreditCardsDto.OpenDate,
                 IBAN = createCreditCardsDto.IBAN,
-                UserId = createCreditCardsDto.UserId
+                UserId = createCreditCardsDto.UserId,
+                CloseExtractDay = createCreditCardsDto.CloseExtractDay,
+                EntityNumber = createCreditCardsDto.EntityNumber,
+                NIB = createCreditCardsDto.NIB,
+                RefNumber = createCreditCardsDto.RefNumber,
             };
         }
 
@@ -40,14 +46,17 @@ namespace api.Mappers
         {
             return new CreditCard
             {
-                Name = updateCreditCardDto.Name,
                 Code = updateCreditCardDto.Code,
                 Description = updateCreditCardDto.Description,
                 Balance = updateCreditCardDto.Balance,
                 CloseDate = updateCreditCardDto.CloseDate,
                 OpenDate = updateCreditCardDto.OpenDate,
                 IBAN = updateCreditCardDto.IBAN,
-                UserId = updateCreditCardDto.UserId
+                UserId = updateCreditCardDto.UserId,
+                NIB = updateCreditCardDto.NIB,
+                CloseExtractDay = updateCreditCardDto.CloseExtractDay,
+                EntityNumber = updateCreditCardDto.EntityNumber,
+                RefNumber = updateCreditCardDto.RefNumber,
             };
         }
 

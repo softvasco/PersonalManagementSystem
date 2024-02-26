@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
@@ -15,7 +16,7 @@ namespace api.Repository
 
         public async Task<User> CreateAsync(User user)
         {
-            if (_context.Users.Any(x => x.Username == user.Username || x.Email == x.Email))
+            if (_context.Users.AsNoTracking().Any(x => (x.Username == user.Username || x.Email == x.Email) && x.IsActive))
                 throw new Exception("User already exists!");
 
             await _context.Users.AddAsync(user);

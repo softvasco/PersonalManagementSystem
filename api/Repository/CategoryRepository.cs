@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
@@ -15,10 +16,10 @@ namespace api.Repository
 
         public async Task<Category> CreateAsync(Category category)
         {
-            if (!_context.Users.Any(x => x.Id == category.UserId))
+            if (!_context.Users.AsNoTracking().Any(x => x.Id == category.UserId && x.IsActive))
                 throw new Exception("User does not exists!");
 
-            if (_context.Categories.Any(x => x.Name == category.Name && x.UserId == category.UserId))
+            if (_context.Categories.AsNoTracking().Any(x => x.Name == category.Name && x.UserId == category.UserId && x.IsActive))
                 throw new Exception("Category already exists!");
 
             await _context.Categories.AddAsync(category);

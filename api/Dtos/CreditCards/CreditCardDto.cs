@@ -1,8 +1,8 @@
-﻿namespace api.Dtos.CreditCards
+﻿
+namespace api.Dtos.CreditCards
 {
     public class CreditCardDto
     {
-        public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public string? IBAN { get; set; } = string.Empty;
@@ -11,5 +11,8 @@
         public DateTime? OpenDate { get; set; }
         public DateTime? CloseDate { get; set; }
         public int UserId { get; set; }
+        public int? CloseExtractDay { get; set; } = 0;
+        public string? EntityNumber { get; set; } = string.Empty;
+        public string? RefNumber { get; set; } = string.Empty;
     }
 }

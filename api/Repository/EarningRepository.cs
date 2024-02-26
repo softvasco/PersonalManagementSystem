@@ -22,6 +22,7 @@ namespace api.Repository
         {
             var existingEarning = await _context
               .Earnings
+              .AsNoTracking()
               .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
 
             if (existingEarning == null)
