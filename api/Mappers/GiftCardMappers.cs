@@ -26,7 +26,9 @@ namespace api.Mappers
                 CloseDate = createGiftCardDto.CloseDate,
                 OpenDate = createGiftCardDto.OpenDate,
                 UserId = createGiftCardDto.UserId,
-                FileContent = fileContent
+                FileContent = fileContent,
+                CardNumber = createGiftCardDto.CardNumber,
+                IsVoucher = createGiftCardDto.IsVoucher,
             };
         }
 
@@ -35,13 +37,13 @@ namespace api.Mappers
             return new GiftCardDto
             {
                 Balance = giftCard.Balance,
-                CardNumer   = giftCard.CardNumer,
+                CardNumber = giftCard.CardNumber,
                 CloseDate = giftCard.CloseDate,
                 Code = giftCard.Code,
-                Description= giftCard.Description,
+                Description = giftCard.Description,
                 IsVoucher = giftCard.IsVoucher,
-                OpenDate= giftCard.OpenDate,
-                UserId = giftCard.UserId
+                OpenDate = giftCard.OpenDate,
+                UserId = giftCard.UserId,
             };
         }
     }

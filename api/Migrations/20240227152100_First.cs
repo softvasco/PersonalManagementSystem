@@ -243,7 +243,7 @@ namespace api.Migrations
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsVoucher = table.Column<bool>(type: "bit", nullable: false),
-                    CardNumer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OpenDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CloseDate = table.Column<DateTime>(type: "datetime2", nullable: true),

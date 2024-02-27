@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240227150813_First")]
+    [Migration("20240227152100_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -390,7 +390,7 @@ namespace api.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("CardNumer")
+                    b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CloseDate")

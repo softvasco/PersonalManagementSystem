@@ -387,7 +387,7 @@ namespace api.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("CardNumer")
+                    b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CloseDate")
