@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Dtos.Credits;
+using api.Enum;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
@@ -44,6 +45,15 @@ namespace api.Repository
             await _context.Credits.AddAsync(credit);
             await _context.SaveChangesAsync();
 
+            if (credit.TAN == 0)
+            {
+                await InsertTransactionWith0Tan(credit);
+            }
+            else
+            {
+                await InsertTransactions(credit);
+            }
+
             return credit;
         }
 
@@ -72,5 +82,63 @@ namespace api.Repository
             throw new NotImplementedException();
         }
 
+
+        private async Task InsertTransactions(Credit credit)
+        {
+            DateTime indexData = Utils.CalculateNextPaymentDate(credit.OpenDate, credit.PayDay);
+
+            while (indexData <= credit.CloseDate)
+            {
+                await _context.Transactions.AddAsync(new Transaction
+                {
+                    OperationDate = indexData,
+                    Description = credit.Description,
+                    State = (int)TransactionState.Pending,
+                    UserId = credit.UserId,
+                    SourceAccountOrCardCode = credit.AccountOrCardCodeToDebt,
+                    Amount = credit.Installment,
+                    Attachment = null,
+                    CreditId = credit.Id,
+                    DestinationAccountOrCardCode = credit.Code,
+                });
+
+                indexData = indexData.AddMonths(1);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task InsertTransactionWith0Tan(Credit credit)
+        {
+            DateTime indexData = Utils.CalculateNextPaymentDate(credit.OpenDate, credit.PayDay);
+            int numbOfTrans = 0;
+
+            while (indexData <= credit.CloseDate)
+            {
+                numbOfTrans++;
+                indexData = indexData.AddMonths(1);
+            }
+
+            indexData = Utils.CalculateNextPaymentDate(credit.OpenDate, credit.PayDay);
+            while (indexData <= credit.CloseDate)
+            {
+                await _context.Transactions.AddAsync(new Transaction
+                {
+                    OperationDate = indexData,
+                    Description = credit.Description,
+                    State = (int)TransactionState.Pending,
+                    UserId = credit.UserId,
+                    SourceAccountOrCardCode = credit.AccountOrCardCodeToDebt,
+                    Amount = credit.DebtCapital / numbOfTrans,
+                    Attachment = null,
+                    CreditId = credit.Id,
+                    DestinationAccountOrCardCode = credit.Code
+                });
+
+                indexData = indexData.AddMonths(1);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

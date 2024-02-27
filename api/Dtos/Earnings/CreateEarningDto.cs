@@ -19,8 +19,6 @@ namespace api.Dtos.Earnings
         [Required]
         public decimal Amount { get; set; }
         [Required]
-        public decimal Percentage { get; set; }
-        [Required]
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
         [Required]
         public int UserId { get; set; }

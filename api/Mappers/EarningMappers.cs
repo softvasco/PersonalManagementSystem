@@ -17,8 +17,7 @@ namespace api.Mappers
                 Months = earning.Months,
                 PayDay = earning.PayDay,
                 StartDate = earning.StartDate,
-                UserId = earning.UserId,
-                Percentage = earning.Percentage,
+                UserId = earning.UserId
                
             };
         }
@@ -35,8 +34,7 @@ namespace api.Mappers
                 Months = createEarningDto.Months,
                 PayDay = createEarningDto.PayDay,
                 StartDate = createEarningDto.StartDate,
-                UserId = createEarningDto.UserId,
-                Percentage = createEarningDto.Percentage
+                UserId = createEarningDto.UserId
             };
         }
     }

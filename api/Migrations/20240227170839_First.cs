@@ -12,6 +12,33 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Credits",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccountOrCardCodeToDebt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartingCapital = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DebtCapital = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Installment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PayDay = table.Column<int>(type: "int", nullable: false),
+                    TAN = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OpenDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CloseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Credits", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -122,32 +149,6 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Credits",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OpenDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CloseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Credits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Credits_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DebitCards",
                 columns: table => new
                 {
@@ -187,7 +188,6 @@ namespace api.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Percentage = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DestinationAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -274,7 +274,6 @@ namespace api.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MonthlyPlafond = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     AnnualPlafond = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PaymentPercentagePerUser = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -303,8 +302,8 @@ namespace api.Migrations
                     SourceAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DestinationAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    FinalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     EarningId = table.Column<int>(type: "int", nullable: true),
+                    CreditId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Attachment = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -314,6 +313,11 @@ namespace api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Credits_CreditId",
+                        column: x => x.CreditId,
+                        principalTable: "Credits",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Transactions_Earnings_EarningId",
                         column: x => x.EarningId,
@@ -343,11 +347,6 @@ namespace api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Credits_UserId",
-                table: "Credits",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DebitCards_UserId",
                 table: "DebitCards",
                 column: "UserId");
@@ -373,6 +372,11 @@ namespace api.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_CreditId",
+                table: "Transactions",
+                column: "CreditId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_EarningId",
                 table: "Transactions",
                 column: "EarningId");
@@ -393,9 +397,6 @@ namespace api.Migrations
                 name: "CreditCards");
 
             migrationBuilder.DropTable(
-                name: "Credits");
-
-            migrationBuilder.DropTable(
                 name: "DebitCards");
 
             migrationBuilder.DropTable(
@@ -412,6 +413,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Credits");
 
             migrationBuilder.DropTable(
                 name: "Earnings");

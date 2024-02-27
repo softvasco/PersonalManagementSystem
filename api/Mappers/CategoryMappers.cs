@@ -19,7 +19,6 @@ namespace api.Mappers
                     Code = s.Code,
                     Description = s.Description,
                     AnnualPlafond = s.AnnualPlafon,
-                    PaymentPercentagePerUser = s.PaymentPercentagePerUser,
                     MonthlyPlafond = s.MontlyPlafon,
                 }).ToList()
             };

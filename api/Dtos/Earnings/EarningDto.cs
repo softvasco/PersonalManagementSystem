@@ -19,7 +19,6 @@ namespace api.Dtos.Earnings
         public DateTime EndDate { get; set; }
         [Required]
         public decimal Amount { get; set; }
-        public decimal Percentage { get; set; }
         [Required]
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
         [Required]

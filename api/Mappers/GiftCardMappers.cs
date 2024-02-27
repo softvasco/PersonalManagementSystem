@@ -1,5 +1,4 @@
-﻿using api.Dtos.BankAccounts;
-using api.Dtos.GiftCards;
+﻿using api.Dtos.GiftCards;
 using api.Models;
 
 namespace api.Mappers

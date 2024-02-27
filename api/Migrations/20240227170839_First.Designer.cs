@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240227152100_First")]
+    [Migration("20240227170839_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -132,7 +132,10 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("CloseDate")
+                    b.Property<string>("AccountOrCardCodeToDebt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CloseDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Code")
@@ -142,14 +145,32 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("DebtCapital")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("FileContent")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<decimal>("Installment")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("OpenDate")
+                    b.Property<DateTime>("OpenDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("PayDay")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("StartingCapital")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TAN")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -158,8 +179,6 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Credits");
                 });
@@ -309,9 +328,6 @@ namespace api.Migrations
 
                     b.Property<int>("PayDay")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Percentage")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -463,9 +479,6 @@ namespace api.Migrations
                     b.Property<decimal?>("MonthlyPlafond")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("PaymentPercentagePerUser")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -493,6 +506,9 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CreditId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -501,9 +517,6 @@ namespace api.Migrations
 
                     b.Property<int?>("EarningId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("FinalAmount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -524,6 +537,8 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreditId");
 
                     b.HasIndex("EarningId");
 
@@ -581,17 +596,6 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.User", "User")
                         .WithMany("Categories")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("api.Models.Credit", b =>
-                {
-                    b.HasOne("api.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -667,6 +671,10 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Transaction", b =>
                 {
+                    b.HasOne("api.Models.Credit", "Credit")
+                        .WithMany()
+                        .HasForeignKey("CreditId");
+
                     b.HasOne("api.Models.Earning", "Earning")
                         .WithMany()
                         .HasForeignKey("EarningId");
@@ -676,6 +684,8 @@ namespace api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Credit");
 
                     b.Navigation("Earning");
 

@@ -2,7 +2,6 @@ using api.Dtos.Credits;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -23,14 +22,14 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateCreditDto createCreditDto)
+        public async Task<IActionResult> CreateAsync([FromForm] CreateCreditDto createCreditDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var creditCard = createCreditDto.ToCreditFromCreateCreditDto();
+                var creditCard = await createCreditDto.ToCreditFromCreateCreditDto();
                 await _creditRepository.CreateAsync(creditCard);
 
                 return Created();

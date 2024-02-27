@@ -31,6 +31,7 @@ builder.Services.AddScoped<IDebitCardRepository, DebitCardRepository>();
 builder.Services.AddScoped<IGiftCardRepository, GiftCardRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IEarningRepository, EarningRepository>();
+builder.Services.AddScoped<ICreditRepository, CreditRepository>();
 
 var app = builder.Build();
 

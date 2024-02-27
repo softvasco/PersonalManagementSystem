@@ -14,11 +14,27 @@ namespace api.Mappers
                 CloseDate = credit.CloseDate,
                 Description = credit.Description,
                 OpenDate = credit.OpenDate,
+                AccountOrCardCodeToDebt = credit.AccountOrCardCodeToDebt,
+                DebtCapital = credit.DebtCapital,
+                DebtDay = credit.PayDay,
+                Installment = credit.Installment,
+                StartingCapital = credit.StartingCapital,
+                TAN = credit.TAN
             };
         }
 
-        public static Credit ToCreditFromCreateCreditDto(this CreateCreditDto createCreditDto)
+        public async static Task<Credit> ToCreditFromCreateCreditDto(this CreateCreditDto createCreditDto)
         {
+            byte[]? fileContent = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                if (createCreditDto.File is not null)
+                {
+                    await createCreditDto.File.CopyToAsync(memoryStream);
+                    fileContent = memoryStream.ToArray();
+                }
+            }
+
             return new Credit
             {
                 Code = createCreditDto.Code,
@@ -26,11 +42,28 @@ namespace api.Mappers
                 CloseDate = createCreditDto.CloseDate,
                 Description = createCreditDto.Description,
                 OpenDate = createCreditDto.OpenDate,
+                AccountOrCardCodeToDebt = createCreditDto.AccountOrCardCodeToDebt,
+                TAN = createCreditDto.TAN,
+                DebtCapital = createCreditDto.DebtCapital,
+                PayDay = createCreditDto.PayDay,
+                Installment = createCreditDto.Installment,
+                StartingCapital = createCreditDto.StartingCapital,
+                FileContent = fileContent
             };
         }
 
-        public static Credit ToCreditFromUpdateCreditDto(this UpdateCreditDto updateCreditDto)
+        public async static Task<Credit> ToCreditFromUpdateCreditDto(this UpdateCreditDto updateCreditDto)
         {
+            byte[]? fileContent = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                if (updateCreditDto.File is not null)
+                {
+                    await updateCreditDto.File.CopyToAsync(memoryStream);
+                    fileContent = memoryStream.ToArray();
+                }
+            }
+
             return new Credit
             {
                 Code = updateCreditDto.Code,
@@ -38,6 +71,13 @@ namespace api.Mappers
                 CloseDate = updateCreditDto.CloseDate,
                 Description = updateCreditDto.Description,
                 OpenDate = updateCreditDto.OpenDate,
+                AccountOrCardCodeToDebt = updateCreditDto.AccountOrCardCodeToDebt,
+                TAN = updateCreditDto.TAN,
+                DebtCapital = updateCreditDto.DebtCapital,
+                PayDay = updateCreditDto.PayDay,
+                Installment = updateCreditDto.Installment,
+                StartingCapital = updateCreditDto.StartingCapital,
+                FileContent = fileContent
             };
         }
 

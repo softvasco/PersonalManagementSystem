@@ -12,8 +12,6 @@ namespace api.Dtos.Categories
         public int UserID { get; set; }
         public decimal? MontlyPlafon { get; set; }
         public decimal? AnnualPlafon { get; set; }
-        public decimal? PaymentPercentagePerUser { get; internal set; }
-
 
         public List<SubcategoryDto> Subcategories { get; set; }
 
