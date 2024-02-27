@@ -23,24 +23,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var creditCard = await _creditCardRepository.GetByCodeAsync(code);
-                return Ok(creditCard);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateCreditCardsDto createCreditCardsDto)
         {
@@ -58,9 +40,27 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetByCodeAsync(string code)
+        {
+            try
+            {
+                var creditCard = await _creditCardRepository.GetByCodeAsync(code);
+                return Ok(creditCard);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
 

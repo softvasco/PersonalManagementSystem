@@ -9,7 +9,6 @@ namespace api.Mappers
         {
             return new FinanceGoal
             {
-                Name = createFinanceGoalDto.Name,
                 Description = createFinanceGoalDto.Description,
                 Code = createFinanceGoalDto.Code,
                 CurrentDebtAmount = createFinanceGoalDto.CurrentDebtAmount,

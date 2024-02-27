@@ -16,12 +16,24 @@ namespace api.Repository
 
         public async Task<User> CreateAsync(User user)
         {
-            if (_context.Users.AsNoTracking().Any(x => (x.Username == user.Username || x.Email == x.Email) && x.IsActive))
-                throw new Exception("User already exists!");
+            try
+            {
+                if (_context
+                    .Users
+                    .AsNoTracking()
+                    .Any(x => (x.Username == user.Username || x.Email == user.Username) && x.IsActive))
+                {
+                    throw new Exception("User already exists!");
+                }
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }

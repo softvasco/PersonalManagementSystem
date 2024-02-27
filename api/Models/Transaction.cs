@@ -13,7 +13,7 @@
         public int? EarningId { get; set; }
         public Earning? Earning { get; set; }
 
-        public int Userid { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; } 
 
         public byte[]? Attachment { get; set; } = [];

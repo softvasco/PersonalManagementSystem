@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Dtos.FinanceGoals;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -32,5 +33,21 @@ namespace api.Repository
             await _context.SaveChangesAsync();
             return financeGoalModel;
         }
+
+        public async Task<FinanceGoalDto> GetByCodeAsync(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<FinanceGoal> UpdateAsync(int id, FinanceGoal financeGoal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<FinanceGoal> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

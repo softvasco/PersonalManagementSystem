@@ -21,6 +21,29 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromForm] CreateBankAccountDto createBankAccountDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var bankAccount = await createBankAccountDto.ToBankAccountFromCreateBankAccountDtoAsync();
+                await _bankAccountRepository.CreateAsync(bankAccount);
+
+                return Created();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{code}")]
         public async Task<IActionResult> GetByCodeAsync(string code)
         {
@@ -39,28 +62,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateBankAccountDto createBankAccountDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                var bankAccount = await createBankAccountDto.ToBankAccountFromCreateBankAccountDtoAsync();
-                await _bankAccountRepository.CreateAsync(bankAccount);
-
-                return Created();
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
+       
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)

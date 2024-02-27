@@ -1,4 +1,5 @@
 using api.Dtos.Users;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -23,12 +24,21 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                var userModel = createUserDto.ToUserFromCreateUserDto();
+                await _userRepository.CreateAsync(userModel);
 
-            var userModel = createUserDto.ToUserFromCreateUserDto();
-
-            return Ok(await _userRepository.CreateAsync(userModel));
+                return Created();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch(Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

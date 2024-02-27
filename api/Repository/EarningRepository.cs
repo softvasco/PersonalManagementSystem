@@ -18,21 +18,6 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<EarningDto> GetByCodeAsync(string code)
-        {
-            var existingEarning = await _context
-              .Earnings
-              .AsNoTracking()
-              .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingEarning == null)
-            {
-                throw new NotFoundException("Earning not found");
-            }
-
-            return existingEarning.ToEarningDtoFromEarning();
-        }
-
         public async Task<Earning> CreateAsync(Earning earning)
         {
             var userExists = await _context
@@ -60,7 +45,7 @@ namespace api.Repository
             await _context.Earnings.AddAsync(earning);
             await _context.SaveChangesAsync();
 
-            DateTime indexData = CalculateNextPaymentDate(earning.StartDate,earning.PayDay);
+            DateTime indexData = CalculateNextPaymentDate(earning.StartDate, earning.PayDay);
 
             while (indexData < earning.EndDate)
             {
@@ -71,7 +56,7 @@ namespace api.Repository
                         OperationDate = indexData,
                         Description = earning.Description,
                         State = (int)TransactionState.Pending,
-                        Userid = earning.UserId,
+                        UserId = earning.UserId,
                         EarningId = earning.Id,
                         SourceAccountOrCardCode = null,
                         DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
@@ -87,6 +72,31 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return earning;
+        }
+
+        public async Task<EarningDto> GetByCodeAsync(string code)
+        {
+            var existingEarning = await _context
+              .Earnings
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
+
+            if (existingEarning == null)
+            {
+                throw new NotFoundException("Earning not found");
+            }
+
+            return existingEarning.ToEarningDtoFromEarning();
+        }
+
+        public Task<Earning> UpdateAsync(int id, Earning earning)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Earning> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
         }
 
         private DateTime CalculateNextPaymentDate(DateTime startDate, int payDay)
@@ -105,6 +115,5 @@ namespace api.Repository
                 return new DateTime(startDate.Year, startDate.Month, payDay);
             }
         }
-
     }
 }

@@ -21,24 +21,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var earning = await _earningRepository.GetByCodeAsync(code);
-                return Ok(earning);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateEarningDto createEarningDto)
         {
@@ -56,51 +38,29 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    try
-        //    {
-        //        var bankAccount = await updateBankAccountDto.ToBankAccountFromUpdateBankAccountDto();
-        //        await _bankAccountRepository.UpdateAsync(id, bankAccount);
-
-        //        return Ok();
-        //    }
-        //    catch(NotFoundException)
-        //    {
-        //        return NotFound();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
-        //[HttpDelete]
-        //[Route("{id:int}")]
-        //public async Task<IActionResult> Delete([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    var bankAccount = await _bankAccountRepository.DeleteAsync(id);
-
-        //    if (bankAccount == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return NoContent();
-        //}
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetByCodeAsync(string code)
+        {
+            try
+            {
+                var earning = await _earningRepository.GetByCodeAsync(code);
+                return Ok(earning);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

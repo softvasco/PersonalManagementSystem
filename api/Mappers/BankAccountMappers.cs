@@ -19,7 +19,6 @@ namespace api.Mappers
 
             return new BankAccount
             {
-                Name = createBankAccountDto.Name,
                 Code = createBankAccountDto.Code,
                 Description = createBankAccountDto.Description,
                 Balance = createBankAccountDto.Balance,
@@ -48,7 +47,6 @@ namespace api.Mappers
 
             return new BankAccount
             {
-                Name = updateBankAccountDto.Name,
                 Code = updateBankAccountDto.Code,
                 Description = updateBankAccountDto.Description,
                 Balance = updateBankAccountDto.Balance,
@@ -67,7 +65,6 @@ namespace api.Mappers
         {
             return new BankAccountDto
             {
-                Name= bankAccount.Name,
                 Code= bankAccount.Code,
                 Description = bankAccount.Description,
                 Balance = bankAccount.Balance,

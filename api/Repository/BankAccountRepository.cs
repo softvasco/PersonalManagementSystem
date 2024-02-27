@@ -104,7 +104,6 @@ namespace api.Repository
             existingBankAccount.NIB = bankAccount.NIB;
             existingBankAccount.Number = bankAccount.Number;
             existingBankAccount.Code = bankAccount.Code;
-            existingBankAccount.Name = bankAccount.Name;
             existingBankAccount.Swift = bankAccount.Swift;
             
             //Only update for a newer file. 

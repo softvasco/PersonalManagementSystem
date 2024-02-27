@@ -9,18 +9,18 @@ namespace api.Mappers
         {
             return new Category
             {
-                Name = createCategoryDto.Name,
+                Code = createCategoryDto.Code,
                 Description = createCategoryDto.Description,
                 AnnualPlafond = createCategoryDto.AnnualPlafon,
                 UserId = createCategoryDto.UserID,
                 MonthlyPlafond = createCategoryDto.MontlyPlafon,
-                Subcategories = createCategoryDto.Subcategories.Select(s => new Category
+                SubCategories = createCategoryDto.Subcategories.Select(s => new SubCategory
                 {
-                    Name = s.Name,
+                    Code = s.Code,
                     Description = s.Description,
                     AnnualPlafond = s.AnnualPlafon,
+                    PaymentPercentagePerUser = s.PaymentPercentagePerUser,
                     MonthlyPlafond = s.MontlyPlafon,
-                    UserId = s.UserID,
                 }).ToList()
             };
         }

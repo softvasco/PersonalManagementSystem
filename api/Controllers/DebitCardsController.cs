@@ -1,4 +1,5 @@
 using api.Dtos.BankAccounts;
+using api.Dtos.Credits;
 using api.Dtos.DebitCards;
 using api.Helpers;
 using api.Interfaces;
@@ -23,23 +24,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var debitCard = await _debitCardRepository.GetByCodeAsync(code);
-                return Ok(debitCard);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDebitCardDto createDebitCardsDto)
@@ -58,14 +42,32 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetByCodeAsync(string code)
+        {
+            try
+            {
+                var debitCard = await _debitCardRepository.GetByCodeAsync(code);
+                return Ok(debitCard);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateDebitCardDto updateDebitCardDto)
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateDebitCardDto updateDebitCardDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -83,7 +85,7 @@ namespace api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 

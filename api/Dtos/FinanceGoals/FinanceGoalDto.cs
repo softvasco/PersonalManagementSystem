@@ -1,6 +1,6 @@
-﻿namespace api.Models
+﻿namespace api.Dtos.FinanceGoals
 {
-    public class FinanceGoal : BaseEntity
+    public class FinanceGoalDto
     {
         public string Description { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
@@ -11,7 +11,5 @@
         public DateTime? EndGoalDate { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; } 
-
     }
 }

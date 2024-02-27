@@ -1,6 +1,7 @@
-﻿namespace api.Models
+﻿
+namespace api.Dtos.Credits
 {
-    public class Credit : BaseEntity
+    public class UpdateCreditDto
     {
         public string Code { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
@@ -9,6 +10,5 @@
         public DateTime? CloseDate { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace api.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<FinanceGoal> FinanceGoals { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
@@ -23,12 +24,6 @@ namespace api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>()
-                .HasOne(c => c.User)
-                .WithMany(u => u.Categories)
-                .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
             base.OnModelCreating(modelBuilder);
         }
 

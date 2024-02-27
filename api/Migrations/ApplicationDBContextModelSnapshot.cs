@@ -58,10 +58,6 @@ namespace api.Migrations
                     b.Property<string>("NIB")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Number")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,6 +91,10 @@ namespace api.Migrations
                     b.Property<decimal?>("AnnualPlafond")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -108,13 +108,6 @@ namespace api.Migrations
                     b.Property<decimal?>("MonthlyPlafond")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ParentCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -122,8 +115,6 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentCategoryId");
 
                     b.HasIndex("UserId");
 
@@ -153,10 +144,6 @@ namespace api.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("OpenDate")
                         .HasColumnType("datetime2");
@@ -370,10 +357,6 @@ namespace api.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("OutstandingAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -404,6 +387,9 @@ namespace api.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("CardNumer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CloseDate")
                         .HasColumnType("datetime2");
 
@@ -418,12 +404,14 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("FileContent")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsVoucher")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("OpenDate")
                         .HasColumnType("datetime2");
@@ -439,6 +427,50 @@ namespace api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("GiftCards");
+                });
+
+            modelBuilder.Entity("api.Models.SubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("AnnualPlafond")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("MonthlyPlafond")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("PaymentPercentagePerUser")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("api.Models.Transaction", b =>
@@ -485,14 +517,14 @@ namespace api.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Userid")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EarningId");
 
-                    b.HasIndex("Userid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -544,19 +576,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Category", b =>
                 {
-                    b.HasOne("api.Models.Category", "ParentCategory")
-                        .WithMany("Subcategories")
-                        .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("api.Models.User", "User")
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ParentCategory");
 
                     b.Navigation("User");
                 });
@@ -627,6 +651,17 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("api.Models.SubCategory", b =>
+                {
+                    b.HasOne("api.Models.Category", "Category")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("api.Models.Transaction", b =>
                 {
                     b.HasOne("api.Models.Earning", "Earning")
@@ -635,7 +670,7 @@ namespace api.Migrations
 
                     b.HasOne("api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("Userid")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -646,7 +681,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Category", b =>
                 {
-                    b.Navigation("Subcategories");
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("api.Models.User", b =>
