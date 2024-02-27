@@ -21,6 +21,8 @@ namespace api.Mappers
                 CloseExtractDay = creditCard.CloseExtractDay,
                 EntityNumber = creditCard.EntityNumber,
                 RefNumber = creditCard.RefNumber,
+                Plafon = creditCard.Plafon,
+                PercentageOfPayment = creditCard.PercentageOfPayment,
             };
         }
 
@@ -39,6 +41,8 @@ namespace api.Mappers
                 EntityNumber = createCreditCardsDto.EntityNumber,
                 NIB = createCreditCardsDto.NIB,
                 RefNumber = createCreditCardsDto.RefNumber,
+                Plafon = createCreditCardsDto.Plafon,
+                PercentageOfPayment = createCreditCardsDto.PercentageOfPayment,
             };
         }
 
@@ -57,6 +61,8 @@ namespace api.Mappers
                 CloseExtractDay = updateCreditCardDto.CloseExtractDay,
                 EntityNumber = updateCreditCardDto.EntityNumber,
                 RefNumber = updateCreditCardDto.RefNumber,
+                Plafon = updateCreditCardDto.Plafon,
+                PercentageOfPayment = updateCreditCardDto.PercentageOfPayment,
             };
         }
 

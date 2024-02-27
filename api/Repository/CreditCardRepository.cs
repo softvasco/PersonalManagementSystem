@@ -107,6 +107,8 @@ namespace api.Repository
             existingCreditCard.CloseExtractDay = creditCard.CloseExtractDay;
             existingCreditCard.RefNumber = creditCard.RefNumber;
             existingCreditCard.EntityNumber = creditCard.EntityNumber;
+            existingCreditCard.RefNumber = creditCard.RefNumber;
+            existingCreditCard.Plafon = creditCard.Plafon;
 
             try
             {

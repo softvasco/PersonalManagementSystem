@@ -18,6 +18,7 @@ namespace api.Dtos.BankAccounts
         public int? CloseExtractDay { get; set; } = 0;
         public string EntityNumber { get; set; } = string.Empty;
         public string RefNumber { get; set; } = string.Empty;
-
+        public decimal Plafon { get; set; }
+        public decimal PercentageOfPayment { get; set; }
     }
 }
