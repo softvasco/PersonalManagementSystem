@@ -20,6 +20,7 @@ namespace api.Data
         public DbSet<DebitCard> DebitCards { get; set; }
         public DbSet<GiftCard> GiftCards { get; set; }
         public DbSet<Earning> Earnings { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

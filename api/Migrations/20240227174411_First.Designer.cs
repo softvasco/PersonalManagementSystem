@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240227170839_First")]
+    [Migration("20240227174411_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -345,6 +345,67 @@ namespace api.Migrations
                     b.ToTable("Earnings");
                 });
 
+            modelBuilder.Entity("api.Models.Expense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinationAccountOrCardCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("FileContent")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Months")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PayDay")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceAccountOrCardCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.ToTable("Expenses");
+                });
+
             modelBuilder.Entity("api.Models.FinanceGoal", b =>
                 {
                     b.Property<int>("Id")
@@ -518,6 +579,9 @@ namespace api.Migrations
                     b.Property<int?>("EarningId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ExpenseId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -541,6 +605,8 @@ namespace api.Migrations
                     b.HasIndex("CreditId");
 
                     b.HasIndex("EarningId");
+
+                    b.HasIndex("ExpenseId");
 
                     b.HasIndex("UserId");
 
@@ -636,6 +702,17 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("api.Models.Expense", b =>
+                {
+                    b.HasOne("api.Models.SubCategory", "SubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubCategory");
+                });
+
             modelBuilder.Entity("api.Models.FinanceGoal", b =>
                 {
                     b.HasOne("api.Models.User", "User")
@@ -679,6 +756,10 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("EarningId");
 
+                    b.HasOne("api.Models.Expense", "Expense")
+                        .WithMany()
+                        .HasForeignKey("ExpenseId");
+
                     b.HasOne("api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -688,6 +769,8 @@ namespace api.Migrations
                     b.Navigation("Credit");
 
                     b.Navigation("Earning");
+
+                    b.Navigation("Expense");
 
                     b.Navigation("User");
                 });

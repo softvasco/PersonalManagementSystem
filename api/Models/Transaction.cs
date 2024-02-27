@@ -12,6 +12,9 @@
         public int? EarningId { get; set; }
         public Earning? Earning { get; set; }
 
+        public int? ExpenseId { get; set; }
+        public Expense? Expense { get; set; }
+
         public int? CreditId { get; set; }
         public Credit? Credit { get; set; }
 

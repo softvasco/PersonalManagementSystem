@@ -291,6 +291,38 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Expenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Months = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PayDay = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SourceAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DestinationAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Expenses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Expenses_SubCategories_SubCategoryId",
+                        column: x => x.SubCategoryId,
+                        principalTable: "SubCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -303,6 +335,7 @@ namespace api.Migrations
                     DestinationAccountOrCardCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     EarningId = table.Column<int>(type: "int", nullable: true),
+                    ExpenseId = table.Column<int>(type: "int", nullable: true),
                     CreditId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Attachment = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
@@ -322,6 +355,11 @@ namespace api.Migrations
                         name: "FK_Transactions_Earnings_EarningId",
                         column: x => x.EarningId,
                         principalTable: "Earnings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Transactions_Expenses_ExpenseId",
+                        column: x => x.ExpenseId,
+                        principalTable: "Expenses",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Transactions_Users_UserId",
@@ -357,6 +395,11 @@ namespace api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Expenses_SubCategoryId",
+                table: "Expenses",
+                column: "SubCategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FinanceGoals_UserId",
                 table: "FinanceGoals",
                 column: "UserId");
@@ -380,6 +423,11 @@ namespace api.Migrations
                 name: "IX_Transactions_EarningId",
                 table: "Transactions",
                 column: "EarningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_ExpenseId",
+                table: "Transactions",
+                column: "ExpenseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
@@ -406,19 +454,22 @@ namespace api.Migrations
                 name: "GiftCards");
 
             migrationBuilder.DropTable(
-                name: "SubCategories");
-
-            migrationBuilder.DropTable(
                 name: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Credits");
 
             migrationBuilder.DropTable(
                 name: "Earnings");
+
+            migrationBuilder.DropTable(
+                name: "Expenses");
+
+            migrationBuilder.DropTable(
+                name: "SubCategories");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Users");
