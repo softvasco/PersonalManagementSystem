@@ -14,24 +14,47 @@ namespace api.Repository
             _context = context;
         }
 
-        public Task<Transaction> CreateAsync(Transaction transaction)
+        public async Task<Transaction> CreateAsync(Transaction transaction, bool ignoreRules)
+        {
+            try
+            {
+                if (ignoreRules)
+                    await InsertIgnoringRules(transaction);
+                else
+                    await Insert(transaction);
+
+                return transaction;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<Transaction> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Transaction> DeleteAsync(int id)
+        public async Task<TransactionDto> GetByCodeId(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TransactionDto> GetByCodeAsync(string code)
+        public async Task<Transaction> UpdateAsync(int id, Transaction transaction)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Transaction> UpdateAsync(int id, Transaction transaction)
+        private async Task Insert(Transaction transaction)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task InsertIgnoringRules(Transaction transaction)
+        {
+            await _context.Transactions.AddAsync(transaction);
+            await _context.SaveChangesAsync();
         }
     }
 }

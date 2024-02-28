@@ -5,26 +5,15 @@ namespace api.Mappers
 {
     public static class ExpenseMappers
     {
-        public static async Task<Expense> ToExpenseFromCreateExpenseDtoAsync(this CreateExpenseDto createExpenseDto)
+        public static Expense ToExpenseFromCreateExpenseDtoAsync(this CreateExpenseDto createExpenseDto)
         {
-            byte[]? fileContent = null;
-            using (var memoryStream = new MemoryStream())
-            {
-                if (createExpenseDto.File is not null)
-                {
-                    await createExpenseDto.File.CopyToAsync(memoryStream);
-                    fileContent = memoryStream.ToArray();
-                }
-            }
-
             return new Expense
             {
                Code = createExpenseDto.Code,
                Amount = createExpenseDto.Amount,
                Description = createExpenseDto.Description,
                DestinationAccountOrCardCode = createExpenseDto.DestinationAccountOrCardCode,
-               FileContent = fileContent,
-               SubCategoryId = createExpenseDto.SubCategoryId,
+               UserId = createExpenseDto.UserId,
                PayDay = createExpenseDto.PayDay,
                Months = createExpenseDto.Months,
                SourceAccountOrCardCode = createExpenseDto.SourceAccountOrCardCode,
@@ -33,26 +22,15 @@ namespace api.Mappers
             };
         }
 
-        public static async Task<Expense> ToBankAccountFromUpdateBankAccountDto(this UpdateExpenseDto updateExpenseDto)
+        public static Expense ToBankAccountFromUpdateBankAccountDto(this UpdateExpenseDto updateExpenseDto)
         {
-            byte[]? fileContent = null;
-            using (var memoryStream = new MemoryStream())
-            {
-                if (updateExpenseDto.File is not null)
-                {
-                    await updateExpenseDto.File.CopyToAsync(memoryStream);
-                    fileContent = memoryStream.ToArray();
-                }
-            }
-
             return new Expense
             {
                 Code = updateExpenseDto.Code,
                 Amount = updateExpenseDto.Amount,
                 Description = updateExpenseDto.Description,
                 DestinationAccountOrCardCode = updateExpenseDto.DestinationAccountOrCardCode,
-                FileContent = fileContent,
-                SubCategoryId = updateExpenseDto.SubCategoryId,
+                UserId = updateExpenseDto.UserId,
                 PayDay = updateExpenseDto.PayDay,
                 Months = updateExpenseDto.Months,
                 SourceAccountOrCardCode = updateExpenseDto.SourceAccountOrCardCode,

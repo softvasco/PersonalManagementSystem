@@ -1,6 +1,8 @@
 ﻿using api.Data;
 using api.Dtos.Categories;
+using api.Helpers;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,9 +36,38 @@ namespace api.Repository
             return category;
         }
 
-        public Task<CategoryDto> GetByCodeAsync(string code)
+        public async Task<CategoryDto> GetByCodeAsync(string code)
         {
-            throw new NotImplementedException();
+            var existingCategory = await _context
+               .Categories
+               .AsNoTracking()
+               .Include(x => x.SubCategories)
+               .FirstOrDefaultAsync(x =>
+                    (x.Code.ToLower() == code.ToLower() && x.IsActive)
+                    ||
+                    x.SubCategories.Any(y => y.Code.ToLower() == code.ToLower() && y.IsActive));
+
+            if (existingCategory == null)
+            {
+                throw new NotFoundException("Category not found");
+            }
+
+            return existingCategory.ToCategoryDtoFromCategory();
+        }
+
+        public async Task<List<CategoryDto>> GetByUserIdAsync(int userId)
+        {
+            var categories = await _context.Categories
+                .Where(x => x.UserId == userId)
+                .Include(x => x.SubCategories)
+                .ToListAsync();
+
+            if (categories == null || !categories.Any())
+            {
+                throw new NotFoundException("No categories found for the specified user");
+            }
+
+            return categories.Select(c => c.ToCategoryDtoFromCategory()).ToList();
         }
 
         public Task<Category> UpdateAsync(int id, Category category)
@@ -48,6 +79,5 @@ namespace api.Repository
         {
             throw new NotImplementedException();
         }
-
     }
 }

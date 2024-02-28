@@ -10,7 +10,6 @@ namespace api.Mappers
             return new CreditDto
             {
                 Code = credit.Code,
-                UserId = credit.UserId,
                 CloseDate = credit.CloseDate,
                 Description = credit.Description,
                 OpenDate = credit.OpenDate,
@@ -19,7 +18,8 @@ namespace api.Mappers
                 DebtDay = credit.PayDay,
                 Installment = credit.Installment,
                 StartingCapital = credit.StartingCapital,
-                TAN = credit.TAN
+                TAN = credit.TAN,
+                UserId = credit.UserId
             };
         }
 
@@ -38,7 +38,6 @@ namespace api.Mappers
             return new Credit
             {
                 Code = createCreditDto.Code,
-                UserId = createCreditDto.UserId,
                 CloseDate = createCreditDto.CloseDate,
                 Description = createCreditDto.Description,
                 OpenDate = createCreditDto.OpenDate,
@@ -48,7 +47,8 @@ namespace api.Mappers
                 PayDay = createCreditDto.PayDay,
                 Installment = createCreditDto.Installment,
                 StartingCapital = createCreditDto.StartingCapital,
-                FileContent = fileContent
+                FileContent = fileContent,
+                UserId = createCreditDto.UserId
             };
         }
 
@@ -67,7 +67,6 @@ namespace api.Mappers
             return new Credit
             {
                 Code = updateCreditDto.Code,
-                UserId = updateCreditDto.UserId,
                 CloseDate = updateCreditDto.CloseDate,
                 Description = updateCreditDto.Description,
                 OpenDate = updateCreditDto.OpenDate,
@@ -77,7 +76,8 @@ namespace api.Mappers
                 PayDay = updateCreditDto.PayDay,
                 Installment = updateCreditDto.Installment,
                 StartingCapital = updateCreditDto.StartingCapital,
-                FileContent = fileContent
+                FileContent = fileContent,
+                UserId = updateCreditDto.UserId
             };
         }
 

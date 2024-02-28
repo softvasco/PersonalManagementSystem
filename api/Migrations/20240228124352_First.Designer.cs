@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240227174411_First")]
+    [Migration("20240228124352_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -91,9 +91,6 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("AnnualPlafond")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -107,9 +104,6 @@ namespace api.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<decimal?>("MonthlyPlafond")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -179,6 +173,8 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Credits");
                 });
@@ -373,9 +369,6 @@ namespace api.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("FileContent")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -393,15 +386,15 @@ namespace api.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SubCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("SubCategoryId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Expenses");
                 });
@@ -517,7 +510,7 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("AnnualPlafond")
+                    b.Property<decimal?>("AnnualPlafon")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("CategoryId")
@@ -594,6 +587,9 @@ namespace api.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -607,6 +603,8 @@ namespace api.Migrations
                     b.HasIndex("EarningId");
 
                     b.HasIndex("ExpenseId");
+
+                    b.HasIndex("SubCategoryId");
 
                     b.HasIndex("UserId");
 
@@ -669,6 +667,17 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("api.Models.Credit", b =>
+                {
+                    b.HasOne("api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("api.Models.CreditCard", b =>
                 {
                     b.HasOne("api.Models.User", "User")
@@ -704,13 +713,13 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Expense", b =>
                 {
-                    b.HasOne("api.Models.SubCategory", "SubCategory")
+                    b.HasOne("api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("SubCategoryId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SubCategory");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("api.Models.FinanceGoal", b =>
@@ -760,6 +769,10 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("ExpenseId");
 
+                    b.HasOne("api.Models.SubCategory", "SubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId");
+
                     b.HasOne("api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -771,6 +784,8 @@ namespace api.Migrations
                     b.Navigation("Earning");
 
                     b.Navigation("Expense");
+
+                    b.Navigation("SubCategory");
 
                     b.Navigation("User");
                 });

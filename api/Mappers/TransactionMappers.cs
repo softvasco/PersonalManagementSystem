@@ -20,9 +20,16 @@ namespace api.Mappers
             return new Transaction
             {
                 Description = createTransactionDto.Description,
-              
+                Amount = createTransactionDto.Amount,
                 UserId = createTransactionDto.UserId,
-
+                CreditId = createTransactionDto.CreditId,
+                DestinationAccountOrCardCode = createTransactionDto.DestinationAccountOrCardCode,
+                SubCategoryId = createTransactionDto.SubCategoryId,
+                State = createTransactionDto.State,
+                SourceAccountOrCardCode = createTransactionDto.SourceAccountOrCardCode,
+                EarningId = createTransactionDto.EarningId,
+                ExpenseId = createTransactionDto.ExpenseId,
+                OperationDate = createTransactionDto.OperationDate,
                 Attachment = fileContent
             };
         }

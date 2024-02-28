@@ -32,7 +32,7 @@ namespace api.Repository
             var bankAccountExists = await _context
                 .BankAccounts
                 .AsNoTracking()
-                .AnyAsync(x => x.Code == bankAccount.Code 
+                .AnyAsync(x => x.Code == bankAccount.Code
                     && x.UserId == bankAccount.UserId
                     && x.IsActive);
 
@@ -42,25 +42,6 @@ namespace api.Repository
             }
 
             await _context.BankAccounts.AddAsync(bankAccount);
-            await _context.SaveChangesAsync();
-
-            return bankAccount;
-        }
-
-        public async Task<BankAccount> DeleteAsync(int id)
-        {
-            var bankAccount = await _context
-                .BankAccounts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
-
-            if (bankAccount is null)
-            {
-                return null!;
-            }
-
-            bankAccount.IsActive = false;
-            _context.Entry(bankAccount).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return bankAccount;
@@ -105,9 +86,9 @@ namespace api.Repository
             existingBankAccount.Number = bankAccount.Number;
             existingBankAccount.Code = bankAccount.Code;
             existingBankAccount.Swift = bankAccount.Swift;
-            
+
             //Only update for a newer file. 
-            if(bankAccount.FileContent != null)
+            if (bankAccount.FileContent != null)
                 existingBankAccount.FileContent = bankAccount.FileContent;
 
             try
@@ -123,5 +104,23 @@ namespace api.Repository
             return existingBankAccount;
         }
 
+        public async Task<BankAccount> DeleteAsync(int id)
+        {
+            var bankAccount = await _context
+                .BankAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (bankAccount is null)
+            {
+                return null!;
+            }
+
+            bankAccount.IsActive = false;
+            _context.Entry(bankAccount).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return bankAccount;
+        }
     }
 }

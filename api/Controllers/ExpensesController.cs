@@ -29,7 +29,7 @@ namespace api.Controllers
 
             try
             {
-                var expense = await createExpenseDto.ToExpenseFromCreateExpenseDtoAsync();
+                var expense = createExpenseDto.ToExpenseFromCreateExpenseDtoAsync();
                 await _expenseRepository.CreateAsync(expense);
 
                 return Created();

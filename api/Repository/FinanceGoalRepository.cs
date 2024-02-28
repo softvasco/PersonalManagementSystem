@@ -26,7 +26,7 @@ namespace api.Repository
             if (_context
                 .FinanceGoals
                 .AsNoTracking()
-                .Any(x => x.Code == financeGoalModel.Code && x.UserId == financeGoalModel.UserId && x.EndGoalDate == null && x.IsActive))
+                .Any(x => x.Code == financeGoalModel.Code && x.UserId == financeGoalModel.UserId && x.IsActive))
                 throw new Exception("Finance Goal already exists!");
 
             await _context.FinanceGoals.AddAsync(financeGoalModel);

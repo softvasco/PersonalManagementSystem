@@ -20,12 +20,12 @@ namespace api.Repository
 
         public async Task<Credit> CreateAsync(Credit credit)
         {
-            var userExists = await _context
+            var user = await _context
                 .Users
                 .AsNoTracking()
                 .AnyAsync(x => x.Id == credit.UserId && x.IsActive);
 
-            if (!userExists)
+            if (!user)
             {
                 throw new NotFoundException("User does not exist!");
             }

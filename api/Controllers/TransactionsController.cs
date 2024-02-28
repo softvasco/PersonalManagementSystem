@@ -30,7 +30,7 @@ namespace api.Controllers
             try
             {
                 var transaction = await createTransactionDto.ToTransactionFromCreateTransactionDto();
-                await _transactionRepository.CreateAsync(transaction);
+                await _transactionRepository.CreateAsync(transaction, createTransactionDto.IgnoreRules);
 
                 return Created();
             }

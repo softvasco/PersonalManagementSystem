@@ -5,7 +5,7 @@
         public string Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal? MonthlyPlafond { get; set; }
-        public decimal? AnnualPlafond { get; set; }
+        public decimal? AnnualPlafon { get; set; }
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }

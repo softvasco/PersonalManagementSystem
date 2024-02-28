@@ -28,5 +28,6 @@ namespace api.Dtos.Credits
         public int UserId { get; set; }
 
         public IFormFile? File { get; set; } = null;
+
     }
 }

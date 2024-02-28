@@ -20,22 +20,11 @@ namespace api.Repository
 
         public async Task<Expense> CreateAsync(Expense expense)
         {
-            var subCategory = await _context
-                .SubCategories
-                .AsNoTracking()
-                .Include(x => x.Category.User)
-                .FirstOrDefaultAsync(x =>x.Id == expense.SubCategoryId);
-
-            if (subCategory is null)
-            {
-                throw new NotFoundException("sub category does not exist!");
-            }
-
             var earningExists = await _context
                 .Expenses
                 .AsNoTracking()
                 .AnyAsync(x => x.Code == expense.Code
-                    && x.SubCategoryId == expense.SubCategoryId
+                    && x.UserId == expense.UserId
                     && x.IsActive);
 
             if (earningExists)
@@ -61,8 +50,7 @@ namespace api.Repository
                         SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
                         DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                         Amount = expense.Amount,
-                        Attachment = expense.FileContent,
-                        UserId = subCategory.Category.UserId
+                        UserId = expense.UserId
                     });
                 }
 

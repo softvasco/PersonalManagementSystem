@@ -12,9 +12,8 @@
         public string SourceAccountOrCardCode { get; set; } = string.Empty;
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
 
-        public SubCategory SubCategory { get; set; }    
-        public  int SubCategoryId { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
 
-        public byte[]? FileContent { get; set; } = [];
     }
 }

@@ -11,15 +11,30 @@ namespace api.Mappers
             {
                 Code = createCategoryDto.Code,
                 Description = createCategoryDto.Description,
-                AnnualPlafond = createCategoryDto.AnnualPlafon,
                 UserId = createCategoryDto.UserID,
-                MonthlyPlafond = createCategoryDto.MontlyPlafon,
                 SubCategories = createCategoryDto.Subcategories.Select(s => new SubCategory
                 {
                     Code = s.Code,
                     Description = s.Description,
-                    AnnualPlafond = s.AnnualPlafon,
-                    MonthlyPlafond = s.MontlyPlafon,
+                    AnnualPlafon = s.AnnualPlafon,
+                    MonthlyPlafond = s.MonthlyPlafond,
+                }).ToList()
+            };
+        }
+
+        public static CategoryDto ToCategoryDtoFromCategory(this Category category)
+        {
+            return new CategoryDto
+            {
+                Code = category.Code,
+                Description = category.Description,
+                UserId = category.UserId,
+                SubCategories = category.SubCategories.Select(s => new SubcategoryDto
+                {
+                    Code = s.Code,
+                    Description = s.Description,
+                    AnnualPlafon = s.AnnualPlafon,
+                    MonthlyPlafond = s.MonthlyPlafond,
                 }).ToList()
             };
         }

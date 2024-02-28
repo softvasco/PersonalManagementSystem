@@ -24,9 +24,7 @@ namespace api.Dtos.Expenses
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
 
         [Required]
-        public int SubCategoryId { get; set; }
-
-        public IFormFile? File { get; set; } = null;
+        public int UserId { get; set; }
 
     }
 }

@@ -43,13 +43,31 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{code}")]
+        [HttpGet("GetByCodeAsync/{code}")]
         public async Task<IActionResult> GetByCodeAsync(string code)
         {
             try
             {
-                var earning = await _categoryRepository.GetByCodeAsync(code);
-                return Ok(earning);
+                var category = await _categoryRepository.GetByCodeAsync(code);
+                return Ok(category);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetByUserIdAsync/{UserId}")]
+        public async Task<IActionResult> GetByUserIdAsync(int UserId)
+        {
+            try
+            {
+                var categories = await _categoryRepository.GetByUserIdAsync(UserId);
+                return Ok(categories);
             }
             catch (NotFoundException)
             {

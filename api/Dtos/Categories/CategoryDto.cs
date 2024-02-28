@@ -4,11 +4,9 @@
     {
         public string Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int UserID { get; set; }
-        public decimal? MontlyPlafon { get; set; }
-        public decimal? AnnualPlafon { get; set; }
+        public int UserId { get; set; }
 
-        public List<SubcategoryDto> Subcategories { get; set; }
+        public List<SubcategoryDto> SubCategories { get; set; }
 
     }
 }
