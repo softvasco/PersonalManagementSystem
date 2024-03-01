@@ -24,8 +24,7 @@ namespace api.Dtos.Transactions
 
         [Required]
         public int UserId { get; set; }
-        [Required]
-        public int SubCategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
 
         public IFormFile? File { get; set; } = null;
 

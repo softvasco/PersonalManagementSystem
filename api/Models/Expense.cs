@@ -9,8 +9,8 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Amount { get; set; }
-        public string SourceAccountOrCardCode { get; set; } = string.Empty;
-        public string DestinationAccountOrCardCode { get; set; } = string.Empty;
+        public string? SourceAccountOrCardCode { get; set; } = string.Empty;
+        public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
 
         public int UserId { get; set; }
         public User User { get; set; }

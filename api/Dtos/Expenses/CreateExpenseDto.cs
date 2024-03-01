@@ -18,10 +18,8 @@ namespace api.Dtos.Expenses
         public DateTime EndDate { get; set; }
         [Required]
         public decimal Amount { get; set; }
-        [Required]
-        public string SourceAccountOrCardCode { get; set; } = string.Empty;
-        [Required]
-        public string DestinationAccountOrCardCode { get; set; } = string.Empty;
+        public string? SourceAccountOrCardCode { get; set; } = string.Empty;
+        public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
 
         [Required]
         public int UserId { get; set; }
