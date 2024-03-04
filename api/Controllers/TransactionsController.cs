@@ -1,7 +1,10 @@
+using api.Dtos.BankAccounts;
 using api.Dtos.Transactions;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -22,7 +25,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CreateTransactionDto createTransactionDto)
+        public async Task<IActionResult> CreateAsync([FromForm] CreateTransactionDto createTransactionDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -41,6 +44,28 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateTransactionDto updateTransactionDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _transactionRepository.UpdateAsync(id, updateTransactionDto);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
 

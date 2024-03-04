@@ -123,5 +123,28 @@ namespace api.Repository
             return existingCreditCard;
         }
 
+        public async Task<CreditCard> UpdateBalanceAsync(int id, decimal balance)
+        {
+            try
+            {
+                CreditCard? creditCard = await _context.CreditCards.FindAsync(id);
+
+                if (creditCard is null)
+                    throw new Exception("Credit card does not exists!");
+
+
+                creditCard.Balance = balance;
+                creditCard.UpdatedDate = DateTime.UtcNow;
+                _context.Entry(creditCard).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return creditCard;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
     }
 }

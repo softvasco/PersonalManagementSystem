@@ -62,8 +62,6 @@ namespace api.Controllers
             }
         }
 
-       
-
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
         {
@@ -78,6 +76,28 @@ namespace api.Controllers
                 return Ok();
             }
             catch(NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPut("balance/{id}")]
+        public async Task<IActionResult> UpdateBalanceAsync(int id, [FromForm] UpdateBalanceBankAccountDto updateBalanceBankAccountDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _bankAccountRepository.UpdateBalanceAsync(id, updateBalanceBankAccountDto.Balance);
+
+                return Ok();
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }

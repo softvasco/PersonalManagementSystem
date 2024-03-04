@@ -7,7 +7,7 @@ namespace api.Interfaces
     {
         Task<Transaction> CreateAsync(Transaction transaction, bool ignoreRules);
         Task<TransactionDto> GetByCodeId(int id);
-        Task<Transaction> UpdateAsync(int id, Transaction transaction);
+        Task<Transaction> UpdateAsync(int id, UpdateTransactionDto updateTransactionDto);
         Task<Transaction> DeleteAsync(int id);
     }
 }

@@ -104,6 +104,27 @@ namespace api.Controllers
             return NoContent();
         }
 
+        [HttpPut("balance/{id}")]
+        public async Task<IActionResult> UpdateBalanceAsync(int id, [FromForm] UpdateBalanceCreditCardDto updateBalanceCreditCardDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _creditCardRepository.UpdateBalanceAsync(id, updateBalanceCreditCardDto.Balance);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
     }
 }

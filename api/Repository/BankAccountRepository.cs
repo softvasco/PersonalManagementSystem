@@ -88,8 +88,8 @@ namespace api.Repository
             existingBankAccount.Swift = bankAccount.Swift;
 
             //Only update for a newer file. 
-            if (bankAccount.FileContent != null)
-                existingBankAccount.FileContent = bankAccount.FileContent;
+            if (bankAccount.Attachment != null)
+                existingBankAccount.Attachment = bankAccount.Attachment;
 
             try
             {
@@ -122,5 +122,29 @@ namespace api.Repository
 
             return bankAccount;
         }
+
+        public async Task<BankAccount> UpdateBalanceAsync(int id, decimal balance)
+        {
+            try
+            {
+                BankAccount? bankAccount = await _context.BankAccounts.FindAsync(id);
+
+                if (bankAccount is null)
+                    throw new Exception("Bank account does not exists!");
+
+
+                bankAccount.Balance = balance;
+                bankAccount.UpdatedDate = DateTime.UtcNow;
+                _context.Entry(bankAccount).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return bankAccount;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
     }
 }

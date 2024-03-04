@@ -9,5 +9,6 @@ namespace api.Interfaces
         Task<BankAccountDto> GetByCodeAsync(string code);
         Task<BankAccount> UpdateAsync(int id, BankAccount bankAccount);
         Task<BankAccount> DeleteAsync(int id);
+        Task<BankAccount> UpdateBalanceAsync(int id, decimal balance);
     }
 }

@@ -7,6 +7,5 @@
         public string Email { get; set; } = string.Empty;
 
         public ICollection<Category> Categories { get; set; }
-        //public ICollection<Transaction> Transactions { get; set; }
     }
 }

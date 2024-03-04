@@ -25,7 +25,7 @@ namespace api.Mappers
                 CloseDate = createGiftCardDto.CloseDate,
                 OpenDate = createGiftCardDto.OpenDate,
                 UserId = createGiftCardDto.UserId,
-                FileContent = fileContent,
+                Attachment = fileContent,
                 CardNumber = createGiftCardDto.CardNumber,
                 IsVoucher = createGiftCardDto.IsVoucher,
             };
@@ -45,5 +45,32 @@ namespace api.Mappers
                 UserId = giftCard.UserId,
             };
         }
+
+        public static async Task<GiftCard> ToGiftCardFromUpdateGiftCardDto(this UpdateGiftCardDto updateGiftCardDto)
+        {
+            byte[]? fileContent = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                if (updateGiftCardDto.File is not null)
+                {
+                    await updateGiftCardDto.File.CopyToAsync(memoryStream);
+                    fileContent = memoryStream.ToArray();
+                }
+            }
+
+            return new GiftCard
+            {
+                Code = updateGiftCardDto.Code,
+                Description = updateGiftCardDto.Description,
+                Balance = updateGiftCardDto.Balance,
+                CloseDate = updateGiftCardDto.CloseDate,
+                OpenDate = updateGiftCardDto.OpenDate,
+                UserId = updateGiftCardDto.UserId,
+                Attachment = fileContent,
+                CardNumber = updateGiftCardDto.CardNumber,
+                IsVoucher = updateGiftCardDto.IsVoucher,
+            };
+        }
+
     }
 }

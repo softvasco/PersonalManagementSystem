@@ -1,7 +1,9 @@
+using api.Dtos.BankAccounts;
 using api.Dtos.GiftCards;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -62,5 +64,27 @@ namespace api.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateGiftCardDto updateGiftCardDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var giftcard = await updateGiftCardDto.ToGiftCardFromUpdateGiftCardDto();
+                await _giftCardRepository.UpdateAsync(id, giftcard);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }

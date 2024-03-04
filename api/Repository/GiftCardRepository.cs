@@ -62,9 +62,42 @@ namespace api.Repository
             return existingGiftCard.ToGiftCardDtoFromGiftCard();
         }
 
-        public Task<GiftCard> UpdateAsync(int id, GiftCard giftCard)
+        public async Task<GiftCard> UpdateAsync(int id, GiftCard giftCard)
         {
-            throw new NotImplementedException();
+            var existingGiftCard = await _context
+              .GiftCards
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingGiftCard == null)
+            {
+                throw new NotFoundException("Gift card not found");
+            }
+
+            existingGiftCard.UpdatedDate = DateTime.UtcNow;
+            existingGiftCard.OpenDate = giftCard.OpenDate;
+            existingGiftCard.CloseDate = giftCard.CloseDate;
+            existingGiftCard.Description = giftCard.Description;
+            if (existingGiftCard.CloseDate is not null)
+                existingGiftCard.IsActive = false;
+            existingGiftCard.Balance = giftCard.Balance;
+            existingGiftCard.Code = giftCard.Code;
+
+            //Only update for a newer file. 
+            if (giftCard.Attachment != null)
+                existingGiftCard.Attachment = giftCard.Attachment;
+
+            try
+            {
+                _context.Entry(existingGiftCard).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingGiftCard;
         }
 
         public Task<GiftCard> DeleteAsync(int id)

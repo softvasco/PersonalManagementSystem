@@ -29,7 +29,7 @@ namespace api.Mappers
                 NIB = createBankAccountDto.NIB,
                 Swift = createBankAccountDto.Swift,
                 Number = createBankAccountDto.Number,
-                FileContent = fileContent
+                Attachment = fileContent
             };
         }
 
@@ -57,7 +57,7 @@ namespace api.Mappers
                 NIB = updateBankAccountDto.NIB,
                 Swift = updateBankAccountDto.Swift,
                 Number = updateBankAccountDto.Number,
-                FileContent = fileContent
+                Attachment = fileContent
             };
         }
     

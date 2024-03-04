@@ -47,7 +47,7 @@ namespace api.Mappers
                 PayDay = createCreditDto.PayDay,
                 Installment = createCreditDto.Installment,
                 StartingCapital = createCreditDto.StartingCapital,
-                FileContent = fileContent,
+                Attachment = fileContent,
                 UserId = createCreditDto.UserId
             };
         }
@@ -76,7 +76,7 @@ namespace api.Mappers
                 PayDay = updateCreditDto.PayDay,
                 Installment = updateCreditDto.Installment,
                 StartingCapital = updateCreditDto.StartingCapital,
-                FileContent = fileContent,
+                Attachment = fileContent,
                 UserId = updateCreditDto.UserId
             };
         }

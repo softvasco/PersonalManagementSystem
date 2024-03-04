@@ -14,6 +14,6 @@
         public DateTime CloseDate { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
-        public byte[]? FileContent { get; set; }
+        public byte[]? Attachment { get; set; }
     }
 }
