@@ -24,6 +24,30 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
+        {
+            try
+            {
+                var transaction = await _transactionRepository.GetByIdAsync(id);
+
+                if (transaction == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(transaction);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateTransactionDto createTransactionDto)
         {
@@ -56,6 +80,28 @@ namespace api.Controllers
             try
             {
                 await _transactionRepository.UpdateAsync(id, updateTransactionDto);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPut("ConfirmTransaction/{id}")]
+        public async Task<IActionResult> ConfirmTransactionAsync(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _transactionRepository.ConfirmTransactionAsync(id);
 
                 return Ok();
             }

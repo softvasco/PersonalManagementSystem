@@ -25,7 +25,6 @@ namespace api.Mappers
                 CreditId = createTransactionDto.CreditId,
                 DestinationAccountOrCardCode = createTransactionDto.DestinationAccountOrCardCode,
                 SubCategoryId = createTransactionDto.SubCategoryId,
-                State = createTransactionDto.State,
                 SourceAccountOrCardCode = createTransactionDto.SourceAccountOrCardCode,
                 EarningId = createTransactionDto.EarningId,
                 ExpenseId = createTransactionDto.ExpenseId,

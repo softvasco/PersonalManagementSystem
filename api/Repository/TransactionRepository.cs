@@ -1,5 +1,4 @@
 ﻿using api.Data;
-using api.Dtos.BankAccounts;
 using api.Dtos.Transactions;
 using api.Enum;
 using api.Helpers;
@@ -16,6 +15,117 @@ namespace api.Repository
         public TransactionRepository(ApplicationDBContext context)
         {
             _context = context;
+        }
+
+        public async Task<Transaction> ConfirmTransactionAsync(int id)
+        {
+            Transaction? transaction = await _context.Transactions.FindAsync(id);
+
+            if (transaction == null)
+            {
+                throw new Exception("Transaction not found!");
+            }
+
+            if (transaction.CreditId.HasValue)
+                HandleWithCredits(transaction);
+            else
+                HandleWithNormalTransactions(transaction);
+
+            return transaction;
+        }
+
+        private async void HandleWithCredits(Transaction transaction)
+        {
+            Credit? credit = await _context.Credits.FindAsync(transaction.CreditId);
+
+            if (credit == null)
+            {
+                throw new Exception("Credit not found");
+            }
+
+            if (string.IsNullOrWhiteSpace(transaction.SourceAccountOrCardCode))
+            {
+                throw new Exception("Source account or card not provided");
+            }
+
+            CreditCard? sourceCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+            BankAccount? sourceBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+
+            if (sourceCreditCard == null && sourceBankAccount == null)
+            {
+                throw new Exception("Source account not found");
+            }
+
+            try
+            {
+                if (sourceCreditCard != null)
+                {
+                    sourceCreditCard.Balance -= transaction.Amount;
+                    sourceCreditCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(sourceCreditCard).State = EntityState.Modified;
+                }
+                else if (sourceBankAccount != null)
+                {
+                    sourceBankAccount.Balance -= transaction.Amount;
+                    sourceBankAccount.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(sourceBankAccount).State = EntityState.Modified;
+                }
+
+                credit.DebtCapital = credit.DebtCapital + (credit.DebtCapital * (credit.TAN / 100 / 12)) - credit.Installment;
+
+                credit.UpdatedDate = DateTime.UtcNow;
+                transaction.UpdatedDate = DateTime.UtcNow;
+                transaction.State = (int)TransactionState.Finished;
+                _context.Entry(credit).State = EntityState.Modified;
+                _context.Entry(transaction).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private async void HandleWithNormalTransactions(Transaction transaction)
+        {
+            CreditCard? sourceCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            BankAccount? sourceBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+
+            CreditCard? destinationCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            BankAccount? destinationBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+
+            if (sourceCreditCard != null)
+            {
+                sourceCreditCard.UpdatedDate = DateTime.UtcNow;
+                sourceCreditCard.Balance = -transaction.Amount;
+                _context.Entry(sourceCreditCard).State = EntityState.Modified;
+            }
+            else if (sourceBankAccount != null)
+            {
+                sourceBankAccount.UpdatedDate = DateTime.UtcNow;
+                sourceBankAccount.Balance = -transaction.Amount;
+                _context.Entry(sourceBankAccount).State = EntityState.Modified;
+            }
+
+            if (destinationCreditCard != null)
+            {
+                destinationCreditCard.UpdatedDate = DateTime.UtcNow;
+                destinationCreditCard.Balance = -transaction.Amount;
+                _context.Entry(destinationCreditCard).State = EntityState.Modified;
+            }
+            else if (destinationBankAccount != null)
+            {
+                destinationBankAccount.UpdatedDate = DateTime.UtcNow;
+                destinationBankAccount.Balance = -transaction.Amount;
+                _context.Entry(destinationBankAccount).State = EntityState.Modified;
+            }
+
+            transaction.State = (int)TransactionState.Finished;
+            transaction.UpdatedDate = DateTime.Now;
+            _context.Entry(transaction).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Transaction> CreateAsync(Transaction transaction, bool ignoreRules)
@@ -40,14 +150,9 @@ namespace api.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<TransactionDto> GetByCodeId(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Transaction> UpdateAsync(int id, UpdateTransactionDto updateTransactionDto)
         {
-            Transaction transaction = await _context.Transactions.FindAsync(id);
+            Transaction? transaction = await _context.Transactions.FindAsync(id);
 
             if (transaction is null)
 
@@ -131,19 +236,6 @@ namespace api.Repository
                 isChanged = true;
             }
 
-            if (transaction.State != updateTransactionDto.State)
-            {
-                transaction.State = updateTransactionDto.State;
-                isChanged = true;
-
-                if (transaction.State == (int)TransactionState.Finished
-                    && !string.IsNullOrWhiteSpace(transaction.SourceAccountOrCardCode)
-                    && !string.IsNullOrWhiteSpace(transaction.DestinationAccountOrCardCode))
-                {
-
-                }
-            }
-
             if (isChanged)
             {
                 transaction.UpdatedDate = DateTime.UtcNow;
@@ -168,9 +260,14 @@ namespace api.Repository
 
         private async Task InsertIgnoringRules(Transaction transaction)
         {
+            transaction.State = (int)TransactionState.Pending;
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Transaction> GetByIdAsync(int id)
+        {
+            return await _context.Transactions.FirstAsync(t => t.Id == id);
+        }
     }
 }

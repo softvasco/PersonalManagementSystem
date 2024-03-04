@@ -7,8 +7,6 @@ namespace api.Dtos.Transactions
         [Required]
         public string Description { get; set; } = string.Empty;
         [Required]
-        public int State { get; set; }
-        [Required]
         public DateTime OperationDate { get; set; }
         public string? SourceAccountOrCardCode { get; set; } = string.Empty;
         public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
