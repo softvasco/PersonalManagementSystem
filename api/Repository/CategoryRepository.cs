@@ -70,14 +70,61 @@ namespace api.Repository
             return categories.Select(c => c.ToCategoryDtoFromCategory()).ToList();
         }
 
-        public Task<Category> UpdateAsync(int id, Category category)
+        public async Task<Category> UpdateAsync(int id, Category category)
         {
-            throw new NotImplementedException();
+            var existingCategory = await _context
+               .Categories
+               .AsNoTracking()
+               .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingCategory == null)
+            {
+                throw new NotFoundException("Category not found");
+            }
+
+            existingCategory.UpdatedDate = DateTime.UtcNow;
+            existingCategory.Description = category.Description;
+            existingCategory.Code = category.Code;
+
+            try
+            {
+                _context.Entry(existingCategory).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingCategory;
         }
 
-        public Task<Category> DeleteAsync(int id)
+        public async Task<Category> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingCategory = await _context
+              .Categories
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingCategory == null)
+            {
+                throw new NotFoundException("Category not found");
+            }
+
+            existingCategory.UpdatedDate = DateTime.Now;
+            existingCategory.IsActive = false;
+
+            try
+            {
+                _context.Entry(existingCategory).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingCategory;
         }
 
         public async Task<List<CategoryDto>> Get()

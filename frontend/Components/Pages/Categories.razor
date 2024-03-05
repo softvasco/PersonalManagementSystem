@@ -1,23 +1,29 @@
 ﻿@page "/categories"
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
-@if (categorias == null)
+<br />
+<br />
+<h2>Expense categories</h2>
+<br />
+
+@if (categories == null)
 {
-    <p><em>Carregando...</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
+    <table id="table" class="table">
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Descrição</th>
-                <th>Ações</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var categoria in categorias)
+            @foreach (var categoria in categories)
             {
                 <tr>
                     <td>
@@ -43,30 +49,41 @@ else
                     <td>
                         @if (categoria.IsEditing)
                         {
-                            <button class="btn btn-success" @onclick="() => Salvar(categoria)">Salvar</button>
-                            <button class="btn btn-secondary" @onclick="() => Cancelar(categoria)">Cancelar</button>
+                            <button class="btn btn-success" @onclick="() => Save(categoria)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(categoria)">Cancel</button>
                         }
                         else
                         {
                             <button class="btn btn-primary" @onclick="() => Editar(categoria)">Editar</button>
-                            @* <button class="btn btn-danger" @onclick="() => ConfirmarExclusao(categoria.Id)">Apagar</button> *@
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(categoria.Id)">Delete</button>
                         }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    <button class="btn btn-primary" @onclick="AddNewCategory">Add</button>
 }
 
 
 
 @code {
-    private List<CategoryDto> categorias;
+    private List<CategoryDto> categories;
 
 
     protected override async Task OnInitializedAsync()
     {
-        categorias = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+    }
+
+    void AddNewCategory()
+    {
+        var novaCategoria = new CategoryDto();
+        categories.Add(novaCategoria);
+
+        Editar(novaCategoria);
+
+        StateHasChanged();
     }
 
     void Editar(CategoryDto categoria)
@@ -74,16 +91,61 @@ else
         categoria.IsEditing = true;
     }
 
-    void Salvar(CategoryDto categoria)
+    async Task Save(CategoryDto categoria)
     {
-        // Implemente a lógica para salvar a categoria
-        categoria.IsEditing = false;
+        if (categoria.Id == 0)
+        {
+            CreateCategoryDto createCategoryDto = new CreateCategoryDto();
+
+            createCategoryDto.Id = categoria.Id;
+            createCategoryDto.UserID = 1; //TODO @VS - Change user id to current user
+            createCategoryDto.Code = categoria.Code;
+            createCategoryDto.Description = categoria.Description;
+            createCategoryDto.Subcategories = new List<SubcategoryDto>();
+
+            var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
+            categoria.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateCategoryDto updateCategoryDto = new UpdateCategoryDto();
+
+            updateCategoryDto.Id = categoria.Id;
+            updateCategoryDto.UserID = categoria.UserId;
+            updateCategoryDto.Code = categoria.Code;
+            updateCategoryDto.Description = categoria.Description;
+            updateCategoryDto.Subcategories = categoria.SubCategories;
+
+            var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
+            categoria.IsEditing = false;
+            StateHasChanged();
+        }
     }
 
-    void Cancelar(CategoryDto categoria)
+    async Task Cancel(CategoryDto categoria)
     {
-        // Implemente a lógica para cancelar a edição
         categoria.IsEditing = false;
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int categoryId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this category?" });
+
+        if (confirmed)
+        {
+            await Delete(categoryId); 
+        }
+    }
+
+    async Task Delete(int categoryId)
+    {
+        var response = await Http.DeleteAsync("Categories/" + categoryId);
+        StateHasChanged();
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
     }
 
 

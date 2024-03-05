@@ -2,7 +2,7 @@
 
 namespace api.Dtos.Categories
 {
-    public class CreateCategoryDto
+    public class UpdateCategoryDto
     {
         public int Id { get; set; }
         [Required]

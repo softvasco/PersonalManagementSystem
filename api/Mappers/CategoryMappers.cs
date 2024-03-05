@@ -40,5 +40,23 @@ namespace api.Mappers
                 }).ToList()
             };
         }
+
+        public static Category ToCategoryFromupdateCategoryDto(this UpdateCategoryDto updateCategoryDto)
+        {
+            return new Category
+            {
+                Code = updateCategoryDto.Code,
+                Description = updateCategoryDto.Description,
+                UserId = updateCategoryDto.UserID,
+                SubCategories = updateCategoryDto.Subcategories.Select(s => new SubCategory
+                {
+                    Code = s.Code,
+                    Description = s.Description,
+                    AnnualPlafon = s.AnnualPlafon,
+                    MonthlyPlafond = s.MonthlyPlafond,
+                }).ToList()
+            };
+        }
+        
     }
 }
