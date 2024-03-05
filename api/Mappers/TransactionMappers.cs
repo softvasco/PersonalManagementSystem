@@ -29,7 +29,8 @@ namespace api.Mappers
                 EarningId = createTransactionDto.EarningId,
                 ExpenseId = createTransactionDto.ExpenseId,
                 OperationDate = createTransactionDto.OperationDate,
-                Attachment = fileContent
+                Attachment = fileContent,
+                State = createTransactionDto.State
             };
         }
     }

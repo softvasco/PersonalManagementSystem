@@ -1,0 +1,90 @@
+﻿@page "/add-transaction"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Add transaction</h2>
+<br />
+
+<EditForm Model="@createTransactionDto" OnSubmit="HandleSubmit">
+    <div class="row">
+        <div class="col-3">
+            <label>Description:</label>
+            <input type="text" class="form-control" @bind="createTransactionDto.Description" />
+        </div>
+        <div class="col-2">
+            <label>State:</label>
+            <select @bind="createTransactionDto.State" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in transactionStates)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Sub Category:</label>
+            <select @bind="createTransactionDto.SubCategoryId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in subcategories)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+    </div>
+
+
+    @*  <div class="form-group">
+    <label>State:</label>
+    <select class="form-control" @bind="formData.State">
+    <option value="1">Pending</option>
+    <option value="2">Finished</option>
+    </select>
+    </div>
+
+    <div class="form-group">
+    <label>Operation Date:</label>
+    <input type="datetime-local" class="form-control" @bind="formData.OperationDate" />
+    </div> *@
+
+    <!-- Add other form fields with Bootstrap styling -->
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code {
+
+    CreateTransactionDto createTransactionDto = new CreateTransactionDto();
+
+    List<DropdownDto> transactionStates = new List<DropdownDto>();
+    List<DropdownDto> subcategories = new List<DropdownDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Transaction States
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetTransactionsStates");
+        if (response != null)
+        {
+            transactionStates = response;
+        }
+
+        //subcategories
+        var subcategories = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSubCategories");
+        if (response != null)
+        {
+            subcategories = response;
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        createTransactionDto.UserId = 1; //TODO @VS - change this to current user
+
+        var response = await Http.PostAsJsonAsync("Transactions", createTransactionDto);
+        StateHasChanged();
+    }
+}

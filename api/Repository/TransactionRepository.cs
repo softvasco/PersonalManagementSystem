@@ -128,18 +128,18 @@ namespace api.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Transaction> CreateAsync(Transaction transaction, bool ignoreRules)
+        public async Task<Transaction> CreateAsync(Transaction transaction, bool? ignoreRules)
         {
             try
             {
-                if (ignoreRules)
+                if (ignoreRules.HasValue && ignoreRules.Value)
                     await InsertIgnoringRules(transaction);
                 else
                     await Insert(transaction);
 
                 return transaction;
             }
-            catch 
+            catch
             {
                 throw;
             }

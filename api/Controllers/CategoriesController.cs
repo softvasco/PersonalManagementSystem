@@ -1,9 +1,7 @@
-using api.Dtos.BankAccounts;
 using api.Dtos.Categories;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers

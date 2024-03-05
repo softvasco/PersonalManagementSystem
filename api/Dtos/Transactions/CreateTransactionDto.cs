@@ -26,7 +26,7 @@ namespace api.Dtos.Transactions
 
         public IFormFile? File { get; set; } = null;
 
-        public bool IgnoreRules { get; set; }
-
+        public bool? IgnoreRules { get; set; }
+        public int State { get;  set; }
     }
 }
