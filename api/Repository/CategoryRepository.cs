@@ -79,5 +79,20 @@ namespace api.Repository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<CategoryDto>> Get()
+        {
+            var categories = await _context.Categories
+                .Where(x => x.IsActive)
+               .Include(x => x.SubCategories)
+               .ToListAsync();
+
+            if (categories == null || !categories.Any())
+            {
+                throw new NotFoundException("No categories found for the specified user");
+            }
+
+            return categories.Select(c => c.ToCategoryDtoFromCategory()).ToList();
+        }
     }
 }

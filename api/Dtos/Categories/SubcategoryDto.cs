@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace api.Dtos.Categories
+﻿namespace api.Dtos.Categories
 {
     public class SubcategoryDto
     {
-        [Required]
+        public int Id { get; set; } 
         public string Code { get; set; } = string.Empty;
-        [Required]
         public string Description { get; set; } = string.Empty;
         public decimal? MonthlyPlafond { get; set; }
         public decimal? AnnualPlafon { get; set; }
-
+        public bool IsEditing { get; set; }
     }
 }

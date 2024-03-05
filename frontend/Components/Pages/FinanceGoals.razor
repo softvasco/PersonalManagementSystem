@@ -1,0 +1,90 @@
+﻿@page "/financegoals"
+@inject HttpClient Http
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+@if (categorias == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var categoria in categorias)
+        {
+            <tr>
+                <td>
+                    @if (categoria.IsEditing)
+                    {
+                        <input @bind="categoria.Code" class="form-control" />
+                    }
+                    else
+                    {
+                        @categoria.Code
+                    }
+                </td>
+                <td>
+                    @if (categoria.IsEditing)
+                    {
+                        <input @bind="categoria.Description" class="form-control" />
+                    }
+                    else
+                    {
+                        @categoria.Description
+                    }
+                </td>
+                <td>
+                    @if (categoria.IsEditing)
+                    {
+                        <button class="btn btn-success" @onclick="() => Salvar(categoria)">Salvar</button>
+                        <button class="btn btn-secondary" @onclick="() => Cancelar(categoria)">Cancelar</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" @onclick="() => Editar(categoria)">Editar</button>
+                        @* <button class="btn btn-danger" @onclick="() => ConfirmarExclusao(categoria.Id)">Apagar</button> *@
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    private List<CategoryDto> categorias;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+    }
+
+    void Editar(CategoryDto categoria)
+    {
+        categoria.IsEditing = true;
+    }
+
+    void Salvar(CategoryDto categoria)
+    {
+        // Implemente a lógica para salvar a categoria
+        categoria.IsEditing = false;
+    }
+
+    void Cancelar(CategoryDto categoria)
+    {
+        // Implemente a lógica para cancelar a edição
+        categoria.IsEditing = false;
+    }
+
+  
+}

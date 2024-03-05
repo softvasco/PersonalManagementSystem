@@ -26,9 +26,11 @@ namespace api.Mappers
         {
             return new CategoryDto
             {
+                Id=category.Id,
                 Code = category.Code,
                 Description = category.Description,
                 UserId = category.UserId,
+                IsEditing=false,
                 SubCategories = category.SubCategories.Select(s => new SubcategoryDto
                 {
                     Code = s.Code,

@@ -1,9 +1,7 @@
 using api.Dtos.Categories;
-using api.Dtos.Users;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -21,6 +19,24 @@ namespace api.Controllers
         {
             _categoryRepository = categoryRepository;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                var categories = await _categoryRepository.Get();
+                return Ok(categories);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
