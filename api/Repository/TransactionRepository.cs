@@ -5,6 +5,7 @@ using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace api.Repository
 {
@@ -32,6 +33,11 @@ namespace api.Repository
                 HandleWithNormalTransactions(transaction);
 
             return transaction;
+        }
+
+        public async Task<Transaction> GetByIdAsync(int id)
+        {
+            return await _context.Transactions.FirstAsync(t => t.Id == id);
         }
 
         private async void HandleWithCredits(Transaction transaction)
@@ -255,8 +261,163 @@ namespace api.Repository
 
         private async Task Insert(Transaction transaction)
         {
-            throw new NotImplementedException();
+            using var trans = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _context.Transactions.AddAsync(transaction);
+                await _context.SaveChangesAsync();
+
+                await DebtMoney(transaction);
+                await _context.SaveChangesAsync();
+
+                await CreditMoney(transaction);
+                await _context.SaveChangesAsync();
+
+                await UpdateFinanceGoal(transaction);
+                await _context.SaveChangesAsync();
+
+                await trans.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await trans.RollbackAsync();
+                throw;
+            }
         }
+
+        private async Task DebtMoney(Transaction transaction)
+        {
+            if (!string.IsNullOrWhiteSpace(transaction.SourceAccountOrCardCode))
+            {
+                DebitCard? debitCard = await _context
+                    .DebitCards
+                    .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode 
+                    && x.UserId == transaction.UserId
+                    && x.IsActive);
+                if (debitCard != null)
+                {
+                    debitCard.Balance -= transaction.Amount;
+                    debitCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(debitCard).State = EntityState.Modified;
+                }
+
+                CreditCard? crebitCard = await _context
+                   .CreditCards
+                   .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
+                   && x.UserId == transaction.UserId
+                   && x.IsActive);
+                if (crebitCard != null)
+                {
+                    crebitCard.Balance -= transaction.Amount;
+                    crebitCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(crebitCard).State = EntityState.Modified;
+                }
+
+                BankAccount? bankAccount = await _context
+                   .BankAccounts
+                   .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
+                   && x.UserId == transaction.UserId
+                   && x.IsActive);
+                if (bankAccount != null)
+                {
+                    bankAccount.UpdatedDate = DateTime.UtcNow;
+                    bankAccount.Balance -= transaction.Amount;
+                    _context.Entry(bankAccount).State = EntityState.Modified;
+                }
+            }
+        }
+
+        private async Task CreditMoney(Transaction transaction)
+        {
+            if (!string.IsNullOrWhiteSpace(transaction.Description))
+            {
+                DebitCard? debitCard = await _context
+                    .DebitCards
+                    .FirstOrDefaultAsync(x => x.Code == transaction.DestinationAccountOrCardCode
+                    && x.UserId == transaction.UserId
+                    && x.IsActive);
+                if (debitCard != null)
+                {
+                    debitCard.Balance += transaction.Amount;
+                    debitCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(debitCard).State = EntityState.Modified;
+                }
+
+                CreditCard? crebitCard = await _context
+                   .CreditCards
+                   .FirstOrDefaultAsync(x => x.Code == transaction.DestinationAccountOrCardCode
+                   && x.UserId == transaction.UserId
+                   && x.IsActive);
+                if (crebitCard != null)
+                {
+                    crebitCard.Balance += transaction.Amount;
+                    crebitCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(crebitCard).State = EntityState.Modified;
+                }
+
+                BankAccount? bankAccount = await _context
+                   .BankAccounts
+                   .FirstOrDefaultAsync(x => x.Code == transaction.DestinationAccountOrCardCode
+                   && x.UserId == transaction.UserId
+                   && x.IsActive);
+                if (bankAccount != null)
+                {
+                    bankAccount.Balance += transaction.Amount;
+                    bankAccount.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(bankAccount).State = EntityState.Modified;
+                }
+
+                Credit? credit = await _context
+                 .Credits
+                 .FirstOrDefaultAsync(x => x.Code == transaction.DestinationAccountOrCardCode
+                 && x.UserId == transaction.UserId
+                 && x.IsActive);
+                if (credit != null)
+                {
+                    credit.DebtCapital = credit.DebtCapital + (credit.DebtCapital * (credit.TAN / 100 / 12)) - transaction.Amount;
+                    credit.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(credit).State = EntityState.Modified;
+                }
+            }
+        }
+
+        private async Task UpdateFinanceGoal(Transaction transaction)
+        {
+            FinanceGoal? financeGoal = await _context
+                .FinanceGoals
+                .FirstOrDefaultAsync(x => x.IsActive
+                    && x.UserId == transaction.UserId);
+
+            if (financeGoal != null)
+            {
+                financeGoal.UpdatedDate = DateTime.UtcNow;
+
+                decimal bankDebpts = _context.BankAccounts
+                    .Where(x => x.IsActive
+                        && x.UserId == transaction.UserId
+                        && x.Code != "BankinterCH")
+                    .Sum(x => x.Balance);
+
+                if (bankDebpts < 0)
+                    bankDebpts = bankDebpts * -1;
+
+                decimal creditsDebpts = _context.Credits
+                     .Where(x => x.IsActive
+                        && x.UserId == transaction.UserId)
+                     .Sum(x => x.DebtCapital);
+
+                decimal creditCardsDebpts = _context.CreditCards
+                    .Where(x => x.IsActive
+                        && x.UserId == transaction.UserId)
+                    .Sum(x => x.Plafon - x.Balance);
+
+                financeGoal.CurrentDebtAmount = bankDebpts + creditsDebpts + creditCardsDebpts;
+                financeGoal.UpdatedDate = DateTime.UtcNow;
+                _context.Entry(financeGoal).State = EntityState.Modified;
+            }
+        }
+
 
         private async Task InsertIgnoringRules(Transaction transaction)
         {
@@ -265,9 +426,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Transaction> GetByIdAsync(int id)
-        {
-            return await _context.Transactions.FirstAsync(t => t.Id == id);
-        }
+
     }
 }

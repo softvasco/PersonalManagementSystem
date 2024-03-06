@@ -63,5 +63,100 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("GetSourceAccountOrCardCode")]
+        public async Task<IActionResult> GetSourceAccountOrCardCode()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetSourceAccountOrCardCode();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetDestinationAccountOrCardCode")]
+        public async Task<IActionResult> GetDestinationAccountOrCardCode()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetDestinationAccountOrCardCode();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetEarnings")]
+        public async Task<IActionResult> GetEarnings()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetEarnings();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetExpenses")]
+        public async Task<IActionResult> GetExpenses()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetExpenses();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetCredits")]
+        public async Task<IActionResult> GetCredits()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetCredits();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
