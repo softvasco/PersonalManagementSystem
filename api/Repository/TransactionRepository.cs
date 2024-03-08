@@ -268,14 +268,17 @@ namespace api.Repository
                 await _context.Transactions.AddAsync(transaction);
                 await _context.SaveChangesAsync();
 
-                await DebtMoney(transaction);
-                await _context.SaveChangesAsync();
+                if (transaction.State == (int)TransactionState.Finished)
+                {
+                    await DebtMoney(transaction);
+                    await _context.SaveChangesAsync();
 
-                await CreditMoney(transaction);
-                await _context.SaveChangesAsync();
+                    await CreditMoney(transaction);
+                    await _context.SaveChangesAsync();
 
-                await UpdateFinanceGoal(transaction);
-                await _context.SaveChangesAsync();
+                    await UpdateFinanceGoal(transaction);
+                    await _context.SaveChangesAsync();
+                }
 
                 await trans.CommitAsync();
             }
@@ -300,6 +303,18 @@ namespace api.Repository
                     debitCard.Balance -= transaction.Amount;
                     debitCard.UpdatedDate = DateTime.UtcNow;
                     _context.Entry(debitCard).State = EntityState.Modified;
+                }
+
+                GiftCard? giftCard = await _context
+                .GiftCards
+                .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
+                && x.UserId == transaction.UserId
+                && x.IsActive);
+                if (giftCard != null)
+                {
+                    giftCard.Balance -= transaction.Amount;
+                    giftCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(giftCard).State = EntityState.Modified;
                 }
 
                 CreditCard? crebitCard = await _context
@@ -354,6 +369,18 @@ namespace api.Repository
                     crebitCard.Balance += transaction.Amount;
                     crebitCard.UpdatedDate = DateTime.UtcNow;
                     _context.Entry(crebitCard).State = EntityState.Modified;
+                }
+
+                GiftCard? giftCard = await _context
+                 .GiftCards
+                 .FirstOrDefaultAsync(x => x.Code == transaction.DestinationAccountOrCardCode
+                 && x.UserId == transaction.UserId
+                 && x.IsActive);
+                if (giftCard != null)
+                {
+                    giftCard.Balance += transaction.Amount;
+                    giftCard.UpdatedDate = DateTime.UtcNow;
+                    _context.Entry(giftCard).State = EntityState.Modified;
                 }
 
                 BankAccount? bankAccount = await _context

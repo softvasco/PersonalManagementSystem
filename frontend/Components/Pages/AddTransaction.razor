@@ -118,6 +118,8 @@
 
 @code {
 
+    int maxFileSizeLimit = 1024 * 1024 * 20;
+
     CreateTransactionDto createTransactionDto = new CreateTransactionDto { OperationDate = DateTime.Today, UserId = 1, IgnoreRules = false };
 
     List<DropdownDto> transactionStates = new List<DropdownDto>();
@@ -184,8 +186,8 @@
     {
         var file = e.File;
 
-        using var memoryStream = new MemoryStream();
-        await file.OpenReadStream().CopyToAsync(memoryStream);
+        var memoryStream = new MemoryStream();
+        await file.OpenReadStream(maxAllowedSize: maxFileSizeLimit).CopyToAsync(memoryStream);
 
         createTransactionDto.File = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
     }
@@ -221,7 +223,7 @@
         // Handle file upload
         if (createTransactionDto.File != null)
         {
-            using var stream = new MemoryStream();
+            var stream = new MemoryStream();
             await createTransactionDto.File.CopyToAsync(stream);
             stream.Position = 0;
             formData.Add(new StreamContent(stream), "File", createTransactionDto.File.FileName);
