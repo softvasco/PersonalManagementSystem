@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  webapi:
+    image: PersonalManagement/api:latest
+    restart: always
+    build: 
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - 6010:8080
+      - 6011:8081
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
