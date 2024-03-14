@@ -18,6 +18,20 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<EarningDto>> Get()
+        {
+            var earnings = await _context.Earnings
+                .Where(x => x.IsActive)
+                .ToListAsync();
+
+            if (earnings == null || !earnings.Any())
+            {
+                throw new NotFoundException("No earnings found for the specified user");
+            }
+
+            return earnings.Select(c => c.ToEarningDtoFromEarning()).ToList();
+        }
+
         public async Task<Earning> CreateAsync(Earning earning)
         {
             var userExists = await _context
@@ -73,21 +87,7 @@ namespace api.Repository
             return earning;
         }
 
-        public async Task<EarningDto> GetByCodeAsync(string code)
-        {
-            var existingEarning = await _context
-              .Earnings
-              .AsNoTracking()
-              .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingEarning == null)
-            {
-                throw new NotFoundException("Earning not found");
-            }
-
-            return existingEarning.ToEarningDtoFromEarning();
-        }
-
+     
         public Task<Earning> UpdateAsync(int id, Earning earning)
         {
             throw new NotImplementedException();

@@ -1,0 +1,91 @@
+﻿@page "/earnings"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Earnings</h2>
+<br />
+
+@if (earnings == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Months</th>
+                <th>PayDay</th>
+                <th>Amount</th>
+                <th>Destination</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var earning in earnings)
+            {
+                <tr>
+                    <td>
+                        @earning.Code
+                    </td>
+                    <td>
+                        @earning.Description
+                    </td>
+                    <td>
+                        @earning.Months
+                    </td>
+                    <td>
+                        @earning.PayDay
+                    </td>
+                    <td>
+                        @earning.Amount
+                    </td>
+                    <td>
+                        @earning.DestinationAccountOrCardCode
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NavigateToAddEarningPage">Add</button>
+}
+
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private List<EarningDto> earnings;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+    }
+
+    async Task ConfirmDelete(int categoryId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this earning?" });
+
+        if (confirmed)
+        {
+            await Delete(categoryId);
+        }
+    }
+
+    async Task Delete(int earningId)
+    {
+        var response = await Http.DeleteAsync("Earnings/" + earningId);
+        StateHasChanged();
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+    }
+
+    private void NavigateToAddEarningPage()
+    {
+        NavigationManager.NavigateTo("/add-earning");
+    }
+
+}

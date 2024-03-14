@@ -6,6 +6,9 @@ services:
     build: 
       context: .
       dockerfile: api/Dockerfile
+    environment:
+      - ASPNETCORE_HTTPS_PORT=6011
+      - ASPNETCORE_ENVIRONMENT=Docker
     ports:
       - 6010:8080
       - 6011:8081

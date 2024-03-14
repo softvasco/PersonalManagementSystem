@@ -1,0 +1,241 @@
+﻿@page "/add-earning"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Add earning</h2>
+<br />
+
+<EditForm Model="@createTransactionDto" OnSubmit="HandleSubmit">
+    <div class="row">
+        <div class="col-2">
+            <label>Description:</label>
+            <input type="text" class="form-control" @bind="createTransactionDto.Description" />
+        </div>
+        <div class="col-2">
+            <label>State:</label>
+            <select @bind="createTransactionDto.State" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in transactionStates)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Sub Category:</label>
+            <select @bind="createTransactionDto.SubCategoryId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in subcategories)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Operation date:</label>
+            <input type="date" class="form-control" @bind="createTransactionDto.OperationDate" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <label>Source:</label>
+            <select @bind="createTransactionDto.SourceAccountOrCardCode" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfSources)
+                {
+                    <option value="@option.Code">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Destination:</label>
+            <select @bind="createTransactionDto.DestinationAccountOrCardCode" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfDestination)
+                {
+                    <option value="@option.Code">@option.Description</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-2">
+            <label>Amount:</label>
+            <div class="input-group">
+                <span class="input-group-text">€</span>
+                <input type="number" step="0.01" class="form-control" @bind="createTransactionDto.Amount" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <label>Earning:</label>
+            <select @bind="createTransactionDto.EarningId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfEarnings)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Expense:</label>
+            <select @bind="createTransactionDto.ExpenseId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfExpenses)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Credit:</label>
+            <select @bind="createTransactionDto.CreditId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfCredits)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <InputFile id="fileInput" Bind-Value="@createTransactionDto.File" OnChange="HandleFileSelected" />
+        </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code {
+
+    int maxFileSizeLimit = 1024 * 1024 * 20;
+
+    CreateTransactionDto createTransactionDto = new CreateTransactionDto { OperationDate = DateTime.Today, UserId = 1, IgnoreRules = false };
+
+    List<DropdownDto> transactionStates = new List<DropdownDto>();
+    List<DropdownDto> subcategories = new List<DropdownDto>();
+    List<DropdownDto> listOfSources = new List<DropdownDto>();
+    List<DropdownDto> listOfDestination = new List<DropdownDto>();
+    List<DropdownDto> listOfEarnings = new List<DropdownDto>();
+    List<DropdownDto> listOfExpenses = new List<DropdownDto>();
+    List<DropdownDto> listOfCredits = new List<DropdownDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Transaction States
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetTransactionsStates");
+        if (response != null)
+        {
+            transactionStates = response;
+        }
+
+        //subcategories
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSubCategories");
+        if (response != null)
+        {
+            subcategories = response;
+        }
+
+        //listOfSources
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSourceAccountOrCardCode");
+        if (response != null)
+        {
+            listOfSources = response;
+        }
+
+        //listOfDestination
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetDestinationAccountOrCardCode");
+        if (response != null)
+        {
+            listOfDestination = response;
+        }
+
+        //listOfEarnings
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetEarnings");
+        if (response != null)
+        {
+            listOfEarnings = response;
+        }
+
+        //listOfExpenses
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetExpenses");
+        if (response != null)
+        {
+            listOfExpenses = response;
+        }
+
+        //listOfCredits
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetCredits");
+        if (response != null)
+        {
+            listOfCredits = response;
+        }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var memoryStream = new MemoryStream();
+        await file.OpenReadStream(maxAllowedSize: maxFileSizeLimit).CopyToAsync(memoryStream);
+
+        createTransactionDto.File = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
+    }
+
+    async Task HandleSubmit()
+    {
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent(createTransactionDto.Description), "Description");
+        formData.Add(new StringContent(createTransactionDto.State.ToString()), "State");
+        formData.Add(new StringContent(createTransactionDto.OperationDate.ToString()), "OperationDate");
+        formData.Add(new StringContent(createTransactionDto.Amount.ToString()), "Amount");
+        formData.Add(new StringContent(createTransactionDto.UserId.ToString()), "UserId");
+
+        if (createTransactionDto.IgnoreRules.HasValue)
+            formData.Add(new StringContent(createTransactionDto.IgnoreRules.Value.ToString()), "IgnoreRules");
+
+        if (createTransactionDto.CreditId.HasValue)
+            formData.Add(new StringContent(createTransactionDto.CreditId.Value.ToString()), "CreditId");
+
+        if (createTransactionDto.ExpenseId.HasValue)
+            formData.Add(new StringContent(createTransactionDto.ExpenseId.Value.ToString()), "ExpenseId");
+
+        if (createTransactionDto.EarningId.HasValue)
+            formData.Add(new StringContent(createTransactionDto.EarningId.Value.ToString()), "EarningId");
+
+        if (createTransactionDto.SubCategoryId.HasValue)
+            formData.Add(new StringContent(createTransactionDto.SubCategoryId.Value.ToString()), "SubCategoryId");
+        if (!string.IsNullOrEmpty(createTransactionDto.DestinationAccountOrCardCode))
+            formData.Add(new StringContent(createTransactionDto.DestinationAccountOrCardCode.ToString()), "DestinationAccountOrCardCode");
+        if (!string.IsNullOrEmpty(createTransactionDto.SourceAccountOrCardCode))
+            formData.Add(new StringContent(createTransactionDto.SourceAccountOrCardCode.ToString()), "SourceAccountOrCardCode");
+
+        // Handle file upload
+        if (createTransactionDto.File != null)
+        {
+            var stream = new MemoryStream();
+            await createTransactionDto.File.CopyToAsync(stream);
+            stream.Position = 0;
+            formData.Add(new StreamContent(stream), "File", createTransactionDto.File.FileName);
+        }
+
+        var response = await Http.PostAsync("Transactions", formData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Redirect to another page upon successful processing
+            NavigationManager.NavigateTo("/list-transactions");
+        }
+
+    }
+}

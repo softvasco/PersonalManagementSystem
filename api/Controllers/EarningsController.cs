@@ -21,6 +21,24 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                var earnings = await _earningRepository.Get();
+                return Ok(earnings);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateEarningDto createEarningDto)
         {
@@ -33,24 +51,6 @@ namespace api.Controllers
                 await _earningRepository.CreateAsync(earning);
 
                 return Created();
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var earning = await _earningRepository.GetByCodeAsync(code);
-                return Ok(earning);
             }
             catch (NotFoundException)
             {
