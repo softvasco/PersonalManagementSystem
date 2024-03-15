@@ -23,6 +23,7 @@ else
                 <th>PayDay</th>
                 <th>Amount</th>
                 <th>Destination</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +37,7 @@ else
                         @earning.Description
                     </td>
                     <td>
-                        @earning.Months
+                        @string.Join(",", @earning.Months)
                     </td>
                     <td>
                         @earning.PayDay
@@ -46,6 +47,9 @@ else
                     </td>
                     <td>
                         @earning.DestinationAccountOrCardCode
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="() => EditEarning(earning.Id)">Edit</button>
                     </td>
                 </tr>
             }
@@ -59,7 +63,6 @@ else
     private NavigationManager NavigationManager { get; set; }
 
     private List<EarningDto> earnings;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,4 +91,10 @@ else
         NavigationManager.NavigateTo("/add-earning");
     }
 
+    // Method to handle editing an earning
+    private void EditEarning(int earningId)
+    {
+        // Navigate to the edit page with the selected earning data
+        NavigationManager.NavigateTo($"/add-edit-earning/{earningId}");
+    }
 }

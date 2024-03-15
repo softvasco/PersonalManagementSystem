@@ -1,10 +1,10 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos.Earnings
 {
     public class EarningDto
     {
+        public int Id { get; set; }
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]

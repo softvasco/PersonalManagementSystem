@@ -9,6 +9,7 @@ namespace api.Mappers
         {
             return new EarningDto
             {
+                Id=earning.Id,
                 Amount = earning.Amount,
                 Code = earning.Code,
                 Description = earning.Description,

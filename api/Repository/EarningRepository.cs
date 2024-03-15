@@ -21,6 +21,7 @@ namespace api.Repository
         public async Task<List<EarningDto>> Get()
         {
             var earnings = await _context.Earnings
+                .AsNoTracking()
                 .Where(x => x.IsActive)
                 .ToListAsync();
 
@@ -30,6 +31,20 @@ namespace api.Repository
             }
 
             return earnings.Select(c => c.ToEarningDtoFromEarning()).ToList();
+        }
+
+        public async Task<EarningDto> GetByIdAsync(int id)
+        {
+            var earning = await _context.Earnings
+               .AsNoTracking()
+               .FirstOrDefaultAsync(x => x.IsActive && x.Id == id);
+
+            if (earning == null)
+            {
+                throw new NotFoundException("No earning found for the specified id");
+            }
+
+            return earning.ToEarningDtoFromEarning();
         }
 
         public async Task<Earning> CreateAsync(Earning earning)

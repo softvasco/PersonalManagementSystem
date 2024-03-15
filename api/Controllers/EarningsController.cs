@@ -39,6 +39,24 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("GetById/{Id:int}")]
+        public async Task<IActionResult> GetByIdAsync(int Id)
+        {
+            try
+            {
+                var earning = await _earningRepository.GetByIdAsync(Id);
+                return Ok(earning);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateEarningDto createEarningDto)
         {

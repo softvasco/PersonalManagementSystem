@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureKestrelServer();
+//builder.ConfigureKestrelServer();
 
 // Add services to the container.
 
