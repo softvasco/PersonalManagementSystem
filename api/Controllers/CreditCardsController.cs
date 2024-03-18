@@ -23,8 +23,26 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                var creditCards = await _creditCardRepository.Get();
+                return Ok(creditCards);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateCreditCardsDto createCreditCardsDto)
+        public async Task<IActionResult> Create([FromBody] CreateCreditCardDto createCreditCardsDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -43,24 +61,6 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var creditCard = await _creditCardRepository.GetByCodeAsync(code);
-                return Ok(creditCard);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
             }
         }
 
@@ -104,27 +104,7 @@ namespace api.Controllers
             return NoContent();
         }
 
-        [HttpPut("balance/{id}")]
-        public async Task<IActionResult> UpdateBalanceAsync(int id, [FromForm] UpdateBalanceCreditCardDto updateBalanceCreditCardDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                await _creditCardRepository.UpdateBalanceAsync(id, updateBalanceCreditCardDto.Balance);
-
-                return Ok();
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
+      
 
     }
 }

@@ -206,13 +206,13 @@ else
     }
 
 
-    async Task ConfirmDelete(int categoryId)
+    async Task ConfirmDelete(int earningId)
     {
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this earning?" });
 
         if (confirmed)
         {
-            await Delete(categoryId);
+            await Delete(earningId);
         }
     }
 

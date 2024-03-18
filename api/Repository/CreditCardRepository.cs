@@ -1,5 +1,4 @@
 ﻿using api.Data;
-using api.Dtos.BankAccounts;
 using api.Dtos.CreditCards;
 using api.Helpers;
 using api.Interfaces;
@@ -18,19 +17,19 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<CreditCardDto> GetByCodeAsync(string code)
+        public async Task<List<CreditCardDto>> Get()
         {
-            var existingCreditCard = await _context
+            var creditCards = await _context
                 .CreditCards
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
+                .Where(x => x.IsActive)
+                .ToListAsync();
 
-            if (existingCreditCard == null)
+            if (creditCards == null || !creditCards.Any())
             {
-                throw new NotFoundException("Credit card not found");
+                throw new NotFoundException("No credit cards found for the specified user");
             }
 
-            return existingCreditCard.ToCreditCardDtoFromCreditCard();
+            return creditCards.Select(c => c.ToCreditCardDtoFromCreditCard()).ToList();
         }
 
         public async Task<CreditCard> CreateAsync(CreditCard creditCard)
@@ -86,12 +85,11 @@ namespace api.Repository
         {
             var existingCreditCard = await _context
                 .CreditCards
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingCreditCard == null)
             {
-                throw new NotFoundException("Bank account not found");
+                throw new NotFoundException("Credit card not found");
             }
 
             existingCreditCard.UpdatedDate = DateTime.UtcNow;
@@ -121,29 +119,6 @@ namespace api.Repository
             }
 
             return existingCreditCard;
-        }
-
-        public async Task<CreditCard> UpdateBalanceAsync(int id, decimal balance)
-        {
-            try
-            {
-                CreditCard? creditCard = await _context.CreditCards.FindAsync(id);
-
-                if (creditCard is null)
-                    throw new Exception("Credit card does not exists!");
-
-
-                creditCard.Balance = balance;
-                creditCard.UpdatedDate = DateTime.UtcNow;
-                _context.Entry(creditCard).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return creditCard;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
         }
 
     }

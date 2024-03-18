@@ -3,6 +3,7 @@ namespace api.Dtos.CreditCards
 {
     public class CreditCardDto
     {
+        public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public string? IBAN { get; set; } = string.Empty;
@@ -16,5 +17,6 @@ namespace api.Dtos.CreditCards
         public string? RefNumber { get; set; } = string.Empty;
         public decimal Plafon { get; set; }
         public decimal PercentageOfPayment { get; set; }
+        public bool IsEditing { get; set; }
     }
 }

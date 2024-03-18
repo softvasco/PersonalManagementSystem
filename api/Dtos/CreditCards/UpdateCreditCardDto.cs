@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos.BankAccounts
+namespace api.Dtos.CreditCards
 {
     public class UpdateCreditCardDto
     {
@@ -16,8 +16,8 @@ namespace api.Dtos.BankAccounts
         [Required]
         public int UserId { get; set; }
         public int? CloseExtractDay { get; set; } = 0;
-        public string EntityNumber { get; set; } = string.Empty;
-        public string RefNumber { get; set; } = string.Empty;
+        public string? EntityNumber { get; set; } = string.Empty;
+        public string? RefNumber { get; set; } = string.Empty;
         public decimal Plafon { get; set; }
         public decimal PercentageOfPayment { get; set; }
     }

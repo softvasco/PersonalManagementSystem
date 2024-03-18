@@ -1,0 +1,281 @@
+﻿@page "/creditcards"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Credit Cards</h2>
+<br />
+
+@if (creditCards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>IBAN</th>
+                <th>NIB</th>
+                <th>Balance</th>
+                <th>Plafon</th>
+                <th>PercentageOfPayment</th>
+                <th>EntityNumber</th>
+                <th>RefNumber</th>
+                <th>CloseExtractDay</th>
+                <th>OpenDate</th>
+                <th>CloseDate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var creditCard in creditCards)
+            {
+                <tr>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.Code" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.Code
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.Description
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.IBAN" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.IBAN
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.NIB" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.NIB
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.Balance" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.Balance
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.Plafon" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.Plafon
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.PercentageOfPayment" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.PercentageOfPayment
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.EntityNumber" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.EntityNumber
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.RefNumber" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.RefNumber
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.CloseExtractDay" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.CloseExtractDay
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.OpenDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.OpenDate
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.CloseDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.CloseDate
+                        }
+                    </td>
+
+
+
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(creditCard)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(creditCard)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(creditCard)">Editar</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(creditCard.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="AddNewEarning">Add</button>
+}
+
+
+
+@code {
+    private List<CreditCardDto> creditCards;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+    }
+
+    void AddNewEarning()
+    {
+        var newCreditCard = new CreditCardDto();
+        creditCards.Add(newCreditCard);
+
+        Edit(newCreditCard);
+
+        StateHasChanged();
+    }
+
+    void Edit(CreditCardDto newCreditCard)
+    {
+        newCreditCard.IsEditing = true;
+    }
+
+    async Task Save(CreditCardDto creditCardDto)
+    {
+        if (creditCardDto.Id == 0)
+        {
+            CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
+
+            createCreditCardDto.Id = creditCardDto.Id;
+            createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
+            createCreditCardDto.Code = creditCardDto.Code;
+            createCreditCardDto.Description = creditCardDto.Description;
+            createCreditCardDto.IBAN = creditCardDto.IBAN;
+            createCreditCardDto.NIB = creditCardDto.NIB;
+            createCreditCardDto.Balance = creditCardDto.Balance;
+            createCreditCardDto.Plafon = creditCardDto.Plafon;
+            createCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
+            createCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
+            createCreditCardDto.RefNumber = creditCardDto.RefNumber;
+            createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
+            createCreditCardDto.OpenDate = creditCardDto.OpenDate;
+            createCreditCardDto.CloseDate = creditCardDto.CloseDate;
+
+            var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
+            creditCardDto.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateCreditCardDto updateCreditCardDto = new UpdateCreditCardDto();
+
+            updateCreditCardDto.Code = creditCardDto.Code;
+            updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
+            updateCreditCardDto.Description = creditCardDto.Description;
+            updateCreditCardDto.IBAN = creditCardDto.IBAN;
+            updateCreditCardDto.NIB = creditCardDto.NIB;
+            updateCreditCardDto.Balance = creditCardDto.Balance;
+            updateCreditCardDto.Plafon = creditCardDto.Plafon;
+            updateCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
+            updateCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
+            updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
+            updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
+            updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
+            updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
+
+            var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
+            creditCardDto.IsEditing = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task Cancel(CreditCardDto creditCardDto)
+    {
+        creditCardDto.IsEditing = false;
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int creditCardId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this credit card?" });
+
+        if (confirmed)
+        {
+            await Delete(creditCardId);
+        }
+    }
+
+    async Task Delete(int creditCardId)
+    {
+        var response = await Http.DeleteAsync("CreditCards/" + creditCardId);
+        StateHasChanged();
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+    }
+
+}

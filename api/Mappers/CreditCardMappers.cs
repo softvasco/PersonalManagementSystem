@@ -1,5 +1,4 @@
-﻿using api.Dtos.BankAccounts;
-using api.Dtos.CreditCards;
+﻿using api.Dtos.CreditCards;
 using api.Models;
 
 namespace api.Mappers
@@ -10,6 +9,7 @@ namespace api.Mappers
         {
             return new CreditCardDto
             {
+                Id = creditCard.Id,
                 Balance = creditCard.Balance,
                 CloseDate = creditCard.CloseDate,
                 Code = creditCard.Code,
@@ -26,10 +26,11 @@ namespace api.Mappers
             };
         }
 
-        public static CreditCard ToCreditCardFromCreateCreditCardDto(this CreateCreditCardsDto createCreditCardsDto)
+        public static CreditCard ToCreditCardFromCreateCreditCardDto(this CreateCreditCardDto createCreditCardsDto)
         {
             return new CreditCard
             {
+                Id = createCreditCardsDto.Id,
                 Code = createCreditCardsDto.Code,
                 Description = createCreditCardsDto.Description,
                 Balance = createCreditCardsDto.Balance,
