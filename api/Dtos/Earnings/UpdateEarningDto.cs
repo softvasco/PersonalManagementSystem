@@ -2,17 +2,14 @@
 
 namespace api.Dtos.Earnings
 {
-    public class CreateEarningDto
+    public class UpdateEarningDto
     {
-        public int Id { get; set; }
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]
         public string? Description { get; set; } = string.Empty;
         [Required]
-        public int UserId { get; set; }
-        [Required]
-        public string Months { get; set; } = string.Empty;
+        public List<int> Months { get; set; } = new List<int>();
         [Required]
         public int PayDay { get; set; }
         [Required]
@@ -23,6 +20,8 @@ namespace api.Dtos.Earnings
         public decimal Amount { get; set; }
         [Required]
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
+        [Required]
+        public int UserId { get; set; }
 
     }
 }

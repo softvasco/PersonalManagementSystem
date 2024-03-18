@@ -10,7 +10,7 @@ namespace api.Dtos.Earnings
         [Required]
         public string? Description { get; set; } = string.Empty;
         [Required]
-        public List<int> Months { get; set; } = new List<int>();
+        public string Months { get; set; } = string.Empty;
         [Required]
         public int PayDay { get; set; }
         [Required]
@@ -23,6 +23,7 @@ namespace api.Dtos.Earnings
         public string DestinationAccountOrCardCode { get; set; } = string.Empty;
         [Required]
         public int UserId { get; set; }
-        
+        public bool IsEditing { get; set; }
+
     }
 }

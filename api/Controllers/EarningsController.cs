@@ -1,7 +1,9 @@
+using api.Dtos.Categories;
 using api.Dtos.Earnings;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -39,26 +41,8 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("GetById/{Id:int}")]
-        public async Task<IActionResult> GetByIdAsync(int Id)
-        {
-            try
-            {
-                var earning = await _earningRepository.GetByIdAsync(Id);
-                return Ok(earning);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateEarningDto createEarningDto)
+        public async Task<IActionResult> Create([FromBody] CreateEarningDto createEarningDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -77,6 +61,48 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateEarningDto updateEarningDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var earning = updateEarningDto.ToEarningFromUpdateEarningDto();
+                await _earningRepository.UpdateAsync(id, earning);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                await _earningRepository.DeleteAsync(id);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
 

@@ -9,17 +9,17 @@ namespace api.Mappers
         {
             return new EarningDto
             {
-                Id=earning.Id,
+                Id = earning.Id,
                 Amount = earning.Amount,
                 Code = earning.Code,
                 Description = earning.Description,
                 DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
                 EndDate = earning.EndDate,
-                Months = earning.Months,
+                Months = String.Join(", ", earning.Months),
                 PayDay = earning.PayDay,
                 StartDate = earning.StartDate,
                 UserId = earning.UserId
-               
+
             };
         }
 
@@ -32,11 +32,28 @@ namespace api.Mappers
                 Description = createEarningDto.Description,
                 DestinationAccountOrCardCode = createEarningDto.DestinationAccountOrCardCode,
                 EndDate = createEarningDto.EndDate,
-                Months = createEarningDto.Months,
+                Months = createEarningDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
                 PayDay = createEarningDto.PayDay,
                 StartDate = createEarningDto.StartDate,
                 UserId = createEarningDto.UserId
             };
         }
+
+        public static Earning ToEarningFromUpdateEarningDto(this UpdateEarningDto updateEarningDto)
+        {
+            return new Earning
+            {
+                Amount = updateEarningDto.Amount,
+                Code = updateEarningDto.Code,
+                Description = updateEarningDto.Description,
+                DestinationAccountOrCardCode = updateEarningDto.DestinationAccountOrCardCode,
+                EndDate = updateEarningDto.EndDate,
+                Months = updateEarningDto.Months,
+                PayDay = updateEarningDto.PayDay,
+                StartDate = updateEarningDto.StartDate,
+                UserId = updateEarningDto.UserId
+            };
+        }
+
     }
 }

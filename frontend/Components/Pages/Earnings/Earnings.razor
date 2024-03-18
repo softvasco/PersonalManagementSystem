@@ -22,7 +22,9 @@ else
                 <th>Months</th>
                 <th>PayDay</th>
                 <th>Amount</th>
-                <th>Destination</th>
+                <th>DestinationAccountOrCardCode</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,43 +33,178 @@ else
             {
                 <tr>
                     <td>
-                        @earning.Code
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.Code" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.Code
+                        }
                     </td>
                     <td>
-                        @earning.Description
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.Description
+                        }
                     </td>
                     <td>
-                        @string.Join(",", @earning.Months)
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.Months" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.Months
+                        }
                     </td>
                     <td>
-                        @earning.PayDay
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.PayDay" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.PayDay
+                        }
                     </td>
                     <td>
-                        @earning.Amount
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.Amount" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.Amount
+                        }
                     </td>
                     <td>
-                        @earning.DestinationAccountOrCardCode
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.DestinationAccountOrCardCode" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.DestinationAccountOrCardCode
+                        }
                     </td>
                     <td>
-                        <button class="btn btn-secondary" @onclick="() => EditEarning(earning.Id)">Edit</button>
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.StartDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.StartDate
+                        }
+                    </td>
+                    <td>
+                        @if (earning.IsEditing)
+                        {
+                            <input @bind="earning.EndDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @earning.EndDate
+                        }
+                    </td>
+                    <td>
+                        @if (earning.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(earning)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(earning)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(earning)">Editar</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(earning.Id)">Delete</button>
+                        }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <button class="btn btn-primary" @onclick="NavigateToAddEarningPage">Add</button>
+    <button class="btn btn-primary" @onclick="AddNewEarning">Add</button>
 }
 
-@code {
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
 
+
+@code {
     private List<EarningDto> earnings;
+
 
     protected override async Task OnInitializedAsync()
     {
         earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
     }
+
+    void AddNewEarning()
+    {
+        var newEarning = new EarningDto();
+        earnings.Add(newEarning);
+
+        Edit(newEarning);
+
+        StateHasChanged();
+    }
+
+    void Edit(EarningDto newEarning)
+    {
+        newEarning.IsEditing = true;
+    }
+
+    async Task Save(EarningDto earning)
+    {
+        if (earning.Id == 0)
+        {
+            CreateEarningDto createEarningDto = new CreateEarningDto();
+
+            createEarningDto.Id = earning.Id;
+            createEarningDto.UserId = 1; //TODO @VS - Change user id to current user
+            createEarningDto.Code = earning.Code;
+            createEarningDto.Description = earning.Description;
+            createEarningDto.EndDate = earning.EndDate;
+            createEarningDto.PayDay = earning.PayDay;
+            createEarningDto.Amount = earning.Amount;
+            createEarningDto.DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode;
+            createEarningDto.StartDate = earning.StartDate;
+            createEarningDto.Months = earning.Months;
+
+            var response = await Http.PostAsJsonAsync("Earnings", createEarningDto);
+            earning.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateEarningDto updateEarningDto = new UpdateEarningDto();
+
+            updateEarningDto.UserId = 1; //TODO @VS - Change user id to current user
+            updateEarningDto.Code = earning.Code;
+            updateEarningDto.Description = earning.Description;
+            updateEarningDto.EndDate = earning.EndDate;
+            updateEarningDto.PayDay = earning.PayDay;
+            updateEarningDto.Amount = earning.Amount;
+            updateEarningDto.DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode;
+            updateEarningDto.StartDate = earning.StartDate;
+            updateEarningDto.Months = earning.Months.Split(',').Select(int.Parse).ToList();
+
+            var response = await Http.PutAsJsonAsync("Earnings/" + earning.Id, updateEarningDto);
+            earning.IsEditing = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task Cancel(EarningDto earningDto)
+    {
+        earningDto.IsEditing = false;
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+        StateHasChanged();
+    }
+
 
     async Task ConfirmDelete(int categoryId)
     {
@@ -86,15 +223,4 @@ else
         earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
     }
 
-    private void NavigateToAddEarningPage()
-    {
-        NavigationManager.NavigateTo("/add-earning");
-    }
-
-    // Method to handle editing an earning
-    private void EditEarning(int earningId)
-    {
-        // Navigate to the edit page with the selected earning data
-        NavigationManager.NavigateTo($"/add-edit-earning/{earningId}");
-    }
 }

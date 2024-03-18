@@ -33,20 +33,6 @@ namespace api.Repository
             return earnings.Select(c => c.ToEarningDtoFromEarning()).ToList();
         }
 
-        public async Task<EarningDto> GetByIdAsync(int id)
-        {
-            var earning = await _context.Earnings
-               .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.IsActive && x.Id == id);
-
-            if (earning == null)
-            {
-                throw new NotFoundException("No earning found for the specified id");
-            }
-
-            return earning.ToEarningDtoFromEarning();
-        }
-
         public async Task<Earning> CreateAsync(Earning earning)
         {
             var userExists = await _context
@@ -102,15 +88,100 @@ namespace api.Repository
             return earning;
         }
 
-     
-        public Task<Earning> UpdateAsync(int id, Earning earning)
+
+        public async Task<Earning> UpdateAsync(int id, Earning earning)
         {
-            throw new NotImplementedException();
+            var existingEarning = await _context
+               .Earnings
+               .AsNoTracking()
+               .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingEarning == null)
+            {
+                throw new NotFoundException("Earning not found");
+            }
+
+            existingEarning.UpdatedDate = DateTime.UtcNow;
+            existingEarning.Description = earning.Description;
+            existingEarning.Code = earning.Code;
+            existingEarning.EndDate = earning.EndDate;
+            existingEarning.StartDate = earning.StartDate;
+            existingEarning.Amount = earning.Amount;
+            existingEarning.DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode;
+            existingEarning.Months = earning.Months;
+            existingEarning.UserId = earning.UserId;
+            existingEarning.PayDay = earning.PayDay;
+
+            try
+            {
+                _context.Entry(existingEarning).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x=>x.EarningId== existingEarning.Id && x.State==(int)TransactionState.Pending));
+                await _context.SaveChangesAsync();
+
+                DateTime indexData = Utils.CalculateNextPaymentDate(earning.StartDate, earning.PayDay);
+
+                while (indexData < earning.EndDate)
+                {
+                    if (earning.Months.Contains(indexData.Month))
+                    {
+                        await _context.Transactions.AddAsync(new Transaction
+                        {
+                            OperationDate = indexData,
+                            Description = earning.Description,
+                            State = (int)TransactionState.Pending,
+                            UserId = earning.UserId,
+                            EarningId = existingEarning.Id,
+                            SourceAccountOrCardCode = null,
+                            DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
+                            Amount = earning.Amount,
+                            Attachment = null,
+                        });
+                    }
+
+                    indexData = indexData.AddMonths(1);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingEarning;
         }
 
-        public Task<Earning> DeleteAsync(int id)
+        public async Task<Earning> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingEarning = await _context
+              .Earnings
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingEarning == null)
+            {
+                throw new NotFoundException("Earning not found");
+            }
+
+            existingEarning.UpdatedDate = DateTime.Now;
+            existingEarning.IsActive = false;
+
+            try
+            {
+                _context.Entry(existingEarning).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.EarningId == id && x.State == (int)TransactionState.Pending));
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingEarning;
         }
 
     }
