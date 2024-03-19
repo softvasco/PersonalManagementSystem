@@ -21,16 +21,34 @@ namespace api.Controllers
             _creditRepository = creditRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                var credits = await _creditRepository.Get();
+                return Ok(credits);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateCreditDto createCreditDto)
+        public async Task<IActionResult> Create([FromBody] CreateCreditDto createCreditDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var creditCard = await createCreditDto.ToCreditFromCreateCreditDto();
-                await _creditRepository.CreateAsync(creditCard);
+                var credit = createCreditDto.ToCreditFromCreateCreditDto();
+                await _creditRepository.CreateAsync(credit);
 
                 return Created();
             }
@@ -44,23 +62,6 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var earning = await _creditRepository.GetByCodeAsync(code);
-                return Ok(earning);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+      
     }
 }

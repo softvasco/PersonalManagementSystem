@@ -9,13 +9,14 @@ namespace api.Mappers
         {
             return new CreditDto
             {
+                Id = credit.Id,
                 Code = credit.Code,
                 CloseDate = credit.CloseDate,
                 Description = credit.Description,
                 OpenDate = credit.OpenDate,
                 AccountOrCardCodeToDebt = credit.AccountOrCardCodeToDebt,
                 DebtCapital = credit.DebtCapital,
-                DebtDay = credit.PayDay,
+                PayDay = credit.PayDay,
                 Installment = credit.Installment,
                 StartingCapital = credit.StartingCapital,
                 TAN = credit.TAN,
@@ -23,18 +24,8 @@ namespace api.Mappers
             };
         }
 
-        public async static Task<Credit> ToCreditFromCreateCreditDto(this CreateCreditDto createCreditDto)
+        public static Credit ToCreditFromCreateCreditDto(this CreateCreditDto createCreditDto)
         {
-            byte[]? fileContent = null;
-            using (var memoryStream = new MemoryStream())
-            {
-                if (createCreditDto.File is not null)
-                {
-                    await createCreditDto.File.CopyToAsync(memoryStream);
-                    fileContent = memoryStream.ToArray();
-                }
-            }
-
             return new Credit
             {
                 Code = createCreditDto.Code,
@@ -47,23 +38,12 @@ namespace api.Mappers
                 PayDay = createCreditDto.PayDay,
                 Installment = createCreditDto.Installment,
                 StartingCapital = createCreditDto.StartingCapital,
-                Attachment = fileContent,
                 UserId = createCreditDto.UserId
             };
         }
 
-        public async static Task<Credit> ToCreditFromUpdateCreditDto(this UpdateCreditDto updateCreditDto)
+        public static Credit ToCreditFromUpdateCreditDto(this UpdateCreditDto updateCreditDto)
         {
-            byte[]? fileContent = null;
-            using (var memoryStream = new MemoryStream())
-            {
-                if (updateCreditDto.File is not null)
-                {
-                    await updateCreditDto.File.CopyToAsync(memoryStream);
-                    fileContent = memoryStream.ToArray();
-                }
-            }
-
             return new Credit
             {
                 Code = updateCreditDto.Code,
@@ -76,7 +56,6 @@ namespace api.Mappers
                 PayDay = updateCreditDto.PayDay,
                 Installment = updateCreditDto.Installment,
                 StartingCapital = updateCreditDto.StartingCapital,
-                Attachment = fileContent,
                 UserId = updateCreditDto.UserId
             };
         }

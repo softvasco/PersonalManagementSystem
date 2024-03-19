@@ -18,6 +18,20 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<CreditDto>> Get()
+        {
+            var credits = await _context.Credits
+            .Where(x => x.IsActive)
+            .ToListAsync();
+
+            if (credits == null || !credits.Any())
+            {
+                throw new NotFoundException("No credits found for the specified user");
+            }
+
+            return credits.Select(c => c.ToCreditDtoFromCredit()).ToList();
+        }
+
         public async Task<Credit> CreateAsync(Credit credit)
         {
             var user = await _context
@@ -55,21 +69,6 @@ namespace api.Repository
             }
 
             return credit;
-        }
-
-        public async Task<CreditDto> GetByCodeAsync(string code)
-        {
-            var existingCredit = await _context
-                .Credits
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingCredit == null)
-            {
-                throw new NotFoundException("Credit not found");
-            }
-
-            return existingCredit.ToCreditDtoFromCredit();
         }
 
         public async Task<Credit> UpdateAsync(int id, Credit credit)
@@ -140,5 +139,7 @@ namespace api.Repository
 
             await _context.SaveChangesAsync();
         }
+
+       
     }
 }
