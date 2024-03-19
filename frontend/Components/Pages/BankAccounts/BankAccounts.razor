@@ -1,4 +1,4 @@
-﻿@page "/giftcards"
+﻿@page "/bankaccounts"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
@@ -8,7 +8,7 @@
 <h2>Bank accounts</h2>
 <br />
 
-@if (debitCards == null)
+@if (bankAccounts == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,119 +17,191 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>Number</th>
+                <th>Swift</th>
                 <th>Code</th>
                 <th>Description</th>
+                <th>IBAN</th>
+                <th>NIB</th>
                 <th>Balance</th>
                 <th>OpenDate</th>
                 <th>CloseDate</th>
+                <th>Attachment</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var debitCard in debitCards)
+            @foreach (var bankAccount in bankAccounts)
             {
                 <tr>
                     <td>
-                        @if (debitCard.IsEditing)
+                        @if (bankAccount.IsEditing)
                         {
-                            <input @bind="debitCard.Code" class="form-control" />
+                            <input @bind="bankAccount.Number" class="form-control" />
                         }
                         else
                         {
-                            @debitCard.Code
+                            @bankAccount.Number
                         }
                     </td>
                     <td>
-                        @if (debitCard.IsEditing)
+                        @if (bankAccount.IsEditing)
                         {
-                            <input @bind="debitCard.Description" class="form-control" />
+                            <input @bind="bankAccount.Swift" class="form-control" />
                         }
                         else
                         {
-                            @debitCard.Description
+                            @bankAccount.Swift
                         }
                     </td>
                     <td>
-                        @if (debitCard.IsEditing)
+                        @if (bankAccount.IsEditing)
                         {
-                            <input @bind="debitCard.Balance" class="form-control" />
+                            <input @bind="bankAccount.Code" class="form-control" />
                         }
                         else
                         {
-                            @debitCard.Balance
+                            @bankAccount.Code
                         }
                     </td>
                     <td>
-                        @if (debitCard.IsEditing)
+                        @if (bankAccount.IsEditing)
                         {
-                            <input @bind="debitCard.OpenDate" class="form-control" />
+                            <input @bind="bankAccount.Description" class="form-control" />
                         }
                         else
                         {
-                            @debitCard.OpenDate
+                            @bankAccount.Description
                         }
                     </td>
                     <td>
-                        @if (debitCard.IsEditing)
+                        @if (bankAccount.IsEditing)
                         {
-                            <input @bind="debitCard.CloseDate" class="form-control" />
+                            <input @bind="bankAccount.IBAN" class="form-control" />
                         }
                         else
                         {
-                            if (@debitCard.CloseDate.HasValue)
-                                @debitCard.CloseDate!.Value.ToString("dd-MM-yyyy")
+                            @bankAccount.IBAN
+                        }
+                    </td>
+                    <td>
+                        @if (bankAccount.IsEditing)
+                        {
+                            <input @bind="bankAccount.NIB" class="form-control" />
+                        }
+                        else
+                        {
+                            @bankAccount.NIB
+                        }
+                    </td>
+                    <td>
+                        @if (bankAccount.IsEditing)
+                        {
+                            <input @bind="bankAccount.Balance" class="form-control" />
+                        }
+                        else
+                        {
+                            @bankAccount.Balance
+                        }
+                    </td>
+                    <td>
+                        @if (bankAccount.IsEditing)
+                        {
+                            <input @bind="bankAccount.OpenDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @bankAccount.OpenDate
+                        }
+                    </td>
+                    <td>
+                        @if (bankAccount.IsEditing)
+                        {
+                            <input @bind="bankAccount.CloseDate" class="form-control" />
+                        }
+                        else
+                        {
+                            if (@bankAccount.CloseDate.HasValue)
+                                @bankAccount.CloseDate!.Value.ToString("dd-MM-yyyy")
                             else
-                                @debitCard.CloseDate
+                                @bankAccount.CloseDate
                         }
                     </td>
                     <td>
-                        @*    @if (credit.IsEditing)
-                {
-                <button class="btn btn-success" @onclick="() => Save(credit)">Save</button>
-                <button class="btn btn-secondary" @onclick="() => Cancel(credit)">Cancel</button>
-                }
-                else
-                {
-                <button class="btn btn-primary" @onclick="() => Edit(credit)">Editar</button>
-                <button class="btn btn-danger" @onclick="() => ConfirmDelete(credit.Id)">Delete</button>
-                } *@
+                        @if (bankAccount.IsEditing)
+                        {
+                            <InputFile OnChange="(e) => HandleFileUpload(e, bankAccount)" class="form-control" />
+                        }
+                        else if (bankAccount.Attachment != null)
+                        {
+                            <a href="@DownloadAttachment(bankAccount)" download="Attachment.pdf">Download file</a>
+                        }
+                    </td>
+                    <td>
+                        @if (bankAccount.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(bankAccount)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(bankAccount)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(bankAccount)">Editar</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(bankAccount.Id)">Delete</button>
+                        }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    @* <button class="btn btn-primary" @onclick="AddNewEarning">Add</button> *@
+    <button class="btn btn-primary" @onclick="AddBankAccount">Add</button>
 }
 
 
 
 @code {
-    private List<GiftCardsDto> debitCards;
+    private List<BankAccountDto> bankAccounts;
+    private IBrowserFile file;
 
 
     protected override async Task OnInitializedAsync()
     {
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
     }
 
-    void AddNewEarning()
+    string DownloadAttachment(BankAccountDto bankAccount)
     {
-        var newDebitCard = new DebitCardDto();
-        debitCards.Add(newDebitCard);
+        var dataUrl = $"data:application/pdf;base64,{Convert.ToBase64String(bankAccount.Attachment)}";
+        return dataUrl;
+    }
 
-        Edit(newDebitCard);
+    void HandleFileUpload(InputFileChangeEventArgs e, BankAccountDto bankAccountDto)
+    {
+        file = e.File;
+        if (file != null)
+        {
+            // Process the uploaded file here, using the account parameter if needed
+            // You can save it to the server or use it for download
+        }
+    }
+
+    void AddBankAccount()
+    {
+        var newBankAccount = new BankAccountDto();
+        bankAccounts.Add(newBankAccount);
+
+        Edit(newBankAccount);
 
         StateHasChanged();
     }
 
-    void Edit(DebitCardDto newDebitCard)
+    void Edit(BankAccountDto newBankAccount)
     {
-        newDebitCard.IsEditing = true;
+        newBankAccount.IsEditing = true;
     }
 
-    async Task Save(DebitCardDto debitCardDto)
+    async Task Save(BankAccountDto bankAccountDto)
     {
-        if (debitCardDto.Id == 0)
+        if (bankAccountDto.Id == 0)
         {
             // CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
 
@@ -176,29 +248,29 @@ else
         }
     }
 
-    async Task Cancel(DebitCardDto debitCardDto)
+    async Task Cancel(BankAccountDto bankAccountDto)
     {
-        debitCardDto.IsEditing = false;
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        bankAccountDto.IsEditing = false;
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
         StateHasChanged();
     }
 
 
-    async Task ConfirmDelete(int debitCardId)
+    async Task ConfirmDelete(int bankAccountId)
     {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this debit card?" });
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this bank account?" });
 
         if (confirmed)
         {
-            await Delete(debitCardId);
+            await Delete(bankAccountId);
         }
     }
 
-    async Task Delete(int debitCardId)
+    async Task Delete(int bankAccountId)
     {
-        var response = await Http.DeleteAsync("DebitCards/" + debitCardId);
+        var response = await Http.DeleteAsync("BankAccounts/" + bankAccountId);
         StateHasChanged();
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
     }
 
 }

@@ -17,6 +17,20 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<BankAccountDto>> GetAsync()
+        {
+            var bankAccounts = await _context.BankAccounts
+              .Where(x => x.IsActive)
+              .ToListAsync();
+
+            if (bankAccounts == null || !bankAccounts.Any())
+            {
+                throw new NotFoundException("No bank accounts found for the specified user");
+            }
+
+            return bankAccounts.Select(c => c.ToBankAccountDtoFromBankAccount()).ToList();
+        }
+
         public async Task<BankAccount> CreateAsync(BankAccount bankAccount)
         {
             var userExists = await _context
@@ -45,21 +59,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return bankAccount;
-        }
-
-        public async Task<BankAccountDto> GetByCodeAsync(string code)
-        {
-            var existingBankAccount = await _context
-                .BankAccounts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingBankAccount == null)
-            {
-                throw new NotFoundException("Bank account not found");
-            }
-
-            return existingBankAccount.ToBankAccountDtoFromBankAccount();
         }
 
         public async Task<BankAccount> UpdateAsync(int id, BankAccount bankAccount)
@@ -121,29 +120,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return bankAccount;
-        }
-
-        public async Task<BankAccount> UpdateBalanceAsync(int id, decimal balance)
-        {
-            try
-            {
-                BankAccount? bankAccount = await _context.BankAccounts.FindAsync(id);
-
-                if (bankAccount is null)
-                    throw new Exception("Bank account does not exists!");
-
-
-                bankAccount.Balance = balance;
-                bankAccount.UpdatedDate = DateTime.UtcNow;
-                _context.Entry(bankAccount).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return bankAccount;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
         }
 
     }

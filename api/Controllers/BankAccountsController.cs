@@ -21,8 +21,26 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var bankAccounts = await _bankAccountRepository.GetAsync();
+                return Ok(bankAccounts);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateBankAccountDto createBankAccountDto)
+        public async Task<IActionResult> Create([FromForm] CreateBankAccountDto createBankAccountDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -44,24 +62,6 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var bankAccount = await _bankAccountRepository.GetByCodeAsync(code);
-                return Ok(bankAccount);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
         {
@@ -76,28 +76,6 @@ namespace api.Controllers
                 return Ok();
             }
             catch(NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        [HttpPut("balance/{id}")]
-        public async Task<IActionResult> UpdateBalanceAsync(int id, [FromForm] UpdateBalanceBankAccountDto updateBalanceBankAccountDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                await _bankAccountRepository.UpdateBalanceAsync(id, updateBalanceBankAccountDto.Balance);
-
-                return Ok();
-            }
-            catch (NotFoundException)
             {
                 return NotFound();
             }

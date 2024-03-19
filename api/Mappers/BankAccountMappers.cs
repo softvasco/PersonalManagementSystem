@@ -65,6 +65,7 @@ namespace api.Mappers
         {
             return new BankAccountDto
             {
+                Id = bankAccount.Id,
                 Code= bankAccount.Code,
                 Description = bankAccount.Description,
                 Balance = bankAccount.Balance,
@@ -74,7 +75,8 @@ namespace api.Mappers
                 UserId = bankAccount.UserId,
                 NIB = bankAccount.NIB,
                 Swift = bankAccount.Swift,
-                Number = bankAccount.Number
+                Number = bankAccount.Number,
+                Attachment = bankAccount.Attachment
             };
         }
     }
