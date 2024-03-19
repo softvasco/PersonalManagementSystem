@@ -1,10 +1,7 @@
-using api.Dtos.BankAccounts;
-using api.Dtos.Credits;
 using api.Dtos.DebitCards;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -24,6 +21,23 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            try
+            {
+                var debitCards = await _debitCardRepository.Get();
+                return Ok(debitCards);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDebitCardDto createDebitCardsDto)
@@ -37,24 +51,6 @@ namespace api.Controllers
                 await _debitCardRepository.CreateAsync(debitCardModel);
 
                 return Created();
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var debitCard = await _debitCardRepository.GetByCodeAsync(code);
-                return Ok(debitCard);
             }
             catch (NotFoundException)
             {

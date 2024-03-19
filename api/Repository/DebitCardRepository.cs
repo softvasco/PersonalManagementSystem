@@ -17,6 +17,20 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<DebitCardDto>> Get()
+        {
+            var debitCards = await _context.DebitCards
+              .Where(x => x.IsActive)
+              .ToListAsync();
+
+            if (debitCards == null || !debitCards.Any())
+            {
+                throw new NotFoundException("No debit cards found for the specified user");
+            }
+
+            return debitCards.Select(c => c.ToDebitCardDtoFromDebitCard()).ToList();
+        }
+
         public async Task<DebitCard> CreateAsync(DebitCard debitCard)
         {
             var userExists = await _context
@@ -64,21 +78,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return debitCard;
-        }
-
-        public async Task<DebitCardDto> GetByCodeAsync(string code)
-        {
-            var existingDebitCard = await _context
-               .DebitCards
-               .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingDebitCard == null)
-            {
-                throw new NotFoundException("Bank account not found");
-            }
-
-            return existingDebitCard.ToDebitCardDtoFromDebitCard();
         }
 
         public async Task<DebitCard> UpdateAsync(int id, DebitCard debitCard)

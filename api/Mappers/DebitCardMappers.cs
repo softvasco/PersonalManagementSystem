@@ -35,6 +35,7 @@ namespace api.Mappers
         {
             return new DebitCardDto
             {
+                Id = debitCard.Id,
                 Code = debitCard.Code,
                 Description = debitCard.Description,
                 Balance = debitCard.Balance,

@@ -156,7 +156,7 @@ else
             }
         </tbody>
     </table>
-    @* <button class="btn btn-primary" @onclick="AddNewEarning">Add</button> *@
+    @* <button class="btn btn-primary" @onclick="AddNewCredit">Add</button> *@
 }
 
 
@@ -170,7 +170,7 @@ else
         credits = await Http.GetFromJsonAsync<List<CreditDto>>("Credits");
     }
 
-    void AddNewEarning()
+    void AddNewCredit()
     {
         var newCredit = new CreditDto();
         credits.Add(newCredit);
