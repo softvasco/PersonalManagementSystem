@@ -1,0 +1,204 @@
+﻿@page "/giftcards"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Gift cards</h2>
+<br />
+
+@if (debitCards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Balance</th>
+                <th>OpenDate</th>
+                <th>CloseDate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var debitCard in debitCards)
+            {
+                <tr>
+                    <td>
+                        @if (debitCard.IsEditing)
+                        {
+                            <input @bind="debitCard.Code" class="form-control" />
+                        }
+                        else
+                        {
+                            @debitCard.Code
+                        }
+                    </td>
+                    <td>
+                        @if (debitCard.IsEditing)
+                        {
+                            <input @bind="debitCard.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @debitCard.Description
+                        }
+                    </td>
+                    <td>
+                        @if (debitCard.IsEditing)
+                        {
+                            <input @bind="debitCard.Balance" class="form-control" />
+                        }
+                        else
+                        {
+                            @debitCard.Balance
+                        }
+                    </td>
+                    <td>
+                        @if (debitCard.IsEditing)
+                        {
+                            <input @bind="debitCard.OpenDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @debitCard.OpenDate
+                        }
+                    </td>
+                    <td>
+                        @if (debitCard.IsEditing)
+                        {
+                            <input @bind="debitCard.CloseDate" class="form-control" />
+                        }
+                        else
+                        {
+                            if (@debitCard.CloseDate.HasValue)
+                                @debitCard.CloseDate!.Value.ToString("dd-MM-yyyy")
+                            else
+                                @debitCard.CloseDate
+                        }
+                    </td>
+                    <td>
+                        @*    @if (credit.IsEditing)
+                {
+                <button class="btn btn-success" @onclick="() => Save(credit)">Save</button>
+                <button class="btn btn-secondary" @onclick="() => Cancel(credit)">Cancel</button>
+                }
+                else
+                {
+                <button class="btn btn-primary" @onclick="() => Edit(credit)">Editar</button>
+                <button class="btn btn-danger" @onclick="() => ConfirmDelete(credit.Id)">Delete</button>
+                } *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @* <button class="btn btn-primary" @onclick="AddNewEarning">Add</button> *@
+}
+
+
+
+@code {
+    private List<GiftCardsDto> debitCards;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+    }
+
+    void AddNewEarning()
+    {
+        var newDebitCard = new DebitCardDto();
+        debitCards.Add(newDebitCard);
+
+        Edit(newDebitCard);
+
+        StateHasChanged();
+    }
+
+    void Edit(DebitCardDto newDebitCard)
+    {
+        newDebitCard.IsEditing = true;
+    }
+
+    async Task Save(DebitCardDto debitCardDto)
+    {
+        if (debitCardDto.Id == 0)
+        {
+            // CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
+
+            // createCreditCardDto.Id = creditCardDto.Id;
+            // createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
+            // createCreditCardDto.Code = creditCardDto.Code;
+            // createCreditCardDto.Description = creditCardDto.Description;
+            // createCreditCardDto.IBAN = creditCardDto.IBAN;
+            // createCreditCardDto.NIB = creditCardDto.NIB;
+            // createCreditCardDto.Balance = creditCardDto.Balance;
+            // createCreditCardDto.Plafon = creditCardDto.Plafon;
+            // createCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
+            // createCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
+            // createCreditCardDto.RefNumber = creditCardDto.RefNumber;
+            // createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
+            // createCreditCardDto.OpenDate = creditCardDto.OpenDate;
+            // createCreditCardDto.CloseDate = creditCardDto.CloseDate;
+
+            // var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
+            // creditCardDto.IsEditing = false;
+            // StateHasChanged();
+        }
+        else
+        {
+            // UpdateCreditCardDto updateCreditCardDto = new UpdateCreditCardDto();
+
+            // updateCreditCardDto.Code = creditCardDto.Code;
+            // updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
+            // updateCreditCardDto.Description = creditCardDto.Description;
+            // updateCreditCardDto.IBAN = creditCardDto.IBAN;
+            // updateCreditCardDto.NIB = creditCardDto.NIB;
+            // updateCreditCardDto.Balance = creditCardDto.Balance;
+            // updateCreditCardDto.Plafon = creditCardDto.Plafon;
+            // updateCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
+            // updateCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
+            // updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
+            // updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
+            // updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
+            // updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
+
+            // var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
+            // creditCardDto.IsEditing = false;
+            // StateHasChanged();
+        }
+    }
+
+    async Task Cancel(DebitCardDto debitCardDto)
+    {
+        debitCardDto.IsEditing = false;
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int debitCardId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this debit card?" });
+
+        if (confirmed)
+        {
+            await Delete(debitCardId);
+        }
+    }
+
+    async Task Delete(int debitCardId)
+    {
+        var response = await Http.DeleteAsync("DebitCards/" + debitCardId);
+        StateHasChanged();
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+    }
+
+}
