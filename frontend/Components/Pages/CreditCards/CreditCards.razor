@@ -143,7 +143,10 @@ else
                         }
                         else
                         {
-                            @creditCard.OpenDate
+                            if (@creditCard.OpenDate.HasValue)
+                                @creditCard.OpenDate!.Value.ToString("dd-MM-yyyy")
+                            else
+                                @creditCard.OpenDate
                         }
                     </td>
                     <td>
@@ -153,12 +156,12 @@ else
                         }
                         else
                         {
-                            @creditCard.CloseDate
+                            if (@creditCard.CloseDate.HasValue)
+                                @creditCard.CloseDate!.Value.ToString("dd-MM-yyyy")
+                            else
+                                @creditCard.CloseDate
                         }
                     </td>
-
-
-
                     <td>
                         @if (creditCard.IsEditing)
                         {
