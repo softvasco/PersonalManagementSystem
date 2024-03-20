@@ -13,7 +13,6 @@ namespace api.Dtos.BankAccounts
         public string NIB { get; set; } = string.Empty;
         public decimal Balance { get; set; }
         public DateTime OpenDate { get; set; }
-        public DateTime? CloseDate { get; set; }
 
         [Required]
         public int UserId { get; set; }
