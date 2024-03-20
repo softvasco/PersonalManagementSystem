@@ -5,6 +5,7 @@ namespace api.Dtos.Credits
 {
     public class CreateCreditDto
     {
+        public int Id { get; set; }
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]

@@ -1,4 +1,5 @@
 ﻿using api.Dtos.BankAccounts;
+using api.Helpers;
 using api.Models;
 
 namespace api.Mappers
@@ -28,7 +29,8 @@ namespace api.Mappers
                 NIB = createBankAccountDto.NIB,
                 Swift = createBankAccountDto.Swift,
                 Number = createBankAccountDto.Number,
-                Attachment = fileContent
+                Attachment = fileContent,
+                FileName = createBankAccountDto.FileName,
             };
         }
 
@@ -55,7 +57,8 @@ namespace api.Mappers
                 NIB = updateBankAccountDto.NIB,
                 Swift = updateBankAccountDto.Swift,
                 Number = updateBankAccountDto.Number,
-                Attachment = fileContent
+                Attachment = fileContent,
+                FileName = updateBankAccountDto.FileName,
             };
         }
     
@@ -64,7 +67,7 @@ namespace api.Mappers
             return new BankAccountDto
             {
                 Id = bankAccount.Id,
-                Code= bankAccount.Code,
+                Code = bankAccount.Code,
                 Description = bankAccount.Description,
                 Balance = bankAccount.Balance,
                 OpenDate = bankAccount.OpenDate,
@@ -73,7 +76,9 @@ namespace api.Mappers
                 NIB = bankAccount.NIB,
                 Swift = bankAccount.Swift,
                 Number = bankAccount.Number,
-                Attachment = bankAccount.Attachment
+                FileBytes = bankAccount.Attachment,
+                FileName = bankAccount.FileName,
+                ContentType = bankAccount.Attachment != null ? ByteArrayToFormFileExtensions.GetContentTypeFromExtension(ByteArrayToFormFileExtensions.InferFileExtension(bankAccount.Attachment)) : string.Empty
             };
         }
     }

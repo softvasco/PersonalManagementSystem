@@ -1,6 +1,7 @@
 ﻿@page "/bankaccounts"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <br />
@@ -116,15 +117,15 @@ else
                     <td>
                         @if (bankAccount.IsEditing)
                         {
-                            if (bankAccount.Attachment != null)
+                            if (bankAccount.FileBytes != null && bankAccount.FileBytes.Length > 0)
                             {
-                                <a href="@DownloadAttachment(bankAccount)" download="Attachment.pdf">Download file</a>
+                                <a href="@DownloadAttachment(bankAccount)" download="@bankAccount.FileName">Download file</a>
                             }
-                            <InputFile OnChange="(e) => HandleFileUpload(e, bankAccount)" class="form-control" />
+                            <InputFile id="fileInput" Bind-Value="@bankAccount.File" OnChange="HandleFileSelected" />
                         }
-                        else if (bankAccount.Attachment != null)
+                        else if (bankAccount.FileBytes != null && bankAccount.FileBytes.Length > 0)
                         {
-                            <a href="@DownloadAttachment(bankAccount)" download="Attachment.pdf">Download file</a>
+                            <a href="@DownloadAttachment(bankAccount)" download="@bankAccount.FileName">Download file</a>
                         }
                     </td>
                     <td>
@@ -150,8 +151,8 @@ else
 
 @code {
     private List<BankAccountDto> bankAccounts;
-    private IBrowserFile file;
-
+    private IFormFile fileUpload;
+    int maxFileSizeLimit = 1024 * 1024 * 20;
 
     protected override async Task OnInitializedAsync()
     {
@@ -160,18 +161,21 @@ else
 
     string DownloadAttachment(BankAccountDto bankAccount)
     {
-        var dataUrl = $"data:application/pdf;base64,{Convert.ToBase64String(bankAccount.Attachment)}";
+        if (bankAccount.FileBytes == null || bankAccount.FileBytes.Length <= 0)
+            return string.Empty;
+
+        var dataUrl = $"data:{bankAccount.ContentType};base64,{Convert.ToBase64String(bankAccount.FileBytes)}";
         return dataUrl;
     }
 
-    void HandleFileUpload(InputFileChangeEventArgs e, BankAccountDto bankAccountDto)
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        file = e.File;
-        if (file != null)
-        {
-            // Process the uploaded file here, using the account parameter if needed
-            // You can save it to the server or use it for download
-        }
+        var file = e.File;
+
+        var memoryStream = new MemoryStream();
+        await file.OpenReadStream(maxAllowedSize: maxFileSizeLimit).CopyToAsync(memoryStream);
+
+        fileUpload = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
     }
 
     void AddBankAccount()
@@ -191,50 +195,49 @@ else
 
     async Task Save(BankAccountDto bankAccountDto)
     {
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("1".ToString()), "UserId"); //TODO @VS - Change this
+
+        formData.Add(new StringContent(bankAccountDto.Description), "Description");
+        formData.Add(new StringContent(bankAccountDto.Code), "Code");
+        formData.Add(new StringContent(bankAccountDto.Number), "Number");
+        formData.Add(new StringContent(bankAccountDto.Swift), "Swift");
+        formData.Add(new StringContent(bankAccountDto.Balance.ToString()), "Balance");
+        formData.Add(new StringContent(bankAccountDto.OpenDate.ToString()), "OpenDate");
+        formData.Add(new StringContent(bankAccountDto.IBAN.ToString()), "IBAN");
+        formData.Add(new StringContent(bankAccountDto.NIB.ToString()), "NIB");
+
+        // Handle file upload
+        if (fileUpload != null)
+        {
+            var stream = new MemoryStream();
+            await fileUpload.CopyToAsync(stream);
+            stream.Position = 0;
+            formData.Add(new StreamContent(stream), "File", fileUpload.FileName);
+            formData.Add(new StringContent(fileUpload.FileName), "FileName");
+        }
+
+        //new
         if (bankAccountDto.Id == 0)
         {
-            // CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
+            var response = await Http.PostAsync("BankAccounts", formData);
+            bankAccountDto.IsEditing = false;
+            StateHasChanged();
 
-            // createCreditCardDto.Id = creditCardDto.Id;
-            // createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // createCreditCardDto.Code = creditCardDto.Code;
-            // createCreditCardDto.Description = creditCardDto.Description;
-            // createCreditCardDto.IBAN = creditCardDto.IBAN;
-            // createCreditCardDto.NIB = creditCardDto.NIB;
-            // createCreditCardDto.Balance = creditCardDto.Balance;
-            // createCreditCardDto.Plafon = creditCardDto.Plafon;
-            // createCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // createCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // createCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // createCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // createCreditCardDto.CloseDate = creditCardDto.CloseDate;
-
-            // var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
+            // Refresh the current page
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
+        //update
         else
         {
-            // UpdateCreditCardDto updateCreditCardDto = new UpdateCreditCardDto();
+            formData.Add(new StringContent(bankAccountDto.Id.ToString()), "Id");
 
-            // updateCreditCardDto.Code = creditCardDto.Code;
-            // updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // updateCreditCardDto.Description = creditCardDto.Description;
-            // updateCreditCardDto.IBAN = creditCardDto.IBAN;
-            // updateCreditCardDto.NIB = creditCardDto.NIB;
-            // updateCreditCardDto.Balance = creditCardDto.Balance;
-            // updateCreditCardDto.Plafon = creditCardDto.Plafon;
-            // updateCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // updateCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
+            var response = await Http.PutAsync($"BankAccounts/{bankAccountDto.Id}", formData);
+            bankAccountDto.IsEditing = false;
+            StateHasChanged();
 
-            // var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
+            // Refresh the current page
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
     }
 

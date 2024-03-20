@@ -63,7 +63,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateBankAccountDto updateBankAccountDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

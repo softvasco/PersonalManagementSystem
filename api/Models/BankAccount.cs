@@ -16,6 +16,6 @@
         public User User { get; set; }
 
         public byte[]? Attachment { get; set; } = [];
-        
+        public string? FileName { get; set; }
     }
 }

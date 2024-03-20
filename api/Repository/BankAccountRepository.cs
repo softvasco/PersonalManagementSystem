@@ -88,7 +88,10 @@ namespace api.Repository
 
             //Only update for a newer file. 
             if (bankAccount.Attachment != null)
+            {
                 existingBankAccount.Attachment = bankAccount.Attachment;
+                existingBankAccount.FileName = bankAccount.FileName;
+            }
 
             try
             {
