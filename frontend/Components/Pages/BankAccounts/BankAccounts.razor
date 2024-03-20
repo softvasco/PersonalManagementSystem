@@ -116,6 +116,10 @@ else
                     <td>
                         @if (bankAccount.IsEditing)
                         {
+                            if (bankAccount.Attachment != null)
+                            {
+                                <a href="@DownloadAttachment(bankAccount)" download="Attachment.pdf">Download file</a>
+                            }
                             <InputFile OnChange="(e) => HandleFileUpload(e, bankAccount)" class="form-control" />
                         }
                         else if (bankAccount.Attachment != null)
