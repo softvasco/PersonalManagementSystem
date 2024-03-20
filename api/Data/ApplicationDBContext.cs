@@ -22,6 +22,7 @@ namespace api.Data
         public DbSet<Earning> Earnings { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<OSRSWorld> OSRSWorlds { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
