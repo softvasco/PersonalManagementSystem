@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Dtos.Earnings;
+using api.Dtos.Expenses;
 using api.Enum;
 using api.Helpers;
 using api.Interfaces;
@@ -18,16 +19,31 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<ExpenseDto>> GetAsync()
+        {
+            var expenses = await _context.Expenses
+              .AsNoTracking()
+              .Where(x => x.IsActive)
+              .ToListAsync();
+
+            if (expenses == null || !expenses.Any())
+            {
+                throw new NotFoundException("No expenses found for the specified user");
+            }
+
+            return expenses.Select(c => c.ToExpenseDtoFromExpense()).ToList();
+        }
+
         public async Task<Expense> CreateAsync(Expense expense)
         {
-            var earningExists = await _context
+            var expenseExists = await _context
                 .Expenses
                 .AsNoTracking()
                 .AnyAsync(x => x.Code == expense.Code
                     && x.UserId == expense.UserId
                     && x.IsActive);
 
-            if (earningExists)
+            if (expenseExists)
             {
                 throw new Exception("Expense already exists!");
             }
@@ -39,7 +55,7 @@ namespace api.Repository
 
             while (indexData < expense.EndDate)
             {
-                if (expense.Months.Contains(indexData.Month))
+                if (expense.Months.Contains(indexData.Month) && expense.Amount > 0)
                 {
                     await _context.Transactions.AddAsync(new Transaction
                     {
@@ -63,15 +79,102 @@ namespace api.Repository
         }
 
 
-        public Task<Expense> UpdateAsync(int id, Expense expense)
+        public async Task<Expense> UpdateAsync(int id, Expense expense)
         {
-            throw new NotImplementedException();
+            var existingExpense = await _context
+              .Expenses
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingExpense == null)
+            {
+                throw new NotFoundException("Expense not found");
+            }
+
+            existingExpense.UpdatedDate = DateTime.UtcNow;
+            existingExpense.Description = expense.Description;
+            existingExpense.Code = expense.Code;
+            existingExpense.Months = expense.Months;
+            existingExpense.EndDate = expense.EndDate;
+            existingExpense.StartDate = expense.StartDate;
+            existingExpense.Amount = expense.Amount;
+            existingExpense.DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode;
+            existingExpense.UserId = expense.UserId;
+            existingExpense.PayDay = expense.PayDay;
+            existingExpense.SourceAccountOrCardCode = expense.SourceAccountOrCardCode;
+
+            try
+            {
+                _context.Entry(existingExpense).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == existingExpense.Id && x.State == (int)TransactionState.Pending));
+                await _context.SaveChangesAsync();
+
+                DateTime indexData = Utils.CalculateNextPaymentDate(expense.StartDate, expense.PayDay);
+
+                while (indexData < expense.EndDate)
+                {
+                    if (expense.Months.Contains(indexData.Month) && expense.Amount > 0)
+                    {
+                        await _context.Transactions.AddAsync(new Transaction
+                        {
+                            OperationDate = indexData,
+                            Description = expense.Description,
+                            State = (int)TransactionState.Pending,
+                            UserId = expense.UserId,
+                            EarningId = existingExpense.Id,
+                            SourceAccountOrCardCode = null,
+                            DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
+                            Amount = expense.Amount,
+                            Attachment = null,
+                        });
+                    }
+
+                    indexData = indexData.AddMonths(1);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingExpense;
         }
 
-        public Task<Expense> DeleteAsync(int id)
+        public async Task<Expense> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingExpense = await _context
+              .Expenses
+              .AsNoTracking()
+              .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+
+            if (existingExpense == null)
+            {
+                throw new NotFoundException("Expense not found");
+            }
+
+            existingExpense.UpdatedDate = DateTime.Now;
+            existingExpense.IsActive = false;
+
+            try
+            {
+                _context.Entry(existingExpense).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == id && x.State == (int)TransactionState.Pending));
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return existingExpense;
         }
 
+       
     }
 }

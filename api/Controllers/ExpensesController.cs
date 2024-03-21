@@ -1,7 +1,9 @@
+using api.Dtos.Earnings;
 using api.Dtos.Expenses;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -21,15 +23,33 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var expenses = await _expenseRepository.GetAsync();
+                return Ok(expenses);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateExpenseDto createExpenseDto)
+        public async Task<IActionResult> Create([FromBody] CreateExpenseDto createExpenseDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var expense = createExpenseDto.ToExpenseFromCreateExpenseDtoAsync();
+                var expense = createExpenseDto.ToExpenseFromCreateExpenseDto();
                 await _expenseRepository.CreateAsync(expense);
 
                 return Created();
@@ -41,6 +61,48 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateExpenseDto updateExpenseDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var earning = updateExpenseDto.ToExpenseFromUpdateExpenseDto();
+                await _expenseRepository.UpdateAsync(id, earning);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _expenseRepository.DeleteAsync(id);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
 

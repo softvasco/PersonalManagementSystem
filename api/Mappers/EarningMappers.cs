@@ -15,7 +15,7 @@ namespace api.Mappers
                 Description = earning.Description,
                 DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
                 EndDate = earning.EndDate,
-                Months = String.Join(", ", earning.Months),
+                Months = string.Join(", ", earning.Months),
                 PayDay = earning.PayDay,
                 StartDate = earning.StartDate,
                 UserId = earning.UserId
@@ -48,7 +48,7 @@ namespace api.Mappers
                 Description = updateEarningDto.Description,
                 DestinationAccountOrCardCode = updateEarningDto.DestinationAccountOrCardCode,
                 EndDate = updateEarningDto.EndDate,
-                Months = updateEarningDto.Months,
+                Months = updateEarningDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
                 PayDay = updateEarningDto.PayDay,
                 StartDate = updateEarningDto.StartDate,
                 UserId = updateEarningDto.UserId

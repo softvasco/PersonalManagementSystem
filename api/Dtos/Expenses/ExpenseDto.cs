@@ -1,16 +1,16 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos.Expenses
 {
     public class ExpenseDto
     {
+        public int Id { get; set; }
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]
         public string? Description { get; set; } = string.Empty;
         [Required]
-        public List<int> Months { get; set; } = new List<int>();
+        public string Months { get; set; } = string.Empty;
         [Required]
         public int PayDay { get; set; }
         [Required]
@@ -20,9 +20,12 @@ namespace api.Dtos.Expenses
         [Required]
         public decimal Amount { get; set; }
         [Required]
-        public string DestinationAccountOrCardCode { get; set; } = string.Empty;
+        public string? SourceAccountOrCardCode { get; set; } = string.Empty;
+        [Required]
+        public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
         [Required]
         public int UserId { get; set; }
-        
+        public bool IsEditing { get; set; }
+
     }
 }

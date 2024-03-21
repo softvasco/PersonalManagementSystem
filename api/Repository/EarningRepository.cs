@@ -18,7 +18,7 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<List<EarningDto>> Get()
+        public async Task<List<EarningDto>> GetAsync()
         {
             var earnings = await _context.Earnings
                 .AsNoTracking()
@@ -124,7 +124,7 @@ namespace api.Repository
 
                 while (indexData < earning.EndDate)
                 {
-                    if (earning.Months.Contains(indexData.Month))
+                    if (earning.Months.Contains(indexData.Month) && earning.Amount > 0)
                     {
                         await _context.Transactions.AddAsync(new Transaction
                         {

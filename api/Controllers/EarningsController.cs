@@ -1,9 +1,7 @@
-using api.Dtos.Categories;
 using api.Dtos.Earnings;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -24,11 +22,11 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var earnings = await _earningRepository.Get();
+                var earnings = await _earningRepository.GetAsync();
                 return Ok(earnings);
             }
             catch (NotFoundException)

@@ -5,24 +5,43 @@ namespace api.Mappers
 {
     public static class ExpenseMappers
     {
-        public static Expense ToExpenseFromCreateExpenseDtoAsync(this CreateExpenseDto createExpenseDto)
+        public static ExpenseDto ToExpenseDtoFromExpense(this Expense expense)
         {
-            return new Expense
+            return new ExpenseDto
             {
-               Code = createExpenseDto.Code,
-               Amount = createExpenseDto.Amount,
-               Description = createExpenseDto.Description,
-               DestinationAccountOrCardCode = createExpenseDto.DestinationAccountOrCardCode,
-               UserId = createExpenseDto.UserId,
-               PayDay = createExpenseDto.PayDay,
-               Months = createExpenseDto.Months,
-               SourceAccountOrCardCode = createExpenseDto.SourceAccountOrCardCode,
-               StartDate = createExpenseDto.StartDate,
-               EndDate = createExpenseDto.EndDate
+                Id = expense.Id,
+                Code = expense.Code,
+                Amount = expense.Amount,
+                Description = expense.Description,
+                DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
+                UserId = expense.UserId,
+                PayDay = expense.PayDay,
+                Months = string.Join(", ", expense.Months),
+                SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
+                StartDate = expense.StartDate,
+                EndDate = expense.EndDate
+
             };
         }
 
-        public static Expense ToBankAccountFromUpdateBankAccountDto(this UpdateExpenseDto updateExpenseDto)
+        public static Expense ToExpenseFromCreateExpenseDto(this CreateExpenseDto createExpenseDto)
+        {
+            return new Expense
+            {
+                Code = createExpenseDto.Code,
+                Amount = createExpenseDto.Amount,
+                Description = createExpenseDto.Description,
+                DestinationAccountOrCardCode = createExpenseDto.DestinationAccountOrCardCode,
+                UserId = createExpenseDto.UserId,
+                PayDay = createExpenseDto.PayDay,
+                Months = createExpenseDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
+                SourceAccountOrCardCode = createExpenseDto.SourceAccountOrCardCode,
+                StartDate = createExpenseDto.StartDate,
+                EndDate = createExpenseDto.EndDate
+            };
+        }
+
+        public static Expense ToExpenseFromUpdateExpenseDto(this UpdateExpenseDto updateExpenseDto)
         {
             return new Expense
             {
@@ -32,7 +51,7 @@ namespace api.Mappers
                 DestinationAccountOrCardCode = updateExpenseDto.DestinationAccountOrCardCode,
                 UserId = updateExpenseDto.UserId,
                 PayDay = updateExpenseDto.PayDay,
-                Months = updateExpenseDto.Months,
+                Months = updateExpenseDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
                 SourceAccountOrCardCode = updateExpenseDto.SourceAccountOrCardCode,
                 StartDate = updateExpenseDto.StartDate,
                 EndDate = updateExpenseDto.EndDate
