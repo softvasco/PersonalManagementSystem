@@ -21,8 +21,6 @@ else
                 <th>Description</th>
                 <th>Balance</th>
                 <th>OpenDate</th>
-                <th>CloseDate</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -66,33 +64,8 @@ else
                         }
                         else
                         {
-                            @debitCard.OpenDate
+                            @debitCard.OpenDate.ToString("dd-MM-yyyy")
                         }
-                    </td>
-                    <td>
-                        @if (debitCard.IsEditing)
-                        {
-                            <input @bind="debitCard.CloseDate" class="form-control" />
-                        }
-                        else
-                        {
-                            if (@debitCard.CloseDate.HasValue)
-                                @debitCard.CloseDate!.Value.ToString("dd-MM-yyyy")
-                            else
-                                @debitCard.CloseDate
-                        }
-                    </td>
-                    <td>
-                        @*    @if (credit.IsEditing)
-                {
-                <button class="btn btn-success" @onclick="() => Save(credit)">Save</button>
-                <button class="btn btn-secondary" @onclick="() => Cancel(credit)">Cancel</button>
-                }
-                else
-                {
-                <button class="btn btn-primary" @onclick="() => Edit(credit)">Editar</button>
-                <button class="btn btn-danger" @onclick="() => ConfirmDelete(credit.Id)">Delete</button>
-                } *@
                     </td>
                 </tr>
             }

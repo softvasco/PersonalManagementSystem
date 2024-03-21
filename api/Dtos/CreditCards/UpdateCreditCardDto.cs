@@ -12,7 +12,6 @@ namespace api.Dtos.CreditCards
         [Required]
         public decimal Balance { get; set; }
         public DateTime? OpenDate { get; set; }
-        public DateTime? CloseDate { get; set; }
         [Required]
         public int UserId { get; set; }
         public int? CloseExtractDay { get; set; } = 0;

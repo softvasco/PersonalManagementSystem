@@ -28,7 +28,6 @@ else
                 <th>RefNumber</th>
                 <th>CloseExtractDay</th>
                 <th>OpenDate</th>
-                <th>CloseDate</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -152,19 +151,6 @@ else
                     <td>
                         @if (creditCard.IsEditing)
                         {
-                            <input @bind="creditCard.CloseDate" class="form-control" />
-                        }
-                        else
-                        {
-                            if (@creditCard.CloseDate.HasValue)
-                                @creditCard.CloseDate!.Value.ToString("dd-MM-yyyy")
-                            else
-                                @creditCard.CloseDate
-                        }
-                    </td>
-                    <td>
-                        @if (creditCard.IsEditing)
-                        {
                             <button class="btn btn-success" @onclick="() => Save(creditCard)">Save</button>
                             <button class="btn btn-secondary" @onclick="() => Cancel(creditCard)">Cancel</button>
                         }
@@ -226,7 +212,6 @@ else
             createCreditCardDto.RefNumber = creditCardDto.RefNumber;
             createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
             createCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            createCreditCardDto.CloseDate = creditCardDto.CloseDate;
 
             var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
             creditCardDto.IsEditing = false;
@@ -248,7 +233,6 @@ else
             updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
             updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
             updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
 
             var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
             creditCardDto.IsEditing = false;

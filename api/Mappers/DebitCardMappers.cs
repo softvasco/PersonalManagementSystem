@@ -12,7 +12,6 @@ namespace api.Mappers
                 Code = createDebitCardsDto.Code,
                 Description = createDebitCardsDto.Description,
                 Balance = createDebitCardsDto.Balance,
-                CloseDate = createDebitCardsDto.CloseDate,
                 OpenDate = createDebitCardsDto.OpenDate,
                 UserId = createDebitCardsDto.UserId
             };
@@ -25,7 +24,6 @@ namespace api.Mappers
                 Code = updateDebitCardDto.Code,
                 Description = updateDebitCardDto.Description,
                 Balance = updateDebitCardDto.Balance,
-                CloseDate = updateDebitCardDto.CloseDate,
                 OpenDate = updateDebitCardDto.OpenDate,
                 UserId = updateDebitCardDto.UserId
             };
@@ -39,7 +37,6 @@ namespace api.Mappers
                 Code = debitCard.Code,
                 Description = debitCard.Description,
                 Balance = debitCard.Balance,
-                CloseDate = debitCard.CloseDate,
                 OpenDate = debitCard.OpenDate,
                 UserId = debitCard.UserId
             };

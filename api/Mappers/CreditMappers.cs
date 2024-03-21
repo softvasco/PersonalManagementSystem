@@ -11,7 +11,6 @@ namespace api.Mappers
             {
                 Id = credit.Id,
                 Code = credit.Code,
-                CloseDate = credit.CloseDate,
                 Description = credit.Description,
                 OpenDate = credit.OpenDate,
                 AccountOrCardCodeToDebt = credit.AccountOrCardCodeToDebt,
@@ -29,7 +28,6 @@ namespace api.Mappers
             return new Credit
             {
                 Code = createCreditDto.Code,
-                CloseDate = createCreditDto.CloseDate,
                 Description = createCreditDto.Description,
                 OpenDate = createCreditDto.OpenDate,
                 AccountOrCardCodeToDebt = createCreditDto.AccountOrCardCodeToDebt,
@@ -47,7 +45,6 @@ namespace api.Mappers
             return new Credit
             {
                 Code = updateCreditDto.Code,
-                CloseDate = updateCreditDto.CloseDate,
                 Description = updateCreditDto.Description,
                 OpenDate = updateCreditDto.OpenDate,
                 AccountOrCardCodeToDebt = updateCreditDto.AccountOrCardCodeToDebt,

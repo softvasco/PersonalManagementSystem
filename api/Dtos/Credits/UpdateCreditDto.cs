@@ -22,9 +22,6 @@ namespace api.Dtos.Credits
         [Required]
         public DateTime OpenDate { get; set; }
         [Required]
-        public DateTime CloseDate { get; set; }
-
-        [Required]
         public int UserId { get; set; }
 
     }

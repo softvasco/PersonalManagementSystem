@@ -26,8 +26,6 @@ else
                 <th>PayDay</th>
                 <th>TAN</th>
                 <th>OpenDate</th>
-                <th>CloseDate</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -121,37 +119,9 @@ else
                         }
                         else
                         {
-                            if (@credit.OpenDate.HasValue)
-                                @credit.OpenDate!.Value.ToString("dd-MM-yyyy")
-                            else
-                                @credit.OpenDate
+                            @credit.OpenDate.ToString("dd-MM-yyyy")
                         }
-                    </td>
-                    <td>
-                        @if (credit.IsEditing)
-                        {
-                            <input @bind="credit.CloseDate" class="form-control" />
-                        }
-                        else
-                        {
-                            if (@credit.CloseDate.HasValue)
-                                @credit.CloseDate!.Value.ToString("dd-MM-yyyy")
-                            else
-                                @credit.CloseDate
-                        }
-                    </td>
-                    <td>
-                     @*    @if (credit.IsEditing)
-                        {
-                            <button class="btn btn-success" @onclick="() => Save(credit)">Save</button>
-                            <button class="btn btn-secondary" @onclick="() => Cancel(credit)">Cancel</button>
-                        }
-                        else
-                        {
-                            <button class="btn btn-primary" @onclick="() => Edit(credit)">Editar</button>
-                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(credit.Id)">Delete</button>
-                        } *@
-                    </td>
+                    </td>                  
                 </tr>
             }
         </tbody>

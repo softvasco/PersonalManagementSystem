@@ -65,7 +65,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateEarningDto updateEarningDto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateEarningDto updateEarningDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -88,7 +88,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {

@@ -11,7 +11,6 @@ namespace api.Mappers
             {
                 Id = creditCard.Id,
                 Balance = creditCard.Balance,
-                CloseDate = creditCard.CloseDate,
                 Code = creditCard.Code,
                 Description = creditCard.Description,
                 IBAN = creditCard.IBAN,
@@ -34,7 +33,6 @@ namespace api.Mappers
                 Code = createCreditCardsDto.Code,
                 Description = createCreditCardsDto.Description,
                 Balance = createCreditCardsDto.Balance,
-                CloseDate = createCreditCardsDto.CloseDate,
                 OpenDate = createCreditCardsDto.OpenDate,
                 IBAN = createCreditCardsDto.IBAN,
                 UserId = createCreditCardsDto.UserId,
@@ -54,7 +52,6 @@ namespace api.Mappers
                 Code = updateCreditCardDto.Code,
                 Description = updateCreditCardDto.Description,
                 Balance = updateCreditCardDto.Balance,
-                CloseDate = updateCreditCardDto.CloseDate,
                 OpenDate = updateCreditCardDto.OpenDate,
                 IBAN = updateCreditCardDto.IBAN,
                 UserId = updateCreditCardDto.UserId,

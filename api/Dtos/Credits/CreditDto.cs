@@ -11,8 +11,7 @@
         public decimal? Installment { get; set; }
         public int? PayDay { get; set; }
         public decimal TAN { get; set; }
-        public DateTime? OpenDate { get; set; }
-        public DateTime? CloseDate { get; set; }
+        public DateTime OpenDate { get; set; }
         public int UserId { get; set; }
         public bool IsEditing { get; set; }
     }

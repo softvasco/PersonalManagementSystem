@@ -12,8 +12,6 @@ namespace api.Dtos.DebitCards
         public decimal Balance { get; set; }
         [Required]
         public DateTime OpenDate { get; set; }
-        public DateTime? CloseDate { get; set; }
-
         [Required]
         public int UserId { get; set; }
 
