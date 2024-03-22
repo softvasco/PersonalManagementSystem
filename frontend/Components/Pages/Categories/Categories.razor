@@ -54,7 +54,7 @@ else
                         }
                         else
                         {
-                            <button class="btn btn-primary" @onclick="() => Editar(categoria)">Editar</button>
+                            <button class="btn btn-primary" @onclick="() => Edit(categoria)">Edit</button>
                             <button class="btn btn-danger" @onclick="() => ConfirmDelete(categoria.Id)">Delete</button>
                         }
                     </td>
@@ -81,12 +81,12 @@ else
         var novaCategoria = new CategoryDto();
         categories.Add(novaCategoria);
 
-        Editar(novaCategoria);
+        Edit(novaCategoria);
 
         StateHasChanged();
     }
 
-    void Editar(CategoryDto categoria)
+    void Edit(CategoryDto categoria)
     {
         categoria.IsEditing = true;
     }

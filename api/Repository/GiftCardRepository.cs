@@ -17,6 +17,20 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<GiftCardDto>> GetAsync()
+        {
+            var giftCards = await _context.GiftCards
+              .Where(x => x.IsActive)
+              .ToListAsync();
+
+            if (giftCards == null || !giftCards.Any())
+            {
+                throw new NotFoundException("No gift cards found for the specified user");
+            }
+
+            return giftCards.Select(c => c.ToGiftCardDtoFromGiftCard()).ToList();
+        }
+
         public async Task<GiftCard> CreateAsync(GiftCard giftCard)
         {
             var userExists = await _context
@@ -45,21 +59,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return giftCard;
-        }
-
-        public async Task<GiftCardDto> GetByCodeAsync(string code)
-        {
-            var existingGiftCard = await _context
-               .GiftCards
-               .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsActive);
-
-            if (existingGiftCard == null)
-            {
-                throw new NotFoundException("Gift Card not found");
-            }
-
-            return existingGiftCard.ToGiftCardDtoFromGiftCard();
         }
 
         public async Task<GiftCard> UpdateAsync(int id, GiftCard giftCard)
@@ -104,5 +103,7 @@ namespace api.Repository
         {
             throw new NotImplementedException();
         }
+
+    
     }
 }
