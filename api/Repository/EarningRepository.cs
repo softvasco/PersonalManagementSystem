@@ -117,7 +117,7 @@ namespace api.Repository
                 _context.Entry(existingEarning).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                _context.Transactions.RemoveRange(_context.Transactions.Where(x=>x.EarningId== existingEarning.Id && x.State==(int)TransactionState.Pending));
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.EarningId == existingEarning.Id && x.State == (int)TransactionState.Pending));
                 await _context.SaveChangesAsync();
 
                 DateTime indexData = Utils.CalculateNextPaymentDate(earning.StartDate, earning.PayDay);

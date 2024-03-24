@@ -96,7 +96,7 @@ namespace api.Repository
             existingExpense.Code = expense.Code;
             existingExpense.Months = expense.Months;
             existingExpense.EndDate = expense.EndDate;
-            existingExpense.StartDate = expense.StartDate;
+            existingExpense.StartDate = DateTime.Now;
             existingExpense.Amount = expense.Amount;
             existingExpense.DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode;
             existingExpense.UserId = expense.UserId;
@@ -111,7 +111,7 @@ namespace api.Repository
                 _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == existingExpense.Id && x.State == (int)TransactionState.Pending));
                 await _context.SaveChangesAsync();
 
-                DateTime indexData = Utils.CalculateNextPaymentDate(expense.StartDate, expense.PayDay);
+                DateTime indexData = Utils.CalculateNextPaymentDate(existingExpense.StartDate, expense.PayDay);
 
                 while (indexData < expense.EndDate)
                 {
@@ -123,8 +123,8 @@ namespace api.Repository
                             Description = expense.Description,
                             State = (int)TransactionState.Pending,
                             UserId = expense.UserId,
-                            EarningId = existingExpense.Id,
-                            SourceAccountOrCardCode = null,
+                            ExpenseId = existingExpense.Id,
+                            SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
                             DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                             Amount = expense.Amount,
                             Attachment = null,

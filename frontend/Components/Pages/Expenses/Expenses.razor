@@ -76,7 +76,7 @@ else
                     <td>
                         @if (expense.IsEditing)
                         {
-                            <input @bind="expense.StartDate" class="form-control" />
+                           
                         }
                         else
                         {
@@ -198,7 +198,6 @@ else
             updateExpenseDto.Code = expense.Code;
             updateExpenseDto.Description = expense.Description;
             updateExpenseDto.PayDay = expense.PayDay;
-            updateExpenseDto.StartDate = expense.StartDate;
             updateExpenseDto.SourceAccountOrCardCode = expense.SourceAccountOrCardCode;
             updateExpenseDto.DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode;
             updateExpenseDto.Amount = expense.Amount;
