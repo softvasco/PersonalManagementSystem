@@ -48,6 +48,7 @@ namespace api.Repository
                 throw new Exception("Expense already exists!");
             }
 
+            expense.StartDate = DateTime.Now.Date;
             await _context.Expenses.AddAsync(expense);
             await _context.SaveChangesAsync();
 
@@ -108,14 +109,16 @@ namespace api.Repository
                 _context.Entry(existingExpense).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == existingExpense.Id && x.State == (int)TransactionState.Pending));
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == existingExpense.Id && x.State == (int)TransactionState.Pending && x.Attachment == null));
                 await _context.SaveChangesAsync();
 
                 DateTime indexData = Utils.CalculateNextPaymentDate(existingExpense.StartDate, expense.PayDay);
 
                 while (indexData < expense.EndDate)
                 {
-                    if (expense.Months.Contains(indexData.Month) && expense.Amount > 0)
+                    if (expense.Months.Contains(indexData.Month) 
+                        && expense.Amount > 0 
+                        && !_context.Transactions.Any(x => x.ExpenseId == existingExpense.Id && x.OperationDate == indexData))
                     {
                         await _context.Transactions.AddAsync(new Transaction
                         {

@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Earnings;
+using api.Dtos.Expenses;
 using api.Models;
 
 namespace api.Mappers
@@ -48,7 +49,7 @@ namespace api.Mappers
                 Description = updateEarningDto.Description,
                 DestinationAccountOrCardCode = updateEarningDto.DestinationAccountOrCardCode,
                 EndDate = updateEarningDto.EndDate,
-                Months = updateEarningDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
+                Months = updateEarningDto.Months.Split(',').Select(int.Parse).ToList(),
                 PayDay = updateEarningDto.PayDay,
                 StartDate = updateEarningDto.StartDate,
                 UserId = updateEarningDto.UserId

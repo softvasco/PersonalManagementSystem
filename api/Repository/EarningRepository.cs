@@ -57,6 +57,7 @@ namespace api.Repository
                 throw new Exception("Earning already exists!");
             }
 
+            earning.StartDate = DateTime.Now.Date;
             await _context.Earnings.AddAsync(earning);
             await _context.SaveChangesAsync();
 
@@ -105,7 +106,7 @@ namespace api.Repository
             existingEarning.Description = earning.Description;
             existingEarning.Code = earning.Code;
             existingEarning.EndDate = earning.EndDate;
-            existingEarning.StartDate = earning.StartDate;
+            existingEarning.StartDate = DateTime.Now;
             existingEarning.Amount = earning.Amount;
             existingEarning.DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode;
             existingEarning.Months = earning.Months;
@@ -117,14 +118,16 @@ namespace api.Repository
                 _context.Entry(existingEarning).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.EarningId == existingEarning.Id && x.State == (int)TransactionState.Pending));
+                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.EarningId == existingEarning.Id && x.State == (int)TransactionState.Pending && x.Attachment == null));
                 await _context.SaveChangesAsync();
 
-                DateTime indexData = Utils.CalculateNextPaymentDate(earning.StartDate, earning.PayDay);
+                DateTime indexData = Utils.CalculateNextPaymentDate(existingEarning.StartDate, earning.PayDay);
 
                 while (indexData < earning.EndDate)
                 {
-                    if (earning.Months.Contains(indexData.Month) && earning.Amount > 0)
+                    if (earning.Months.Contains(indexData.Month)
+                       && earning.Amount > 0
+                       && !_context.Transactions.Any(x => x.ExpenseId == existingEarning.Id && x.OperationDate == indexData))
                     {
                         await _context.Transactions.AddAsync(new Transaction
                         {

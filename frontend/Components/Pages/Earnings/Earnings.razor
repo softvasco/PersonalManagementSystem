@@ -93,14 +93,8 @@ else
                         }
                     </td>
                     <td>
-                        @if (earning.IsEditing)
-                        {
-                            <input @bind="earning.StartDate" class="form-control" />
-                        }
-                        else
-                        {
-                            @earning.StartDate.ToString("dd-MM-yyyy")
-                        }
+                        @earning.StartDate.ToString("dd-MM-yyyy")
+
                     </td>
                     <td>
                         @if (earning.IsEditing)
@@ -190,7 +184,7 @@ else
             updateEarningDto.Amount = earning.Amount;
             updateEarningDto.DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode;
             updateEarningDto.StartDate = earning.StartDate;
-            updateEarningDto.Months = earning.Months.Split(',').Select(int.Parse).ToList();
+            updateEarningDto.Months = earning.Months;
 
             var response = await Http.PutAsJsonAsync("Earnings/" + earning.Id, updateEarningDto);
             earning.IsEditing = false;

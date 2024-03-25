@@ -51,7 +51,7 @@ namespace api.Mappers
                 DestinationAccountOrCardCode = updateExpenseDto.DestinationAccountOrCardCode,
                 UserId = updateExpenseDto.UserId,
                 PayDay = updateExpenseDto.PayDay,
-                Months = updateExpenseDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
+                Months = updateExpenseDto.Months.Split(',').Select(int.Parse).ToList(),
                 SourceAccountOrCardCode = updateExpenseDto.SourceAccountOrCardCode,
                 EndDate = updateExpenseDto.EndDate
             };
