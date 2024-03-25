@@ -24,8 +24,26 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var transactions = await _transactionRepository.GetAsync();
+                return Ok(transactions);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetAsync([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {

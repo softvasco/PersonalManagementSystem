@@ -1,0 +1,95 @@
+﻿@page "/transactions"
+@using api.Enum
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<br />
+<br />
+<h2>Transactions</h2>
+<br />
+
+@if (transactions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in transactions)
+            {
+                <tr>
+                    <td>
+                        @transaction.Description
+                    </td>
+                    <td>
+                       @transaction.State
+                    </td>
+                    <td>
+                        @if (transaction.State == (int)TransactionState.Pending)
+                        {
+                            <button class="btn btn-success" @onclick="() => Approve(transaction)">Approve</button>
+                            <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(transaction.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="AddTransaction">Add</button>
+}
+
+
+
+@code {
+    private List<TransactionDto> transactions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+    }
+
+    void Approve(TransactionDto transaction)
+    {
+        
+    }
+
+    void AddTransaction()
+    {
+        // Redirect to another page upon successful processing
+        NavigationManager.NavigateTo("/add-transaction");
+    }
+
+    void Edit(TransactionDto TransactionDto)
+    {
+        
+    }
+
+    async Task ConfirmDelete(int transactiondId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this transaction?" });
+
+        if (confirmed)
+        {
+            await Delete(transactiondId);
+        }
+    }
+
+    async Task Delete(int transactiondId)
+    {
+        var response = await Http.DeleteAsync("Transactions/" + transactiondId);
+        StateHasChanged();
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+    }
+
+}

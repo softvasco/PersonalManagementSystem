@@ -1,4 +1,7 @@
-﻿using api.Dtos.Transactions;
+﻿using api.Dtos.BankAccounts;
+using api.Dtos.Transactions;
+using api.Enum;
+using api.Helpers;
 using api.Models;
 
 namespace api.Mappers
@@ -31,6 +34,29 @@ namespace api.Mappers
                 OperationDate = createTransactionDto.OperationDate,
                 Attachment = fileContent,
                 State = createTransactionDto.State
+            };
+        }
+
+        public static TransactionDto ToTransactionDtoFromTransaction(this Transaction transaction)
+        {
+            return new TransactionDto
+            {
+                Id = transaction.Id,
+                Description = transaction.Description,
+                State  = transaction.State,
+                StateDesc = transaction.State == (int)TransactionState.Pending ? "Pending" : "Finished"
+                //Code = bankAccount.Code,
+                //Description = bankAccount.Description,
+                //Balance = bankAccount.Balance,
+                //OpenDate = bankAccount.OpenDate,
+                //IBAN = bankAccount.IBAN,
+                //UserId = bankAccount.UserId,
+                //NIB = bankAccount.NIB,
+                //Swift = bankAccount.Swift,
+                //Number = bankAccount.Number,
+                //FileBytes = bankAccount.Attachment,
+                //FileName = bankAccount.FileName,
+                //ContentType = bankAccount.Attachment != null ? ByteArrayToFormFileExtensions.GetContentTypeFromExtension(ByteArrayToFormFileExtensions.InferFileExtension(bankAccount.Attachment)) : string.Empty
             };
         }
     }

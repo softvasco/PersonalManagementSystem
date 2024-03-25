@@ -3,9 +3,9 @@ using api.Dtos.Transactions;
 using api.Enum;
 using api.Helpers;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace api.Repository
 {
@@ -16,6 +16,22 @@ namespace api.Repository
         public TransactionRepository(ApplicationDBContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<TransactionDto>> GetAsync()
+        {
+            var transactions = await _context.Transactions
+            .Where(x => x.IsActive && ((x.OperationDate >= DateTime.Now && x.OperationDate <= DateTime.Now.AddMonths(1)) || x.State == (int)TransactionState.Pending))
+            .OrderBy(x => x.OperationDate)
+            .Take(25)
+            .ToListAsync();
+
+            if (transactions == null || !transactions.Any())
+            {
+                throw new NotFoundException("No transactions found for the specified user");
+            }
+
+            return transactions.Select(c => c.ToTransactionDtoFromTransaction()).ToList();
         }
 
         public async Task<Transaction> ConfirmTransactionAsync(int id)
@@ -445,14 +461,12 @@ namespace api.Repository
             }
         }
 
-
         private async Task InsertIgnoringRules(Transaction transaction)
         {
             transaction.State = (int)TransactionState.Pending;
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
         }
-
 
     }
 }
