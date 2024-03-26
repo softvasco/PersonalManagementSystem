@@ -8,7 +8,7 @@
         public string? SourceAccountOrCardCode { get; set; } = string.Empty;
         public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-        
+
         public int? EarningId { get; set; }
         public Earning? Earning { get; set; }
 
@@ -22,9 +22,9 @@
         public SubCategory? SubCategory { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; } 
+        public User User { get; set; }
 
         public byte[]? Attachment { get; set; } = [];
-        
+        public string? FileName { get; set; } = string.Empty;
     }
 }

@@ -3,7 +3,6 @@ using api.Dtos.Transactions;
 using api.Enum;
 using api.Helpers;
 using api.Interfaces;
-using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,21 +17,99 @@ namespace api.Repository
             _context = context;
         }
 
+        #region public methods
+
+        #endregion
+
+        /// <summary>
+        /// Retrieves a list of transactions for the current user, filtered by active status, operation date range, and pending state.
+        /// </summary>
+        /// <returns>A list of TransactionDto objects representing the retrieved transactions.</returns>
+        /// <exception cref="NotFoundException">Thrown when no transactions are found for the specified user.</exception>
         public async Task<List<TransactionDto>> GetAsync()
         {
+            // Retrieve transactions from the database based on the specified criteria
             var transactions = await _context.Transactions
-            .Where(x => x.IsActive && ((x.OperationDate >= DateTime.Now && x.OperationDate <= DateTime.Now.AddMonths(1)) || x.State == (int)TransactionState.Pending))
-            .OrderBy(x => x.OperationDate)
-            .Take(25)
-            .ToListAsync();
+                .Where(x => x.IsActive && ((x.OperationDate >= DateTime.Now && x.OperationDate <= DateTime.Now.AddMonths(1)) || x.State == (int)TransactionState.Pending))
+                .OrderBy(x => x.OperationDate)
+                .Take(25)
+                .ToListAsync();
 
+            // Check if any transactions were found
             if (transactions == null || !transactions.Any())
             {
                 throw new NotFoundException("No transactions found for the specified user");
             }
 
-            return transactions.Select(c => c.ToTransactionDtoFromTransaction()).ToList();
+            // Create a new list of TransactionDto objects and populate it with data from the retrieved transactions
+            var transactionDtos = transactions.Select(transaction => new TransactionDto
+            {
+                Id = transaction.Id,
+                Description = transaction.Description,
+                State = transaction.State,
+                StateDesc = transaction.State == (int)TransactionState.Pending ? "Pending" : "Finished",
+                OperationDate = transaction.OperationDate,
+                Amount = transaction.Amount,
+                SourceAccountOrCardCode = GetAccountOrCardCode(transaction.SourceAccountOrCardCode),
+                DestinationAccountOrCardCode = GetAccountOrCardCode(transaction.DestinationAccountOrCardCode),
+                FileBytes = transaction.Attachment,
+                FileName = string.IsNullOrEmpty(transaction.FileName) ? "File" : transaction.FileName,
+                ContentType = transaction.Attachment != null ? ByteArrayToFormFileExtensions.GetContentTypeFromExtension(ByteArrayToFormFileExtensions.InferFileExtension(transaction.Attachment)) : string.Empty
+            }).ToList();
+
+            return transactionDtos;
         }
+
+        #region Private methods
+
+        /// <summary>
+        /// Retrieves the description of a bank account, gift card, credit, or credit card based on the provided code.
+        /// </summary>
+        /// <param name="accountOrCardCode">The code of the bank account, gift card, credit, or credit card.</param>
+        /// <returns>The description of the corresponding bank account, gift card, credit, or credit card, or an empty string if not found.</returns>
+        private string GetAccountOrCardCode(string? accountOrCardCode)
+        {
+            if (string.IsNullOrWhiteSpace(accountOrCardCode))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                // Check if the code matches a bank account
+                BankAccount? bankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code == accountOrCardCode);
+                if (bankAccount != null)
+                {
+                    return bankAccount.Description!;
+                }
+
+                // Check if the code matches a gift card
+                GiftCard? giftCard = _context.GiftCards.FirstOrDefault(x => x.Code == accountOrCardCode);
+                if (giftCard != null)
+                {
+                    return giftCard.Description!;
+                }
+
+                // Check if the code matches a credit
+                Credit? credit = _context.Credits.FirstOrDefault(x => x.Code == accountOrCardCode);
+                if (credit != null)
+                {
+                    return credit.Description!;
+                }
+
+                // Check if the code matches a credit card
+                CreditCard? creditCard = _context.CreditCards.FirstOrDefault(x => x.Code == accountOrCardCode);
+                if (creditCard != null)
+                {
+                    return creditCard.Description!;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        #endregion
+
+
 
         public async Task<Transaction> ConfirmTransactionAsync(int id)
         {

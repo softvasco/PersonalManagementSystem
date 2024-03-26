@@ -20,7 +20,12 @@ else
         <thead>
             <tr>
                 <th>Description</th>
+                <th>Operation Date</th>
+                <th>Amount</th>
                 <th>State</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Attachment</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -32,7 +37,25 @@ else
                         @transaction.Description
                     </td>
                     <td>
-                       @transaction.State
+                        @transaction.OperationDate.ToString("dd-MM-yyyy")
+                    </td>
+                    <td>
+                        @transaction.Amount
+                    </td>
+                    <td>
+                        @transaction.StateDesc
+                    </td>
+                    <td>
+                        @transaction.SourceAccountOrCardCode
+                    </td>
+                    <td>
+                        @transaction.DestinationAccountOrCardCode
+                    </td>
+                    <td>
+                        @if (transaction.FileBytes != null && transaction.FileBytes.Length > 0)
+                        {
+                            <a href="@DownloadAttachment(transaction)" download="@transaction.FileName">Download file</a>
+                        }
                     </td>
                     <td>
                         @if (transaction.State == (int)TransactionState.Pending)
@@ -52,16 +75,11 @@ else
 
 
 @code {
-    private List<TransactionDto> transactions;
+    private List<TransactionDto> transactions = new();
 
     protected override async Task OnInitializedAsync()
     {
         transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
-    }
-
-    void Approve(TransactionDto transaction)
-    {
-        
     }
 
     void AddTransaction()
@@ -70,9 +88,23 @@ else
         NavigationManager.NavigateTo("/add-transaction");
     }
 
+    string DownloadAttachment(TransactionDto tansactionDto)
+    {
+        if (tansactionDto.FileBytes == null || tansactionDto.FileBytes.Length <= 0)
+            return string.Empty;
+
+        var dataUrl = $"data:{tansactionDto.ContentType};base64,{Convert.ToBase64String(tansactionDto.FileBytes)}";
+        return dataUrl;
+    }
+
+    void Approve(TransactionDto transaction)
+    {
+
+    }
+
     void Edit(TransactionDto TransactionDto)
     {
-        
+
     }
 
     async Task ConfirmDelete(int transactiondId)
