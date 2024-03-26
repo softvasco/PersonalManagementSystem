@@ -36,6 +36,7 @@ builder.Services.AddScoped<IEarningRepository, EarningRepository>();
 builder.Services.AddScoped<ICreditRepository, CreditRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IDropdownRepository, DropdownRepository>();
+builder.Services.AddScoped<ISimulatorRepository, SimulatorRepository>();
 
 var app = builder.Build();
 

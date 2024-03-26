@@ -19,8 +19,6 @@ namespace api.Repository
 
         #region public methods
 
-        #endregion
-
         /// <summary>
         /// Retrieves a list of transactions for the current user, filtered by active status, operation date range, and pending state.
         /// </summary>
@@ -59,6 +57,31 @@ namespace api.Repository
 
             return transactionDtos;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <param name="ignoreRules"></param>
+        /// <returns></returns>
+        public async Task<Transaction> CreateAsync(Transaction transaction, bool? ignoreRules)
+        {
+            try
+            {
+                if (ignoreRules.HasValue && ignoreRules.Value)
+                    await InsertIgnoringRules(transaction);
+                else
+                    await Insert(transaction);
+
+                return transaction;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        #endregion
 
         #region Private methods
 
@@ -227,22 +250,7 @@ namespace api.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Transaction> CreateAsync(Transaction transaction, bool? ignoreRules)
-        {
-            try
-            {
-                if (ignoreRules.HasValue && ignoreRules.Value)
-                    await InsertIgnoringRules(transaction);
-                else
-                    await Insert(transaction);
 
-                return transaction;
-            }
-            catch
-            {
-                throw;
-            }
-        }
 
         public async Task<Transaction> DeleteAsync(int id)
         {

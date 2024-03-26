@@ -1,9 +1,7 @@
-using api.Dtos.Earnings;
 using api.Dtos.FinanceGoals;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -46,23 +44,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            try
-            {
-                var earning = await _financeGoalRepository.GetByCodeAsync(code);
-                return Ok(earning);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+       
 
     }
 }
