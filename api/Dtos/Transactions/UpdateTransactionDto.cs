@@ -29,6 +29,8 @@ namespace api.Dtos.Transactions
         public bool? IgnoreRules { get; set; }
 
         public int State { get; set; }
-
+        public byte[]? Attachment { get;  set; }
+        public string? FileName { get;  set; }
+        public string? ContentType { get; set; } = string.Empty;
     }
 }

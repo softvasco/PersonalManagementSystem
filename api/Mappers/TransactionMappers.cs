@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Transactions;
+using api.Helpers;
 using api.Models;
 
 namespace api.Mappers
@@ -48,8 +49,10 @@ namespace api.Mappers
                 EarningId = transaction.EarningId,
                 ExpenseId = transaction.ExpenseId,
                 OperationDate = transaction.OperationDate,
-                //Attachment = fileContent,
-                //State = createTransactionDto.State
+                Attachment = transaction.Attachment,
+                FileName = transaction.FileName,
+                State = transaction.State,
+                ContentType = transaction.Attachment != null ? ByteArrayToFormFileExtensions.GetContentTypeFromExtension(ByteArrayToFormFileExtensions.InferFileExtension(transaction.Attachment)) : string.Empty
             };
         }
 

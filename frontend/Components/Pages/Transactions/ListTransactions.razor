@@ -77,8 +77,6 @@ else
     <button class="btn btn-primary" @onclick="AddTransaction">Add</button>
 }
 
-
-
 @code {
     private List<TransactionDto> transactions = new();
 
@@ -93,12 +91,12 @@ else
         NavigationManager.NavigateTo("/add-transaction");
     }
 
-    string DownloadAttachment(TransactionDto tansactionDto)
+    string DownloadAttachment(TransactionDto transactionDto)
     {
-        if (tansactionDto.FileBytes == null || tansactionDto.FileBytes.Length <= 0)
+        if (transactionDto.FileBytes == null || transactionDto.FileBytes.Length <= 0)
             return string.Empty;
 
-        var dataUrl = $"data:{tansactionDto.ContentType};base64,{Convert.ToBase64String(tansactionDto.FileBytes)}";
+        var dataUrl = $"data:{transactionDto.ContentType};base64,{Convert.ToBase64String(transactionDto.FileBytes)}";
         return dataUrl;
     }
 

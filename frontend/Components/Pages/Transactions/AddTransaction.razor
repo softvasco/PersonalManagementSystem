@@ -228,6 +228,10 @@ else
         <div class="row">
             <div class="col-2">
                 <InputFile id="fileInput" Bind-Value="@updateTransactionDto.File" OnChange="HandleFileSelected" />
+                @if (updateTransactionDto.Attachment != null && updateTransactionDto.Attachment.Length > 0)
+                {
+                    <a href="@DownloadAttachment(updateTransactionDto)" download="@updateTransactionDto.FileName">Download file</a>
+                }
             </div>
         </div>
         <br />
@@ -323,7 +327,7 @@ else
         await file.OpenReadStream(maxAllowedSize: maxFileSizeLimit).CopyToAsync(memoryStream);
 
         createTransactionDto.File = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
-        createTransactionDto.File = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
+        updateTransactionDto.File = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
     }
 
     async Task HandleSubmit()
@@ -408,6 +412,7 @@ else
             await updateTransactionDto.File.CopyToAsync(stream);
             stream.Position = 0;
             formData.Add(new StreamContent(stream), "File", updateTransactionDto.File.FileName);
+            formData.Add(new StringContent(updateTransactionDto.File.FileName), "FileName");
         }
 
         var response = await Http.PutAsync($"Transactions/{Id}", formData);
@@ -419,4 +424,14 @@ else
         }
 
     }
+    
+    string DownloadAttachment(UpdateTransactionDto updateTransactionDto)
+    {
+        if (updateTransactionDto.Attachment == null || updateTransactionDto.Attachment.Length <= 0)
+            return string.Empty;
+
+        var dataUrl = $"data:{updateTransactionDto.ContentType};base64,{Convert.ToBase64String(updateTransactionDto.Attachment)}";
+        return dataUrl;
+    }
+
 }
