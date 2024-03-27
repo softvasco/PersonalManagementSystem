@@ -45,7 +45,7 @@ else
                         @transaction.Amount
                     </td>
                     <td>
-                        @transaction.StateDesc
+                        <span style="color: @(transaction.StateDesc == "Finished" ? "green" : "red")">@transaction.StateDesc</span>
                     </td>
                     <td>
                         @transaction.SourceAccountOrCardCode
@@ -63,7 +63,10 @@ else
                         @if (transaction.State == (int)TransactionState.Pending)
                         {
                             <button class="btn btn-success" @onclick="() => Approve(transaction)">Approve</button>
-                            <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
+                        }
+                        <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
+                        @if (transaction.State == (int)TransactionState.Pending)
+                        {
                             <button class="btn btn-danger" @onclick="() => ConfirmDelete(transaction.Id)">Delete</button>
                         }
                     </td>
@@ -99,9 +102,9 @@ else
         return dataUrl;
     }
 
-    void Approve(TransactionDto transaction)
+    async Task Approve(TransactionDto transaction)
     {
-
+        // var response = await Http.PutAsJsonAsync("Approve/" + transaction.Id, null);
     }
 
     void Edit(TransactionDto TransactionDto)

@@ -1,4 +1,129 @@
 ﻿@page "/"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <PageTitle>Personal Management - Annual Dashboard</PageTitle>
 
+<style>
+    /* Styles.css */
+
+    .table-with-borders {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table-with-borders th, .table-with-borders td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table-with-borders th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        .table-with-borders tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table-with-borders tr:hover {
+            background-color: #e6e6e6;
+        }
+</style>
+
+<br />
+<br />
+<h2>DashBoard</h2>
+<br />
+
+<table class="centered-table-with-borders">
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">January</th>
+            <th colspan="2">February</th>
+            <th colspan="2">March</th>
+            <th colspan="2">April</th>
+            <th colspan="2">May</th>
+            <th colspan="2">June</th>
+            <th colspan="2">July</th>
+            <th colspan="2">August</th>
+            <th colspan="2">September</th>
+            <th colspan="2">October</th>
+            <th colspan="2">November</th>
+            <th colspan="2">December</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+            <th>Prev</th>
+            <th>Real</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td>homeDto.HomeCategoryDto.Name</td>
+            <td>homeDto.HomeCategoryDto.JanuaryPrev</td>
+            <td>homeDto.HomeCategoryDto.JanuaryReal</td>
+            <td>homeDto.HomeCategoryDto.FebruaryPrev</td>
+            <td>homeDto.HomeCategoryDto.FebruaryReal</td>
+            <td>homeDto.HomeCategoryDto.MarchPrev</td>
+            <td>homeDto.HomeCategoryDto.MarchReal</td>
+            <td>homeDto.HomeCategoryDto.AprilPrev</td>
+            <td>homeDto.HomeCategoryDto.AprilReal</td>
+            <td>homeDto.HomeCategoryDto.MayPrev</td>
+            <td>homeDto.HomeCategoryDto.MayReal</td>
+            <td>homeDto.HomeCategoryDto.JunePrev</td>
+            <td>homeDto.HomeCategoryDto.JuneReal</td>
+            <td>homeDto.HomeCategoryDto.JulyPrev</td>
+            <td>homeDto.HomeCategoryDto.JulyReal</td>
+            <td>homeDto.HomeCategoryDto.AugustPrev</td>
+            <td>homeDto.HomeCategoryDto.AugustReal</td>
+            <td>homeDto.HomeCategoryDto.SeptemberPrev</td>
+            <td>homeDto.HomeCategoryDto.SeptemberReal</td>
+            <td>homeDto.HomeCategoryDto.OctoberPrev</td>
+            <td>homeDto.HomeCategoryDto.OctoberReal</td>
+            <td>homeDto.HomeCategoryDto.NovemberPrev</td>
+            <td>homeDto.HomeCategoryDto.NovemberReal</td>
+            <td>homeDto.HomeCategoryDto.DecemberPrev</td>
+            <td>homeDto.HomeCategoryDto.DecemberReal</td>
+        </tr>
+
+    </tbody>
+</table>
+
+@code {
+
+    private HomeDto homeDto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        homeDto = await Http.GetFromJsonAsync<HomeDto>("Home");
+    }
+
+}

@@ -1,4 +1,5 @@
 using api.Configurations;
+using api.Controllers;
 using api.Data;
 using api.Interfaces;
 using api.Repository;
@@ -37,6 +38,7 @@ builder.Services.AddScoped<ICreditRepository, CreditRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IDropdownRepository, DropdownRepository>();
 builder.Services.AddScoped<ISimulatorRepository, SimulatorRepository>();
+builder.Services.AddScoped<IHomeRepository, HomeRepository>();
 
 var app = builder.Build();
 
