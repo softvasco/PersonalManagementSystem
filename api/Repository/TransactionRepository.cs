@@ -27,10 +27,17 @@ namespace api.Repository
         public async Task<List<TransactionDto>> GetAsync()
         {
             // Retrieve transactions from the database based on the specified criteria
+            // Get the current month and year
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+
+            // Calculate the start and end dates for the current month
+            DateTime startDate = new DateTime(currentYear, currentMonth, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+
             var transactions = await _context.Transactions
-                .Where(x => x.IsActive && ((x.OperationDate >= DateTime.Now && x.OperationDate <= DateTime.Now.AddMonths(1)) || x.State == (int)TransactionState.Pending))
-                .OrderBy(x => x.OperationDate)
-                .Take(25)
+                .Where(t => t.OperationDate >= startDate && t.OperationDate <= endDate)
+                .OrderBy(t => t.OperationDate)
                 .ToListAsync();
 
             // Check if any transactions were found
