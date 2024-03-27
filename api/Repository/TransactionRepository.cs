@@ -26,17 +26,8 @@ namespace api.Repository
         /// <exception cref="NotFoundException">Thrown when no transactions are found for the specified user.</exception>
         public async Task<List<TransactionDto>> GetAsync()
         {
-            // Retrieve transactions from the database based on the specified criteria
-            // Get the current month and year
-            int currentMonth = DateTime.Now.Month;
-            int currentYear = DateTime.Now.Year;
-
-            // Calculate the start and end dates for the current month
-            DateTime startDate = new DateTime(currentYear, currentMonth, 1);
-            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
-
             var transactions = await _context.Transactions
-                .Where(t => t.OperationDate >= startDate && t.OperationDate <= endDate)
+                .Where(t => (t.OperationDate >= DateTime.Now.Date && t.OperationDate <= DateTime.Now.Date.AddMonths(1)) || (t.State==(int)TransactionState.Pending && t.OperationDate <= DateTime.Now.Date))
                 .OrderBy(t => t.OperationDate)
                 .ToListAsync();
 
@@ -88,6 +79,32 @@ namespace api.Repository
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Transaction> ConfirmTransactionAsync(int id)
+        {
+            Transaction? transaction
+                = await _context
+                    .Transactions
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (transaction == null)
+            {
+                throw new Exception("Transaction not found!");
+            }
+
+            if (transaction.CreditId.HasValue)
+                HandleWithCredits(transaction);
+            else
+                await HandleWithNormalTransactions(transaction);
+
+            return transaction;
+        }
+
         #endregion
 
         #region Private methods
@@ -137,32 +154,11 @@ namespace api.Repository
             }
         }
 
-        #endregion
-
-
-
-        public async Task<Transaction> ConfirmTransactionAsync(int id)
-        {
-            Transaction? transaction = await _context.Transactions.FindAsync(id);
-
-            if (transaction == null)
-            {
-                throw new Exception("Transaction not found!");
-            }
-
-            if (transaction.CreditId.HasValue)
-                HandleWithCredits(transaction);
-            else
-                HandleWithNormalTransactions(transaction);
-
-            return transaction;
-        }
-
-        public async Task<Transaction> GetByIdAsync(int id)
-        {
-            return await _context.Transactions.FirstAsync(t => t.Id == id);
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <exception cref="Exception"></exception>
         private async void HandleWithCredits(Transaction transaction)
         {
             Credit? credit = await _context.Credits.FindAsync(transaction.CreditId);
@@ -216,13 +212,18 @@ namespace api.Repository
             }
         }
 
-        private async void HandleWithNormalTransactions(Transaction transaction)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        private async Task HandleWithNormalTransactions(Transaction transaction)
         {
-            CreditCard? sourceCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            BankAccount? sourceBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            CreditCard? sourceCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.ToUpper() == transaction.SourceAccountOrCardCode!.ToUpper());
+            BankAccount? sourceBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.ToUpper() == transaction.SourceAccountOrCardCode!.ToUpper());
 
-            CreditCard? destinationCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            BankAccount? destinationBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            CreditCard? destinationCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.ToUpper() == transaction.DestinationAccountOrCardCode!.ToUpper());
+            BankAccount? destinationBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.ToUpper() == transaction.DestinationAccountOrCardCode!.ToUpper());
 
             if (sourceCreditCard != null)
             {
@@ -257,7 +258,15 @@ namespace api.Repository
             await _context.SaveChangesAsync();
         }
 
+        #endregion
 
+        public async Task<Transaction> GetByIdAsync(int id)
+        {
+            return await _context.Transactions.FirstAsync(t => t.Id == id);
+        }
+
+        
+       
 
         public async Task<Transaction> DeleteAsync(int id)
         {

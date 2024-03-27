@@ -34,6 +34,25 @@ namespace api.Mappers
             };
         }
 
+        public static UpdateTransactionDto ToUpdateTransactionDtoFromTransaction(this Transaction transaction)
+        {
+            return new UpdateTransactionDto
+            {
+                Description = transaction.Description,
+                Amount = transaction.Amount,
+                UserId = transaction.UserId,
+                CreditId = transaction.CreditId,
+                DestinationAccountOrCardCode = transaction.DestinationAccountOrCardCode,
+                SubCategoryId = transaction.SubCategoryId,
+                SourceAccountOrCardCode = transaction.SourceAccountOrCardCode,
+                EarningId = transaction.EarningId,
+                ExpenseId = transaction.ExpenseId,
+                OperationDate = transaction.OperationDate,
+                //Attachment = fileContent,
+                //State = createTransactionDto.State
+            };
+        }
+
 
     }
 }

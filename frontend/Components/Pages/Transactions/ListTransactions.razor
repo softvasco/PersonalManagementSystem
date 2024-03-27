@@ -62,7 +62,7 @@ else
                     <td>
                         @if (transaction.State == (int)TransactionState.Pending)
                         {
-                            <button class="btn btn-success" @onclick="() => Approve(transaction)">Approve</button>
+                            <button class="btn btn-success" @onclick="() => ConfirmApprove(transaction)">Approve</button>
                         }
                         <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
                         @if (transaction.State == (int)TransactionState.Pending)
@@ -102,14 +102,26 @@ else
         return dataUrl;
     }
 
-    async Task Approve(TransactionDto transaction)
+    async Task ConfirmApprove(TransactionDto transactionDto)
     {
-        // var response = await Http.PutAsJsonAsync("Approve/" + transaction.Id, null);
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to confirm this transaction?" });
+
+        if (confirmed)
+        {
+            await Approve(transactionDto);
+        }
     }
 
-    void Edit(TransactionDto TransactionDto)
+    async Task Approve(TransactionDto transactionDto)
     {
+        var response = await Http.PutAsync($"Transactions/ConfirmTransaction/{transactionDto.Id}", null);
+        StateHasChanged();
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+    }
 
+    void Edit(TransactionDto transactionDto)
+    {
+        NavigationManager.NavigateTo($"/add-transaction/{transactionDto.Id}");
     }
 
     async Task ConfirmDelete(int transactiondId)

@@ -1,10 +1,7 @@
-using api.Dtos.BankAccounts;
 using api.Dtos.Transactions;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Models;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -42,7 +39,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("Get/{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
@@ -54,7 +51,7 @@ namespace api.Controllers
                     return NotFound();
                 }
 
-                return Ok(transaction);
+                return Ok(transaction.ToUpdateTransactionDtoFromTransaction());
             }
             catch (NotFoundException)
             {
@@ -67,7 +64,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateTransactionDto createTransactionDto)
+        public async Task<IActionResult> Create([FromForm] CreateTransactionDto createTransactionDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -112,7 +109,7 @@ namespace api.Controllers
         }
 
         [HttpPut("ConfirmTransaction/{id}")]
-        public async Task<IActionResult> ConfirmTransactionAsync(int id)
+        public async Task<IActionResult> ConfirmTransaction(int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
