@@ -12,5 +12,9 @@
         public DateTime? CloseDate { get; set; }
         public int UserId { get; set; }
         public bool IsEditing { get; set; }
+        public byte[]? FileBytes { get; set; }
+        public string? FileName { get; set; } = string.Empty;
+        public string? ContentType { get; set; } = string.Empty;
+        public IFormFile? File { get; set; } = null;
     }
 }

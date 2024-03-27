@@ -1,6 +1,7 @@
 ﻿@page "/giftcards"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <PageTitle>Personal Management - Gift Cards</PageTitle>
@@ -53,7 +54,60 @@ else
                             @giftCard.Description
                         }
                     </td>
-                   
+                    <td>
+                        @if (giftCard.IsEditing)
+                        {
+                            <input @bind="giftCard.CardNumber" class="form-control" />
+                        }
+                        else
+                        {
+                            @giftCard.CardNumber
+                        }
+                    </td>
+                    <td>
+                        @if (giftCard.IsEditing)
+                        {
+                            <input @bind="giftCard.Balance" class="form-control" />
+                        }
+                        else
+                        {
+                            @giftCard.Balance
+                        }
+                    </td>
+                    <td>
+                        @if (giftCard.IsEditing)
+                        {
+                            <input @bind="giftCard.OpenDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @giftCard.OpenDate.ToString("dd-MM-yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (giftCard.IsEditing)
+                        {
+                            <input @bind="giftCard.IsVoucher" class="form-control" />
+                        }
+                        else
+                        {
+                            @giftCard.IsVoucher
+                        }
+                    </td>
+                    <td>
+                        @if (giftCard.IsEditing)
+                        {
+                            if (giftCard.FileBytes != null && giftCard.FileBytes.Length > 0)
+                            {
+                                <a href="@DownloadAttachment(giftCard)" download="@giftCard.FileName">Download file</a>
+                            }
+                            <InputFile id="fileInput" Bind-Value="@giftCard.File" OnChange="HandleFileSelected" />
+                        }
+                        else if (giftCard.FileBytes != null && giftCard.FileBytes.Length > 0)
+                        {
+                            <a href="@DownloadAttachment(giftCard)" download="@giftCard.FileName">Download file</a>
+                        }
+                    </td>
                     <td>
                         @if (giftCard.IsEditing)
                         {
@@ -70,21 +124,39 @@ else
             }
         </tbody>
     </table>
-    <button class="btn btn-primary" @onclick="AddNewEarning">Add</button>
+    <button class="btn btn-primary" @onclick="AddNewGiftCard">Add</button>
 }
-
-
 
 @code {
     private List<GiftCardDto> giftCards;
-
+    private IFormFile fileUpload;
+    int maxFileSizeLimit = 1024 * 1024 * 20;
 
     protected override async Task OnInitializedAsync()
     {
         giftCards = await Http.GetFromJsonAsync<List<GiftCardDto>>("GiftCards");
     }
 
-    void AddNewEarning()
+    string DownloadAttachment(GiftCardDto giftCardDto)
+    {
+        if (giftCardDto.FileBytes == null || giftCardDto.FileBytes.Length <= 0)
+            return string.Empty;
+
+        var dataUrl = $"data:{giftCardDto.ContentType};base64,{Convert.ToBase64String(giftCardDto.FileBytes)}";
+        return dataUrl;
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var memoryStream = new MemoryStream();
+        await file.OpenReadStream(maxAllowedSize: maxFileSizeLimit).CopyToAsync(memoryStream);
+
+        fileUpload = new FormFile(memoryStream, 0, file.Size, file.Name, file.Name);
+    }
+
+    void AddNewGiftCard()
     {
         var newGiftCard = new GiftCardDto();
         giftCards.Add(newGiftCard);
@@ -101,50 +173,45 @@ else
 
     async Task Save(GiftCardDto giftCardDto)
     {
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("1".ToString()), "UserId"); //TODO @VS - Change this
+
+        formData.Add(new StringContent(giftCardDto.Description), "Description");
+        formData.Add(new StringContent(giftCardDto.Code), "Code");
+        formData.Add(new StringContent(giftCardDto.Balance.ToString()), "Balance");
+        formData.Add(new StringContent(giftCardDto.OpenDate.ToString()), "OpenDate");
+
+        // Handle file upload
+        if (fileUpload != null)
+        {
+            var stream = new MemoryStream();
+            await fileUpload.CopyToAsync(stream);
+            stream.Position = 0;
+            formData.Add(new StreamContent(stream), "File", fileUpload.FileName);
+            formData.Add(new StringContent(fileUpload.FileName), "FileName");
+        }
+
+        //new
         if (giftCardDto.Id == 0)
         {
-            // CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
+            var response = await Http.PostAsync("GiftCards", formData);
+            giftCardDto.IsEditing = false;
+            StateHasChanged();
 
-            // createCreditCardDto.Id = creditCardDto.Id;
-            // createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // createCreditCardDto.Code = creditCardDto.Code;
-            // createCreditCardDto.Description = creditCardDto.Description;
-            // createCreditCardDto.IBAN = creditCardDto.IBAN;
-            // createCreditCardDto.NIB = creditCardDto.NIB;
-            // createCreditCardDto.Balance = creditCardDto.Balance;
-            // createCreditCardDto.Plafon = creditCardDto.Plafon;
-            // createCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // createCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // createCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // createCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // createCreditCardDto.CloseDate = creditCardDto.CloseDate;
-
-            // var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
+            // Refresh the current page
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
+        //update
         else
         {
-            // UpdateCreditCardDto updateCreditCardDto = new UpdateCreditCardDto();
+            formData.Add(new StringContent(giftCardDto.Id.ToString()), "Id");
 
-            // updateCreditCardDto.Code = creditCardDto.Code;
-            // updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // updateCreditCardDto.Description = creditCardDto.Description;
-            // updateCreditCardDto.IBAN = creditCardDto.IBAN;
-            // updateCreditCardDto.NIB = creditCardDto.NIB;
-            // updateCreditCardDto.Balance = creditCardDto.Balance;
-            // updateCreditCardDto.Plafon = creditCardDto.Plafon;
-            // updateCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // updateCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
+            var response = await Http.PutAsync($"GiftCards/{giftCardDto.Id}", formData);
+            giftCardDto.IsEditing = false;
+            StateHasChanged();
 
-            // var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
+            // Refresh the current page
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
     }
 

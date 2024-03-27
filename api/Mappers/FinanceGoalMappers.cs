@@ -19,5 +19,21 @@ namespace api.Mappers
                 EndGoalDate = createFinanceGoalDto.EndGoalDate
             };
         }
+
+        public static FinanceGoalDto ToFinanceGoalDtoFromFinanceGoal(this FinanceGoal financeGoal)
+        {
+            return new FinanceGoalDto
+            {
+                Description = financeGoal.Description,
+                Code = financeGoal.Code,
+                CurrentDebtAmount = financeGoal.CurrentDebtAmount,
+                OutstandingAmount = financeGoal.OutstandingAmount,
+                UserId = financeGoal.UserId,
+                Goal = financeGoal.Goal,
+                StartGoalDate = financeGoal.StartGoalDate,
+                EndGoalDate = financeGoal.EndGoalDate
+            };
+        }
+
     }
 }

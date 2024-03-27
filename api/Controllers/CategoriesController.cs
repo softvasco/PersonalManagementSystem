@@ -22,11 +22,11 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var categories = await _categoryRepository.Get();
+                var categories = await _categoryRepository.GetAsync();
                 return Ok(categories);
             }
             catch (NotFoundException)

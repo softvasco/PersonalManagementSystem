@@ -21,6 +21,24 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var financeGoals = await _financeGoalRepository.GetAsync();
+                return Ok(financeGoals);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateFinanceGoalDto createFinanceGoalDto)
         {
@@ -43,8 +61,6 @@ namespace api.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-       
 
     }
 }

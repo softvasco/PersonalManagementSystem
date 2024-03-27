@@ -17,7 +17,7 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<List<CategoryDto>> Get()
+        public async Task<List<CategoryDto>> GetAsync()
         {
             var categories = await _context.Categories
                .Where(x => x.IsActive)

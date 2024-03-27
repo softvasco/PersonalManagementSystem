@@ -9,3 +9,202 @@
 <br />
 <h2>Finance goals</h2>
 <br />
+
+@if (financeGoalsDto == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Outstanding Amount</th>
+                <th>Current Debt Amoun</th>
+                <th>Goal</th>
+                <th>Start Goal Date</th>
+                <th>End Goal Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var financeGoal in financeGoalsDto)
+            {
+                <tr>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.Code" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.Code
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.Description
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.OutstandingAmount" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.OutstandingAmount
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.CurrentDebtAmount" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.CurrentDebtAmount
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.Goal" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.Goal
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.StartGoalDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @financeGoal.StartGoalDate.ToString("dd-MM-yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <input @bind="financeGoal.EndGoalDate" class="form-control" />
+                        }
+                        else
+                        {
+                            if (financeGoal.EndGoalDate.HasValue)
+                                @financeGoal.EndGoalDate.Value.ToString("dd-MM-yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (financeGoal.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(financeGoal)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(financeGoal)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(financeGoal)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(financeGoal.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="AddNewFinanceGoal">Add</button>
+}
+
+
+
+@code {
+    private List<FinanceGoalDto> financeGoalsDto;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+    }
+
+    void AddNewFinanceGoal()
+    {
+        var newFinanceGoal = new FinanceGoalDto();
+        financeGoalsDto.Add(newFinanceGoal);
+
+        Edit(newFinanceGoal);
+
+        StateHasChanged();
+    }
+
+    void Edit(FinanceGoalDto newFinanceGoal)
+    {
+        newFinanceGoal.IsEditing = true;
+    }
+
+    async Task Save(FinanceGoalDto financeGoalDto)
+    {
+        // if (categoria.Id == 0)
+        // {
+        //     CreateCategoryDto createCategoryDto = new CreateCategoryDto();
+
+        //     createCategoryDto.Id = categoria.Id;
+        //     createCategoryDto.UserID = 1; //TODO @VS - Change user id to current user
+        //     createCategoryDto.Code = categoria.Code;
+        //     createCategoryDto.Description = categoria.Description;
+        //     createCategoryDto.Subcategories = new List<SubcategoryDto>();
+
+        //     var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
+        //     categoria.IsEditing = false;
+        //     StateHasChanged();
+        // }
+        // else
+        // {
+        //     UpdateCategoryDto updateCategoryDto = new UpdateCategoryDto();
+
+        //     updateCategoryDto.Id = categoria.Id;
+        //     updateCategoryDto.UserID = categoria.UserId;
+        //     updateCategoryDto.Code = categoria.Code;
+        //     updateCategoryDto.Description = categoria.Description;
+        //     updateCategoryDto.Subcategories = categoria.SubCategories;
+
+        //     var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
+        //     categoria.IsEditing = false;
+        //     StateHasChanged();
+        // }
+    }
+
+    async Task Cancel(FinanceGoalDto financeGoalDto)
+    {
+        financeGoalDto.IsEditing = false;
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int financeGoalId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this finance goal?" });
+
+        if (confirmed)
+        {
+            await Delete(financeGoalId);
+        }
+    }
+
+    async Task Delete(int financeGoalId)
+    {
+        var response = await Http.DeleteAsync("FinanceGoals/" + financeGoalId);
+        StateHasChanged();
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+    }
+
+
+}

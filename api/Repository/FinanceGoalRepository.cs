@@ -1,6 +1,8 @@
 ﻿using api.Data;
 using api.Dtos.FinanceGoals;
+using api.Helpers;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +15,20 @@ namespace api.Repository
         public FinanceGoalRepository(ApplicationDBContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<FinanceGoalDto>> GetAsync()
+        {
+            var financeGoals = await _context.FinanceGoals
+             .Where(x => x.IsActive)
+             .ToListAsync();
+
+            if (financeGoals == null || !financeGoals.Any())
+            {
+                throw new NotFoundException("No finance goals found for the specified user");
+            }
+
+            return financeGoals.Select(c => c.ToFinanceGoalDtoFromFinanceGoal()).ToList();
         }
 
         public async Task<FinanceGoal> CreateAsync(FinanceGoal financeGoalModel)
@@ -34,11 +50,6 @@ namespace api.Repository
             return financeGoalModel;
         }
 
-        public async Task<FinanceGoalDto> GetByCodeAsync(string code)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<FinanceGoal> UpdateAsync(int id, FinanceGoal financeGoal)
         {
             throw new NotImplementedException();
@@ -49,5 +60,6 @@ namespace api.Repository
             throw new NotImplementedException();
         }
 
+      
     }
 }

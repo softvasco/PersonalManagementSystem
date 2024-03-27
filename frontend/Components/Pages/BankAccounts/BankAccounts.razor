@@ -113,7 +113,10 @@ else
                         }
                         else
                         {
-                            @bankAccount.OpenDate
+                            if (@bankAccount.OpenDate.HasValue)
+                                @bankAccount.OpenDate!.Value.ToString("dd-MM-yyyy")
+                            else
+                                @bankAccount.OpenDate
                         }
                     </td>
                     <td>

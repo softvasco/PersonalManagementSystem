@@ -21,5 +21,6 @@ namespace api.Dtos.GiftCards
         public int UserId { get; set; }
 
         public IFormFile? File { get; set; } = null;
+        public string FileName { get; internal set; }
     }
 }

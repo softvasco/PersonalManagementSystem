@@ -261,7 +261,7 @@ else
         if (!string.IsNullOrEmpty(Id))
         {
             // Load the object from the ID
-            var updateDto = await Http.GetFromJsonAsync<UpdateTransactionDto>("Transactions/Get/" + Id);
+            var updateDto = await Http.GetFromJsonAsync<UpdateTransactionDto>("Transactions/GetAsync/" + Id);
             if (updateDto != null)
             {
                 // Do something with the loaded object

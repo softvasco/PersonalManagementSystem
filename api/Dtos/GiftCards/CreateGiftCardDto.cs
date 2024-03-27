@@ -4,6 +4,7 @@ namespace api.Dtos.GiftCards
 {
     public class CreateGiftCardDto
     {
+        public int Id { get; set; }
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]
@@ -21,5 +22,6 @@ namespace api.Dtos.GiftCards
         public int UserId { get; set; }
 
         public IFormFile? File { get; set; } = null;
+        public string FileName { get; internal set; }
     }
 }

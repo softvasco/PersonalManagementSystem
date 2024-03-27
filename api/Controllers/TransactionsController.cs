@@ -39,7 +39,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("Get/{id:int}")]
+        [HttpGet("GetAsync/{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
