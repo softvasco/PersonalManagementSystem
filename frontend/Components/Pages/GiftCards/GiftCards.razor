@@ -25,7 +25,6 @@ else
                 <th>CardNumber</th>
                 <th>Balance</th>
                 <th>OpenDate</th>
-                <th>IsVoucher</th>
                 <th>Attachment</th>
                 <th>Actions</th>
             </tr>
@@ -82,16 +81,6 @@ else
                         else
                         {
                             @giftCard.OpenDate.ToString("dd-MM-yyyy")
-                        }
-                    </td>
-                    <td>
-                        @if (giftCard.IsEditing)
-                        {
-                            <input @bind="giftCard.IsVoucher" class="form-control" />
-                        }
-                        else
-                        {
-                            @giftCard.IsVoucher
                         }
                     </td>
                     <td>
@@ -180,6 +169,9 @@ else
         formData.Add(new StringContent(giftCardDto.Code), "Code");
         formData.Add(new StringContent(giftCardDto.Balance.ToString()), "Balance");
         formData.Add(new StringContent(giftCardDto.OpenDate.ToString()), "OpenDate");
+        formData.Add(new StringContent(giftCardDto.Id.ToString()), "Id");
+        if (!string.IsNullOrWhiteSpace(giftCardDto.CardNumber))
+            formData.Add(new StringContent(giftCardDto.CardNumber), "CardNumber");
 
         // Handle file upload
         if (fileUpload != null)

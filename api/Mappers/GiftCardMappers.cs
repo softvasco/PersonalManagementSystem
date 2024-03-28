@@ -1,5 +1,4 @@
-﻿using api.Dtos.BankAccounts;
-using api.Dtos.GiftCards;
+﻿using api.Dtos.GiftCards;
 using api.Helpers;
 using api.Models;
 
@@ -24,13 +23,11 @@ namespace api.Mappers
                 Code = createGiftCardDto.Code,
                 Description = createGiftCardDto.Description,
                 Balance = createGiftCardDto.Balance,
-                CloseDate = createGiftCardDto.CloseDate,
                 OpenDate = createGiftCardDto.OpenDate,
                 UserId = createGiftCardDto.UserId,
                 Attachment = fileContent,
                 FileName = createGiftCardDto.FileName,
                 CardNumber = createGiftCardDto.CardNumber,
-                IsVoucher = createGiftCardDto.IsVoucher,
             };
         }
 
@@ -41,10 +38,8 @@ namespace api.Mappers
                 Id= giftCard.Id,
                 Balance = giftCard.Balance,
                 CardNumber = giftCard.CardNumber,
-                CloseDate = giftCard.CloseDate,
                 Code = giftCard.Code,
                 Description = giftCard.Description,
-                IsVoucher = giftCard.IsVoucher,
                 OpenDate = giftCard.OpenDate,
                 UserId = giftCard.UserId,
                 FileBytes = giftCard.Attachment,
@@ -70,12 +65,10 @@ namespace api.Mappers
                 Code = updateGiftCardDto.Code,
                 Description = updateGiftCardDto.Description,
                 Balance = updateGiftCardDto.Balance,
-                CloseDate = updateGiftCardDto.CloseDate,
                 OpenDate = updateGiftCardDto.OpenDate,
                 UserId = updateGiftCardDto.UserId,
                 Attachment = fileContent,
                 CardNumber = updateGiftCardDto.CardNumber,
-                IsVoucher = updateGiftCardDto.IsVoucher,
                 FileName = updateGiftCardDto.FileName,
             };
         }
