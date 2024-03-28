@@ -84,10 +84,7 @@ else
                         @if (transaction.State == (int)TransactionState.Pending)
                         {
                             <button class="btn btn-success" @onclick="() => ConfirmApprove(transaction)">Approve</button>
-                        }
-                        <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
-                        @if (transaction.State == (int)TransactionState.Pending)
-                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(transaction)">Edit</button>
                             <button class="btn btn-danger" @onclick="() => ConfirmDelete(transaction.Id)">Delete</button>
                         }
                     </td>
