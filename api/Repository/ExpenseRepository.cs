@@ -53,6 +53,7 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             DateTime indexData = Utils.CalculateNextPaymentDate(expense.StartDate, expense.PayDay);
+            SubCategory? subCategory = _context.SubCategories.FirstOrDefault(x => x.Description == expense.Description);
 
             while (indexData < expense.EndDate)
             {
@@ -67,7 +68,8 @@ namespace api.Repository
                         SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
                         DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                         Amount = expense.Amount,
-                        UserId = expense.UserId
+                        UserId = expense.UserId,
+                        SubCategoryId = (subCategory != null) ? subCategory.Id : null
                     });
                 }
 
