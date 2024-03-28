@@ -10,116 +10,83 @@
 <style>
     /* Styles.css */
 
-    .table-with-borders {
+    .centered-table-with-borders {
+        margin: 0 auto;
         border-collapse: collapse;
         width: 100%;
     }
 
-        .table-with-borders th, .table-with-borders td {
-            border: 1px solid #ddd;
+        .centered-table-with-borders th {
+            text-align: center;
+            background-color: #f2f2f2;
             padding: 8px;
+            border: 1px solid #ddd;
         }
 
-        .table-with-borders th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
-
-        .table-with-borders tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .table-with-borders tr:hover {
-            background-color: #e6e6e6;
+        .centered-table-with-borders td {
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
         }
 </style>
 
-<br />
-<br />
-<h2>DashBoard</h2>
-<br />
+@if (homeDto == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
-<table class="centered-table-with-borders">
-    <thead>
-        <tr>
-            <th></th>
-            <th colspan="2">January</th>
-            <th colspan="2">February</th>
-            <th colspan="2">March</th>
-            <th colspan="2">April</th>
-            <th colspan="2">May</th>
-            <th colspan="2">June</th>
-            <th colspan="2">July</th>
-            <th colspan="2">August</th>
-            <th colspan="2">September</th>
-            <th colspan="2">October</th>
-            <th colspan="2">November</th>
-            <th colspan="2">December</th>
-        </tr>
-        <tr>
-            <th></th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-            <th>Prev</th>
-            <th>Real</th>
-        </tr>
-    </thead>
-    <tbody>
+    <br />
+    <br />
+    <h2><b>DashBoard</b></h2>
+    <hr />
+    <h4>Categories</h4>
+    <br />
 
-        <tr>
-            <td>homeDto.HomeCategoryDto.Name</td>
-            <td>homeDto.HomeCategoryDto.JanuaryPrev</td>
-            <td>homeDto.HomeCategoryDto.JanuaryReal</td>
-            <td>homeDto.HomeCategoryDto.FebruaryPrev</td>
-            <td>homeDto.HomeCategoryDto.FebruaryReal</td>
-            <td>homeDto.HomeCategoryDto.MarchPrev</td>
-            <td>homeDto.HomeCategoryDto.MarchReal</td>
-            <td>homeDto.HomeCategoryDto.AprilPrev</td>
-            <td>homeDto.HomeCategoryDto.AprilReal</td>
-            <td>homeDto.HomeCategoryDto.MayPrev</td>
-            <td>homeDto.HomeCategoryDto.MayReal</td>
-            <td>homeDto.HomeCategoryDto.JunePrev</td>
-            <td>homeDto.HomeCategoryDto.JuneReal</td>
-            <td>homeDto.HomeCategoryDto.JulyPrev</td>
-            <td>homeDto.HomeCategoryDto.JulyReal</td>
-            <td>homeDto.HomeCategoryDto.AugustPrev</td>
-            <td>homeDto.HomeCategoryDto.AugustReal</td>
-            <td>homeDto.HomeCategoryDto.SeptemberPrev</td>
-            <td>homeDto.HomeCategoryDto.SeptemberReal</td>
-            <td>homeDto.HomeCategoryDto.OctoberPrev</td>
-            <td>homeDto.HomeCategoryDto.OctoberReal</td>
-            <td>homeDto.HomeCategoryDto.NovemberPrev</td>
-            <td>homeDto.HomeCategoryDto.NovemberReal</td>
-            <td>homeDto.HomeCategoryDto.DecemberPrev</td>
-            <td>homeDto.HomeCategoryDto.DecemberReal</td>
-        </tr>
-
-    </tbody>
-</table>
+    <table class="centered-table-with-borders">
+        <thead>
+            <tr>
+                <th></th>
+                <th colspan="1">Jan</th>
+                <th colspan="1">Feb</th>
+                <th colspan="1">Mar</th>
+                <th colspan="1">April</th>
+                <th colspan="1">May</th>
+                <th colspan="1">June</th>
+                <th colspan="1">July</th>
+                <th colspan="1">August</th>
+                <th colspan="1">Sept</th>
+                <th colspan="1">Oct</th>
+                <th colspan="1">Nov</th>
+                <th colspan="1">Dec</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var homeCategory in @homeDto.HomeCategories)
+            {
+                <tr>
+                    <td>@homeCategory.CategoryName</td>
+                    <td>@homeCategory.JanuaryExpenses</td>
+                    <td>@homeCategory.FebruaryExpenses</td>
+                    <td>@homeCategory.MarchExpenses</td>
+                    <td>@homeCategory.AprilExpenses</td>
+                    <td>@homeCategory.MayExpenses</td>
+                    <td>@homeCategory.JuneExpenses</td>
+                    <td>@homeCategory.JulyExpenses</td>
+                    <td>@homeCategory.AugustExpenses</td>
+                    <td>@homeCategory.SeptemberExpenses</td>
+                    <td>@homeCategory.OctoberExpenses</td>
+                    <td>@homeCategory.NovemberExpenses</td>
+                    <td>@homeCategory.DecemberExpenses</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-
-    private HomeDto homeDto;
+    private HomeDto homeDto = null;
 
     protected override async Task OnInitializedAsync()
     {

@@ -24,7 +24,7 @@ namespace api.Controllers
         {
             try
             {
-                var homeDto = await _homeRepository.GetAsync(1, 2024);
+                var homeDto = await _homeRepository.GetAsync(1, DateTime.Now.Year);
                 return Ok(homeDto);
             }
             catch (NotFoundException)

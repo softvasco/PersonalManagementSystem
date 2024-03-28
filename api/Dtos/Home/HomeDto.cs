@@ -2,11 +2,11 @@
 {
     public class HomeDto
     {
-        public HomeCategoryDto HomeCategoryDto { get; set; } = new();
+        public List<HomeCategoryDto> HomeCategories { get; set; } = new();
 
         public HomeDto()
         {
-            HomeCategoryDto = new();
+            
         }
     }
 }
