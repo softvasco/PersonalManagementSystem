@@ -2,6 +2,7 @@ using api.Dtos.Transactions;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -128,6 +129,23 @@ namespace api.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var transaction = await _transactionRepository.DeleteAsync(id);
+
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
 
     }

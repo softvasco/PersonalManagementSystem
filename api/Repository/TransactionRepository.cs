@@ -249,14 +249,17 @@ namespace api.Repository
         }
 
         /// <summary>
-        /// 
+        /// Remove one transaction
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<Transaction> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Transaction transaction = await _context.Transactions.FindAsync(id);
+            _context.Transactions.Remove(transaction!);
+            await _context.SaveChangesAsync();
+
+            return transaction!;
         }
 
         #endregion
