@@ -39,6 +39,7 @@ builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IDropdownRepository, DropdownRepository>();
 builder.Services.AddScoped<ISimulatorRepository, SimulatorRepository>();
 builder.Services.AddScoped<IHomeRepository, HomeRepository>();
+builder.Services.AddScoped<IWeightRepository, WeightRepository>();
 
 var app = builder.Build();
 
