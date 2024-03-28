@@ -365,6 +365,7 @@ else
             await createTransactionDto.File.CopyToAsync(stream);
             stream.Position = 0;
             formData.Add(new StreamContent(stream), "File", createTransactionDto.File.FileName);
+            formData.Add(new StringContent(createTransactionDto.File.FileName), "FileName");
         }
 
         var response = await Http.PostAsync("Transactions", formData);

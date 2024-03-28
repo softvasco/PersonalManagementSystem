@@ -31,7 +31,8 @@ namespace api.Mappers
                 ExpenseId = createTransactionDto.ExpenseId,
                 OperationDate = createTransactionDto.OperationDate,
                 Attachment = fileContent,
-                State = createTransactionDto.State
+                State = createTransactionDto.State,
+                FileName = createTransactionDto.FileName
             };
         }
 
