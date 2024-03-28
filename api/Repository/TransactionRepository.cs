@@ -579,6 +579,10 @@ namespace api.Repository
                 {
                     credit.DebtCapital = credit.DebtCapital + (credit.DebtCapital * (credit.TAN / 100 / 12)) - transaction.Amount;
                     credit.UpdatedDate = DateTime.UtcNow;
+                    if(credit.DebtCapital==0)
+                    {
+                        credit.IsActive = false;
+                    }
                     _context.Entry(credit).State = EntityState.Modified;
                 }
             }
