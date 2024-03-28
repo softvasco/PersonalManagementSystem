@@ -104,6 +104,8 @@ namespace api.Repository
             existingExpense.PayDay = expense.PayDay;
             existingExpense.SourceAccountOrCardCode = expense.SourceAccountOrCardCode;
 
+            SubCategory? subCategory = _context.SubCategories.FirstOrDefault(x => x.Description == existingExpense.Description);
+
             try
             {
                 _context.Entry(existingExpense).State = EntityState.Modified;
@@ -131,6 +133,7 @@ namespace api.Repository
                             DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                             Amount = expense.Amount,
                             Attachment = null,
+                            SubCategoryId = (subCategory != null) ? subCategory.Id : null
                         });
                     }
 
