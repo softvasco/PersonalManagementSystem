@@ -94,7 +94,6 @@ namespace api.Repository
         {
             var existingEarning = await _context
                .Earnings
-               .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingEarning == null)
@@ -127,7 +126,7 @@ namespace api.Repository
                 {
                     if (earning.Months.Contains(indexData.Month)
                        && earning.Amount > 0
-                       && !_context.Transactions.Any(x => x.ExpenseId == existingEarning.Id && x.OperationDate == indexData))
+                       && !_context.Transactions.Any(x => x.EarningId == existingEarning.Id && x.OperationDate == indexData))
                     {
                         await _context.Transactions.AddAsync(new Transaction
                         {

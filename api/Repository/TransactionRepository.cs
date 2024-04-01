@@ -255,7 +255,7 @@ namespace api.Repository
         /// <returns></returns>
         public async Task<Transaction> DeleteAsync(int id)
         {
-            Transaction transaction = await _context.Transactions.FindAsync(id);
+            Transaction? transaction = await _context.Transactions.FindAsync(id);
             _context.Transactions.Remove(transaction!);
             await _context.SaveChangesAsync();
 
