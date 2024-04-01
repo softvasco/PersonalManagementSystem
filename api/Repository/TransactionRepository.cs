@@ -88,7 +88,7 @@ namespace api.Repository
         public async Task<Transaction> ConfirmTransactionAsync(int id)
         {
             Transaction? transaction
-                = await _context
+                =  await _context
                     .Transactions
                     .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -98,7 +98,7 @@ namespace api.Repository
             }
 
             if (transaction.CreditId.HasValue)
-                HandleWithCredits(transaction);
+                await HandleWithCredits(transaction);
             else
                 await HandleWithNormalTransactions(transaction);
 
@@ -323,7 +323,7 @@ namespace api.Repository
         /// </summary>
         /// <param name="transaction"></param>
         /// <exception cref="Exception"></exception>
-        private async void HandleWithCredits(Transaction transaction)
+        private async Task HandleWithCredits(Transaction transaction)
         {
             Credit? credit = await _context.Credits.FindAsync(transaction.CreditId);
 
@@ -408,7 +408,7 @@ namespace api.Repository
                 destinationCreditCard.Balance = -transaction.Amount;
                 _context.Entry(destinationCreditCard).State = EntityState.Modified;
             }
-            else if (destinationBankAccount != null)
+            else if (destinationBankAccount != null && destinationBankAccount.Code != "BankinterCH")
             {
                 destinationBankAccount.UpdatedDate = DateTime.UtcNow;
                 destinationBankAccount.Balance = -transaction.Amount;
