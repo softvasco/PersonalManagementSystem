@@ -32,18 +32,24 @@
 
 @if (homeDto == null)
 {
-    <p><em>Loading...</em></p>
+        <p><em>Loading...</em></p>
 }
 else
 {
 
     <br />
-    <br />
     <h2><b>DashBoard</b></h2>
-    <hr />
-    <h4>Categories</h4>
+    <br />
     <br />
 
+    <h4>Finance Goal</h4>
+        <label>In @homeDto.HomeFinanceGoal.StartGoalDate.ToString("dd-MM-yyyy") the debt was @homeDto.HomeFinanceGoal.OutstandingAmount€ and in 31/12/2024 will be @homeDto.HomeFinanceGoal.DebtAmount€.</label>
+        <label> The finance goal is @homeDto.HomeFinanceGoal.Goal. The difference will be @homeDto.HomeFinanceGoal.Diff</label>
+    <br />
+    <br />
+
+    <h4>Categories</h4>
+    <br />
     <table class="centered-table-with-borders">
         <thead>
             <tr>
@@ -63,24 +69,24 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var homeCategory in @homeDto.HomeCategories)
-            {
-                <tr>
-                    <td>@homeCategory.CategoryName</td>
-                    <td>@homeCategory.JanuaryExpenses</td>
-                    <td>@homeCategory.FebruaryExpenses</td>
-                    <td>@homeCategory.MarchExpenses</td>
-                    <td>@homeCategory.AprilExpenses</td>
-                    <td>@homeCategory.MayExpenses</td>
-                    <td>@homeCategory.JuneExpenses</td>
-                    <td>@homeCategory.JulyExpenses</td>
-                    <td>@homeCategory.AugustExpenses</td>
-                    <td>@homeCategory.SeptemberExpenses</td>
-                    <td>@homeCategory.OctoberExpenses</td>
-                    <td>@homeCategory.NovemberExpenses</td>
-                    <td>@homeCategory.DecemberExpenses</td>
-                </tr>
-            }
+        @foreach (var homeCategory in @homeDto.HomeCategories)
+        {
+                    <tr>
+                        <td>@homeCategory.CategoryName</td>
+                        <td>@homeCategory.JanuaryExpenses</td>
+                        <td>@homeCategory.FebruaryExpenses</td>
+                        <td>@homeCategory.MarchExpenses</td>
+                        <td>@homeCategory.AprilExpenses</td>
+                        <td>@homeCategory.MayExpenses</td>
+                        <td>@homeCategory.JuneExpenses</td>
+                        <td>@homeCategory.JulyExpenses</td>
+                        <td>@homeCategory.AugustExpenses</td>
+                        <td>@homeCategory.SeptemberExpenses</td>
+                        <td>@homeCategory.OctoberExpenses</td>
+                        <td>@homeCategory.NovemberExpenses</td>
+                        <td>@homeCategory.DecemberExpenses</td>
+                    </tr>
+        }
         </tbody>
     </table>
 }

@@ -10,10 +10,13 @@ namespace api.Repository
     public class HomeRepository : IHomeRepository
     {
         private readonly ApplicationDBContext _context;
+        private readonly ITransactionRepository _transactionRepository;
 
-        public HomeRepository(ApplicationDBContext context)
+        public HomeRepository(ApplicationDBContext context,
+            ITransactionRepository transactionRepository)
         {
             _context = context;
+            _transactionRepository = transactionRepository;
         }
 
         /// <summary>
@@ -25,13 +28,26 @@ namespace api.Repository
         public async Task<HomeDto> GetAsync(int UserId, int year)
         {
             HomeDto homeDto = new HomeDto();
+            
+            var homeCategories = await CalculateCategories(UserId, year);
+            homeDto.HomeCategories = homeCategories;
+
+            var prevOfFinanceGoal = await CalculatePrevFinanceGoal(UserId, year);
+            homeDto.HomeFinanceGoal = prevOfFinanceGoal;
+
+            return homeDto;
+        }
+
+        private async Task<List<HomeCategoryDto>> CalculateCategories(int UserId, int year)
+        {
+            List<HomeCategoryDto> homeCategories = new();
 
             var transactions = await _context.Transactions
-                                .Include(sub => sub.SubCategory)
-                                .Where(x => x.UserId == UserId
-                                    && x.IsActive
-                                    && x.OperationDate.Year == year)
-                                .ToListAsync();
+                                            .Include(sub => sub.SubCategory)
+                                            .Where(x => x.UserId == UserId
+                                                && x.IsActive
+                                                && x.OperationDate.Year == year)
+                                            .ToListAsync();
 
             var categories = _context.Categories.Where(x => x.UserId == UserId && x.IsActive).ToList();
 
@@ -46,10 +62,10 @@ namespace api.Repository
                     SetRealAmountForMonth(homeCategoryDto, month, realAmount);
                 }
 
-                homeDto.HomeCategories.Add(homeCategoryDto);
+                homeCategories.Add(homeCategoryDto);
             }
 
-            return homeDto;
+            return homeCategories;
         }
 
         private decimal GetRealAmountForMonth(List<Transaction> transactions, int categoryId, int userId, int month)
@@ -103,6 +119,50 @@ namespace api.Repository
                     homeCategoryDto.DecemberExpenses = amount;
                     break;
             }
+        }
+
+        private async Task<HomeFinanceGoal> CalculatePrevFinanceGoal(int userId, int year)
+        {
+            HomeFinanceGoal homeFinanceGoal = new HomeFinanceGoal();
+            
+            var financeGoal = _context.FinanceGoals.First(x => x.UserId == userId);
+
+            homeFinanceGoal.StartGoalDate = financeGoal.StartGoalDate;
+            homeFinanceGoal.EndGoalDate = financeGoal.EndGoalDate;
+            homeFinanceGoal.OutstandingAmount = financeGoal.OutstandingAmount;
+            homeFinanceGoal.DebtAmount = await CalculateDebtAmount(userId, year);
+            homeFinanceGoal.Goal = financeGoal.Goal;
+            homeFinanceGoal.Diff = homeFinanceGoal.DebtAmount-financeGoal.Goal;
+
+            return homeFinanceGoal;
+        }
+
+        private async Task<decimal> CalculateDebtAmount(int userId, int year)
+        {
+            var transactions = _context
+                                    .Transactions
+                                    .Where(x => x.UserId == userId
+                                        && x.OperationDate.Year == year
+                                        && x.State == (int)TransactionState.Pending)
+                                    .OrderBy(x => x.OperationDate)
+                                    .ToList();
+
+            BankAccount bankAccount = await _context.BankAccounts.FirstAsync(x => x.Code == "BancoCTT");
+
+            foreach (var transaction in transactions)
+            {
+                if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && transaction.SourceAccountOrCardCode == bankAccount.Code)
+                {
+                    bankAccount.Balance -= transaction.Amount;
+                }
+                if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && transaction.DestinationAccountOrCardCode == bankAccount.Code)
+                {
+                    bankAccount.Balance += transaction.Amount;
+                }
+            }
+
+
+            return bankAccount.Balance;
         }
 
     }

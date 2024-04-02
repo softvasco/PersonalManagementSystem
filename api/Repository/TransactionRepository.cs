@@ -124,7 +124,7 @@ namespace api.Repository
         /// <exception cref="NotFoundException"></exception>
         public async Task<Transaction> UpdateAsync(int id, UpdateTransactionDto updateTransactionDto)
         {
-            Transaction? transaction = await _context.Transactions.FindAsync(id);
+            Transaction? transaction = await _context.Transactions.FirstOrDefaultAsync(x=>x.Id == id);
 
             if (transaction is null)
 
@@ -230,13 +230,10 @@ namespace api.Repository
                         await _context.SaveChangesAsync();
 
                         await DebtMoney(transaction);
-                        await _context.SaveChangesAsync();
 
                         await CreditMoney(transaction);
-                        await _context.SaveChangesAsync();
 
                         await UpdateFinanceGoal(transaction);
-                        await _context.SaveChangesAsync();
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -513,6 +510,8 @@ namespace api.Repository
                     bankAccount.Balance -= transaction.Amount;
                     _context.Entry(bankAccount).State = EntityState.Modified;
                 }
+
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -570,7 +569,8 @@ namespace api.Repository
                 {
                     bankAccount.Balance += transaction.Amount;
                     bankAccount.UpdatedDate = DateTime.UtcNow;
-                    _context.Entry(bankAccount).State = EntityState.Modified;
+                    if (transaction.SourceAccountOrCardCode != transaction.DestinationAccountOrCardCode)
+                        _context.Entry(bankAccount).State = EntityState.Modified;
                 }
 
                 Credit? credit = await _context
@@ -588,6 +588,8 @@ namespace api.Repository
                     }
                     _context.Entry(credit).State = EntityState.Modified;
                 }
+
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -629,6 +631,7 @@ namespace api.Repository
                 financeGoal.CurrentDebtAmount = bankDebpts + creditsDebpts + creditCardsDebpts;
                 financeGoal.UpdatedDate = DateTime.UtcNow;
                 _context.Entry(financeGoal).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
             }
         }
 
