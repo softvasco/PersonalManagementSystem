@@ -124,7 +124,7 @@ namespace api.Repository
         private async Task<HomeFinanceGoal> CalculatePrevFinanceGoal(int userId, int year)
         {
             HomeFinanceGoal homeFinanceGoal = new HomeFinanceGoal();
-            
+
             var financeGoal = _context.FinanceGoals.First(x => x.UserId == userId);
 
             homeFinanceGoal.StartGoalDate = financeGoal.StartGoalDate;
@@ -132,7 +132,7 @@ namespace api.Repository
             homeFinanceGoal.OutstandingAmount = financeGoal.OutstandingAmount;
             homeFinanceGoal.DebtAmount = await CalculateDebtAmount(userId, year);
             homeFinanceGoal.Goal = financeGoal.Goal;
-            homeFinanceGoal.Diff = homeFinanceGoal.DebtAmount-financeGoal.Goal;
+            homeFinanceGoal.Diff = financeGoal.Goal - homeFinanceGoal.DebtAmount;
 
             return homeFinanceGoal;
         }
@@ -148,21 +148,48 @@ namespace api.Repository
                                     .ToList();
 
             BankAccount bankAccount = await _context.BankAccounts.FirstAsync(x => x.Code == "BancoCTT");
+            List<Credit> credits = await _context.Credits.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
+            List<CreditCard> creditCards = await _context.CreditCards.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
 
             foreach (var transaction in transactions)
             {
+                //Debit
                 if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && transaction.SourceAccountOrCardCode == bankAccount.Code)
                 {
                     bankAccount.Balance -= transaction.Amount;
                 }
+                if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
+                {
+                    creditCards.First(x => x.Code == transaction.SourceAccountOrCardCode).Balance -= transaction.Amount;
+                }
+
+                //Credit
                 if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && transaction.DestinationAccountOrCardCode == bankAccount.Code)
                 {
                     bankAccount.Balance += transaction.Amount;
                 }
+                if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && credits.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
+                {
+                    if (transaction.Description.Contains("Ana - Cofidis"))
+                    {
+                        credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital -= transaction.Amount;
+                    }
+                    else
+                    {
+                        credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital = credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital + (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital * (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).TAN / 100 / 12)) - credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).Installment;
+                    }
+                }
+                if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
+                {
+                    creditCards.First(x => x.Code == transaction.DestinationAccountOrCardCode).Balance += transaction.Amount;
+                }
             }
 
+            decimal banks = bankAccount.Balance < 0 ? bankAccount.Balance * -1 : -1 * bankAccount.Balance;
+            decimal creditDebpts = credits.Sum(x => x.DebtCapital);
+            decimal creditCardsDEbpts = creditCards.Sum(x => x.Plafon - x.Balance);
 
-            return bankAccount.Balance;
+            return decimal.Round(banks + creditDebpts + creditCardsDEbpts, 2);
         }
 
     }

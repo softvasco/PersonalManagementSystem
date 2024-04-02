@@ -44,7 +44,14 @@ else
 
     <h4>Finance Goal</h4>
         <label>In @homeDto.HomeFinanceGoal.StartGoalDate.ToString("dd-MM-yyyy") the debt was @homeDto.HomeFinanceGoal.OutstandingAmount€ and in 31/12/2024 will be @homeDto.HomeFinanceGoal.DebtAmount€.</label>
-        <label> The finance goal is @homeDto.HomeFinanceGoal.Goal. The difference will be @homeDto.HomeFinanceGoal.Diff</label>
+            <label> The finance goal is @homeDto.HomeFinanceGoal.Goal. The difference will be @if (@homeDto.HomeFinanceGoal.Diff < 0)
+        {
+            <span style="color: red;">@homeDto.HomeFinanceGoal.Diff€.</span>
+        }
+        else
+        {
+            <span style="color: green;">@homeDto.HomeFinanceGoal.Diff€.</span>
+        }</label>
     <br />
     <br />
 
