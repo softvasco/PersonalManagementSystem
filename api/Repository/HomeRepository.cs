@@ -73,8 +73,7 @@ namespace api.Repository
             return transactions
                 .Where(x => (x.SubCategory is not null && x.SubCategory.CategoryId == categoryId)
                     && x.UserId == userId
-                    && x.OperationDate.Month == month 
-                    && x.State == (int)TransactionState.Finished)
+                    && x.OperationDate.Month == month )
                 .Sum(x => x.Amount);
         }
 
