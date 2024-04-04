@@ -9,3 +9,179 @@
 <br />
 <h2>Sub categories</h2>
 <br />
+
+@if (subCategories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>MonthlyPlafond</th>
+                <th>AnnualPlafon</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subCategory in subCategories)
+            {
+                <tr>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <input @bind="subCategory.Code" class="form-control" />
+                        }
+                        else
+                        {
+                            @subCategory.Code
+                        }
+                    </td>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <input @bind="subCategory.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @subCategory.Description
+                        }
+                    </td>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <input @bind="subCategory.MonthlyPlafond" class="form-control" />
+                        }
+                        else
+                        {
+                            @subCategory.MonthlyPlafond
+                        }
+                    </td>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <input @bind="subCategory.AnnualPlafon" class="form-control" />
+                        }
+                        else
+                        {
+                            @subCategory.AnnualPlafon
+                        }
+                    </td>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <input @bind="subCategory.CategoryName" class="form-control" />
+                        }
+                        else
+                        {
+                            @subCategory.CategoryName
+                        }
+                    </td>
+                    <td>
+                        @if (subCategory.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(subCategory)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(subCategory)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(subCategory)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(subCategory.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="AddNewSubCategory">Add</button>
+}
+
+
+
+@code {
+    private List<SubCategoryDto> subCategories;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+    }
+
+    void AddNewSubCategory()
+    {
+        var newSubCategory = new SubCategoryDto();
+        subCategories.Add(newSubCategory);
+
+        Edit(newSubCategory);
+
+        StateHasChanged();
+    }
+
+    void Edit(SubCategoryDto subCategory)
+    {
+        subCategory.IsEditing = true;
+    }
+
+    async Task Save(SubCategoryDto subCategoria)
+    {
+        // if (categoria.Id == 0)
+        // {
+        //     CreateCategoryDto createCategoryDto = new CreateCategoryDto();
+
+        //     createCategoryDto.Id = categoria.Id;
+        //     createCategoryDto.UserID = 1; //TODO @VS - Change user id to current user
+        //     createCategoryDto.Code = categoria.Code;
+        //     createCategoryDto.Description = categoria.Description;
+        //     createCategoryDto.Subcategories = new List<SubCategoryDto>();
+
+        //     var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
+        //     categoria.IsEditing = false;
+        //     StateHasChanged();
+        // }
+        // else
+        // {
+        //     UpdateCategoryDto updateCategoryDto = new UpdateCategoryDto();
+
+        //     updateCategoryDto.Id = categoria.Id;
+        //     updateCategoryDto.UserID = categoria.UserId;
+        //     updateCategoryDto.Code = categoria.Code;
+        //     updateCategoryDto.Description = categoria.Description;
+        //     updateCategoryDto.Subcategories = categoria.SubCategories;
+
+        //     var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
+        //     categoria.IsEditing = false;
+        //     StateHasChanged();
+        // }
+    }
+
+    async Task Cancel(SubCategoryDto subCategoria)
+    {
+        subCategoria.IsEditing = false;
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int subCategoria)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this sub category?" });
+
+        if (confirmed)
+        {
+            await Delete(subCategoria);
+        }
+    }
+
+    async Task Delete(int subCategoryId)
+    {
+        var response = await Http.DeleteAsync("SubCategories/" + subCategoryId);
+        StateHasChanged();
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+    }
+
+
+}

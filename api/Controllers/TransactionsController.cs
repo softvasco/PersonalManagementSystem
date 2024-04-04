@@ -2,7 +2,6 @@ using api.Dtos.Transactions;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
-using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers

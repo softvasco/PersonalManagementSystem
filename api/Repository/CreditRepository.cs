@@ -36,7 +36,6 @@ namespace api.Repository
         {
             var user = await _context
                 .Users
-                .AsNoTracking()
                 .AnyAsync(x => x.Id == credit.UserId && x.IsActive);
 
             if (!user)
@@ -46,7 +45,6 @@ namespace api.Repository
 
             var creditExists = await _context
                 .Credits
-                .AsNoTracking()
                 .AnyAsync(x => x.Code == credit.Code
                     && x.UserId == credit.UserId
                     && x.IsActive);

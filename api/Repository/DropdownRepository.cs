@@ -2,7 +2,6 @@
 using api.Dtos.Dropdown;
 using api.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace api.Repository
 {
@@ -23,11 +22,11 @@ namespace api.Repository
 
         public async Task<List<DropdownDto>> GetSourceAccountOrCardCode()
         {
-            var credits = await _context.Credits.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var creditCards = await _context.CreditCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var bankAccounts = await _context.BankAccounts.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var debitCards = await _context.DebitCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var giftCards = await _context.GiftCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
+            var credits = await _context.Credits.Where(x => x.IsActive).ToListAsync();
+            var creditCards = await _context.CreditCards.Where(x => x.IsActive).ToListAsync();
+            var bankAccounts = await _context.BankAccounts.Where(x => x.IsActive).ToListAsync();
+            var debitCards = await _context.DebitCards.Where(x => x.IsActive).ToListAsync();
+            var giftCards = await _context.GiftCards.Where(x => x.IsActive).ToListAsync();
 
             List<DropdownDto> result =
             [
@@ -43,11 +42,11 @@ namespace api.Repository
 
         public async Task<List<DropdownDto>> GetDestinationAccountOrCardCode()
         {
-            var credits = await _context.Credits.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var creditCards = await _context.CreditCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var bankAccounts = await _context.BankAccounts.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var debitCards = await _context.DebitCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
-            var giftCards = await _context.GiftCards.AsNoTracking().Where(x => x.IsActive).ToListAsync();
+            var credits = await _context.Credits.Where(x => x.IsActive).ToListAsync();
+            var creditCards = await _context.CreditCards.Where(x => x.IsActive).ToListAsync();
+            var bankAccounts = await _context.BankAccounts.Where(x => x.IsActive).ToListAsync();
+            var debitCards = await _context.DebitCards.Where(x => x.IsActive).ToListAsync();
+            var giftCards = await _context.GiftCards.Where(x => x.IsActive).ToListAsync();
 
             List<DropdownDto> result =
             [

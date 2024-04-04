@@ -35,7 +35,6 @@ namespace api.Repository
         {
             var userExists = await _context
                 .Users
-                .AsNoTracking()
                 .AnyAsync(x => x.Id == bankAccount.UserId && x.IsActive);
 
             if (!userExists)
@@ -45,7 +44,6 @@ namespace api.Repository
 
             var bankAccountExists = await _context
                 .BankAccounts
-                .AsNoTracking()
                 .AnyAsync(x => x.Code == bankAccount.Code
                     && x.UserId == bankAccount.UserId
                     && x.IsActive);
@@ -65,7 +63,6 @@ namespace api.Repository
         {
             var existingBankAccount = await _context
                 .BankAccounts
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingBankAccount == null)
@@ -110,7 +107,6 @@ namespace api.Repository
         {
             var bankAccount = await _context
                 .BankAccounts
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (bankAccount is null)

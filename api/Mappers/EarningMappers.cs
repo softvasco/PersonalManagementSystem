@@ -1,5 +1,4 @@
 ﻿using api.Dtos.Earnings;
-using api.Dtos.Expenses;
 using api.Models;
 
 namespace api.Mappers

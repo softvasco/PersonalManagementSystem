@@ -36,13 +36,11 @@ namespace api.Repository
         {
             if (!_context
                 .Users
-                .AsNoTracking()
                 .Any(x => x.Id == category.UserId && x.IsActive))
                 throw new Exception("User does not exists!");
 
             if (_context
                 .Categories
-                .AsNoTracking()
                 .Any(x => x.Code == category.Code && x.UserId == category.UserId && x.IsActive))
                 throw new Exception("Category already exists!");
 
@@ -55,7 +53,6 @@ namespace api.Repository
         {
             var existingCategory = await _context
                .Categories
-               .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingCategory == null)
@@ -84,7 +81,6 @@ namespace api.Repository
         {
             var existingCategory = await _context
               .Categories
-              .AsNoTracking()
               .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingCategory == null)

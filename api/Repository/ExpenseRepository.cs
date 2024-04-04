@@ -1,5 +1,4 @@
 ﻿using api.Data;
-using api.Dtos.Earnings;
 using api.Dtos.Expenses;
 using api.Enum;
 using api.Helpers;
@@ -22,7 +21,6 @@ namespace api.Repository
         public async Task<List<ExpenseDto>> GetAsync()
         {
             var expenses = await _context.Expenses
-              .AsNoTracking()
               .Where(x => x.IsActive)
               .ToListAsync();
 

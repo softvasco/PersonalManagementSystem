@@ -21,7 +21,6 @@ namespace api.Repository
         public async Task<List<EarningDto>> GetAsync()
         {
             var earnings = await _context.Earnings
-                .AsNoTracking()
                 .Where(x => x.IsActive)
                 .ToListAsync();
 
@@ -37,7 +36,6 @@ namespace api.Repository
         {
             var userExists = await _context
                 .Users
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == earning.UserId && x.IsActive);
 
             if (userExists is null)
@@ -47,7 +45,6 @@ namespace api.Repository
 
             var earningExists = await _context
                 .Earnings
-                .AsNoTracking()
                 .AnyAsync(x => x.Code == earning.Code
                     && x.UserId == earning.UserId
                     && x.IsActive);
@@ -159,7 +156,6 @@ namespace api.Repository
         {
             var existingEarning = await _context
               .Earnings
-              .AsNoTracking()
               .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingEarning == null)

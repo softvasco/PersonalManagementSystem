@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Categories;
+using api.Dtos.SubCategories;
 using api.Models;
 
 namespace api.Mappers
@@ -31,7 +32,7 @@ namespace api.Mappers
                 Description = category.Description,
                 UserId = category.UserId,
                 IsEditing=false,
-                SubCategories = category.SubCategories.Select(s => new SubcategoryDto
+                SubCategories = category.SubCategories.Select(s => new SubCategoryDto
                 {
                     Code = s.Code,
                     Description = s.Description,

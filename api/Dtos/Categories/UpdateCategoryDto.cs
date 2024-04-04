@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.Dtos.SubCategories;
 
 namespace api.Dtos.Categories
 {
@@ -12,7 +13,7 @@ namespace api.Dtos.Categories
         [Required]
         public int UserID { get; set; }
 
-        public List<SubcategoryDto> Subcategories { get; set; }
+        public List<SubCategoryDto> Subcategories { get; set; }
 
     }
 }

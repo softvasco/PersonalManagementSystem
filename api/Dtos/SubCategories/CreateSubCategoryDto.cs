@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using api.Dtos.SubCategories;
 
-namespace api.Dtos.Categories
+namespace api.Dtos.SubCategories
 {
-    public class CreateCategoryDto
+    public class CreateSubCategoryDto
     {
         public int Id { get; set; }
         [Required]
@@ -11,9 +10,8 @@ namespace api.Dtos.Categories
         [Required]
         public string Description { get; set; } = string.Empty;
         [Required]
-        public int UserID { get; set; }
-
-        public List<SubCategoryDto> Subcategories { get; set; }
-
+        public int CategoryId { get; set; }
+        public decimal? MonthlyPlafond { get; set; }
+        public decimal? AnnualPlafon { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using api.Dtos.Expenses;
+using api.Dtos.SubCategories;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
@@ -8,16 +8,16 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ExpensesController : ControllerBase
+    public class SubCategoriesController : ControllerBase
     {
-        private readonly ILogger<ExpensesController> _logger;
-        private readonly IExpenseRepository _expenseRepository;
+        private readonly ILogger<SubCategoriesController> _logger;
+        private readonly ISubCategoryRepository _subCategoryRepository;
 
-        public ExpensesController(
-            IExpenseRepository expenseRepository,
-            ILogger<ExpensesController> logger)
+        public SubCategoriesController(
+            ISubCategoryRepository subCategoryRepository,
+            ILogger<SubCategoriesController> logger)
         {
-            _expenseRepository = expenseRepository;
+            _subCategoryRepository = subCategoryRepository;
             _logger = logger;
         }
 
@@ -26,8 +26,8 @@ namespace api.Controllers
         {
             try
             {
-                var expenses = await _expenseRepository.GetAsync();
-                return Ok(expenses);
+                var subCategories = await _subCategoryRepository.GetAsync();
+                return Ok(subCategories);
             }
             catch (NotFoundException)
             {
@@ -40,15 +40,12 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateExpenseDto createExpenseDto)
+        public async Task<IActionResult> Create([FromBody] CreateSubCategoryDto createSubCategoryDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
-                var expense = createExpenseDto.ToExpenseFromCreateExpenseDto();
-                await _expenseRepository.CreateAsync(expense);
+                var subCategoryModel = createSubCategoryDto.TosubCategoryFromCreateSubCategoryDto();
+                await _subCategoryRepository.CreateAsync(subCategoryModel);
 
                 return Created();
             }
@@ -63,15 +60,15 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateExpenseDto updateExpenseDto)
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateSubCategoryDto updateSubCategoryDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var earning = updateExpenseDto.ToExpenseFromUpdateExpenseDto();
-                await _expenseRepository.UpdateAsync(id, earning);
+                var subCategory = updateSubCategoryDto.ToSubCategoryFromUpdateSubCategoryDto();
+                await _subCategoryRepository.UpdateAsync(id, subCategory);
 
                 return Ok();
             }
@@ -86,11 +83,11 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             try
             {
-                await _expenseRepository.DeleteAsync(id);
+                await _subCategoryRepository.DeleteAsync(id);
 
                 return Ok();
             }
@@ -103,6 +100,5 @@ namespace api.Controllers
                 return BadRequest(ex);
             }
         }
-
     }
 }
