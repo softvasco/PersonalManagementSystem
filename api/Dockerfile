@@ -1,25 +1,36 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+# Use the official Microsoft .NET Core SDK 8 image as the base image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["api.csproj", "."]
-RUN dotnet restore "api.csproj"
-COPY . .
-WORKDIR "/src"
-RUN dotnet build "api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# Set the working directory to the root of the project
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy the project files to the container
+COPY . .
+
+# Restore the dependencies
+RUN dotnet restore
+
+# Build the project
+RUN dotnet build --configuration Release
+
+# Publish the project
+RUN dotnet publish -c Release -o out
+
+# Use the official Microsoft .NET Core runtime image as the base image for the production environment
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Set the working directory to the root of the project
+WORKDIR /app
+
+# Copy the published project files to the container
+COPY --from=build /app/out .
+
+# Set the environment variables
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose the port that the application will listen on
+EXPOSE 80
+
+# Start the application
 ENTRYPOINT ["dotnet", "api.dll"]
