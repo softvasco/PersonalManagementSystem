@@ -1,4 +1,4 @@
-﻿using api.Dtos.SubCategories;
+﻿using Shared.Dtos.SubCategories;
 using api.Models;
 
 namespace api.Mappers

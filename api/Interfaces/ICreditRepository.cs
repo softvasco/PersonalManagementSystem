@@ -1,4 +1,4 @@
-﻿using api.Dtos.Credits;
+﻿using Shared.Dtos.Credits;
 using api.Models;
 
 namespace api.Interfaces

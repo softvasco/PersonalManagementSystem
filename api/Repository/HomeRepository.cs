@@ -1,6 +1,6 @@
 ﻿using api.Data;
-using api.Dtos.Home;
-using api.Enum;
+using Shared.Dtos.Home;
+using Shared.Enum;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;

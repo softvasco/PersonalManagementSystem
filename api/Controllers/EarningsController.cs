@@ -1,4 +1,4 @@
-using api.Dtos.Earnings;
+using Shared.Dtos.Earnings;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

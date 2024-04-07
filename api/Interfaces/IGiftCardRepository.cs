@@ -1,4 +1,4 @@
-﻿using api.Dtos.GiftCards;
+﻿using Shared.Dtos.GiftCards;
 using api.Models;
 
 namespace api.Interfaces

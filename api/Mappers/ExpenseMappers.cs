@@ -1,4 +1,4 @@
-﻿using api.Dtos.Expenses;
+﻿using Shared.Dtos.Expenses;
 using api.Models;
 
 namespace api.Mappers

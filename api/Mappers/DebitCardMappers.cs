@@ -1,4 +1,4 @@
-﻿using api.Dtos.DebitCards;
+﻿using Shared.Dtos.DebitCards;
 using api.Models;
 
 namespace api.Mappers

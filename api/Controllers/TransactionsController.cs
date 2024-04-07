@@ -1,4 +1,4 @@
-using api.Dtos.Transactions;
+using Shared.Dtos.Transactions;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

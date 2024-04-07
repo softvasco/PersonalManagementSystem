@@ -1,4 +1,4 @@
-﻿namespace api.Enum
+﻿namespace Shared.Enum
 {
     public enum TransactionState
     {

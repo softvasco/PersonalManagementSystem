@@ -1,4 +1,4 @@
-﻿using api.Dtos.Home;
+﻿using Shared.Dtos.Home;
 
 namespace api.Interfaces
 {

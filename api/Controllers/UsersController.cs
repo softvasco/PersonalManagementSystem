@@ -1,4 +1,4 @@
-using api.Dtos.Users;
+using Shared.Dtos.Users;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

@@ -1,4 +1,4 @@
-﻿using api.Dtos.Users;
+﻿using Shared.Dtos.Users;
 using api.Models;
 
 namespace api.Mappers

@@ -9,23 +9,20 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-# version: "3.8"
-# services:
-  # webapi:
-    # image: PersonalManagement/api:latest
-    # restart: always
-    # build: 
-      # context: .
-      # dockerfile: api/Dockerfile
-    # environment:
-      # - ASPNETCORE_HTTPS_PORT=6011
-      # - ASPNETCORE_ENVIRONMENT=Docker
-    # ports:
-      # - 6010:8080
-      # - 6011:8081
-    # networks:
-      # - mynetwork
 
-# networks:
-  # mynetwork:
-    # driver: bridge
+  personal_management_frontend:
+    image: ${DOCKER_REGISTRY-}personal_management_frontend
+    build: /
+    ports:
+      - "5001:81"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:81
+    depends_on:
+      - personal_management_api
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

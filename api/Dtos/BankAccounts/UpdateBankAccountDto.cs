@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos.BankAccounts
+namespace Shared.Dtos.BankAccounts
 {
     public class UpdateBankAccountDto
     {

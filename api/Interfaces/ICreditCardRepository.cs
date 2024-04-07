@@ -1,4 +1,4 @@
-﻿using api.Dtos.CreditCards;
+﻿using Shared.Dtos.CreditCards;
 using api.Models;
 
 namespace api.Interfaces

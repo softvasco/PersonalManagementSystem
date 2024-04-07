@@ -1,4 +1,4 @@
-﻿namespace api.Dtos.GiftCards
+﻿namespace Shared.Dtos.GiftCards
 {
     public class GiftCardDto
     {

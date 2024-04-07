@@ -1,5 +1,5 @@
-﻿using api.Dtos.Categories;
-using api.Dtos.SubCategories;
+﻿using Shared.Dtos.Categories;
+using Shared.Dtos.SubCategories;
 using api.Models;
 
 namespace api.Mappers

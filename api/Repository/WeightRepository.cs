@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using api.Dtos.Categories;
+using Shared.Dtos.Categories;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

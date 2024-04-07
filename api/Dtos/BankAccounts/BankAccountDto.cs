@@ -1,4 +1,4 @@
-﻿namespace api.Dtos.BankAccounts
+﻿namespace Shared.Dtos.BankAccounts
 {
     public class BankAccountDto
     {

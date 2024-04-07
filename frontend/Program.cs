@@ -7,7 +7,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Adicionar HttpClient
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5192/") });
+builder.Services.AddScoped(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var apiUrl = !builder.Environment.IsEnvironment("Development") ? "personal_management_api:5000/" : "http://localhost:5192/";
+    return new HttpClient { BaseAddress = new Uri(apiUrl!) };
+});
 
 var app = builder.Build();
 

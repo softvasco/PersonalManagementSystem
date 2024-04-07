@@ -1,5 +1,5 @@
-using api.Dtos.Dropdown;
-using api.Enum;
+using Shared.Dtos.Dropdown;
+using Shared.Enum;
 using api.Helpers;
 using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;

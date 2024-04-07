@@ -1,6 +1,6 @@
 ﻿using api.Data;
-using api.Dtos.Transactions;
-using api.Enum;
+using Shared.Dtos.Transactions;
+using Shared.Enum;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;

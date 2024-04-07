@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using api.Dtos.DebitCards;
+using Shared.Dtos.DebitCards;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

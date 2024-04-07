@@ -1,4 +1,4 @@
-using api.Dtos.BankAccounts;
+using Shared.Dtos.BankAccounts;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

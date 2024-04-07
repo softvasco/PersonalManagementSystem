@@ -1,4 +1,4 @@
-﻿using api.Dtos.Categories;
+﻿using Shared.Dtos.Categories;
 using api.Models;
 
 namespace api.Interfaces

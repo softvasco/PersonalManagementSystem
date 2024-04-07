@@ -1,4 +1,4 @@
-﻿using api.Dtos.Earnings;
+﻿using Shared.Dtos.Earnings;
 using api.Models;
 
 namespace api.Mappers

@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using api.Dtos.FinanceGoals;
+using Shared.Dtos.FinanceGoals;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

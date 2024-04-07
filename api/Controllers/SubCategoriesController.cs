@@ -1,4 +1,4 @@
-using api.Dtos.SubCategories;
+using Shared.Dtos.SubCategories;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;

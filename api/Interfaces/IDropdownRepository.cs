@@ -1,4 +1,4 @@
-﻿using api.Dtos.Dropdown;
+﻿using Shared.Dtos.Dropdown;
 
 namespace api.Interfaces
 {

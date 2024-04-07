@@ -1,4 +1,4 @@
-﻿using api.Dtos.FinanceGoals;
+﻿using Shared.Dtos.FinanceGoals;
 using api.Models;
 
 namespace api.Interfaces

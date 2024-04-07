@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using api.Enum;
+using Shared.Enum;
 using api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

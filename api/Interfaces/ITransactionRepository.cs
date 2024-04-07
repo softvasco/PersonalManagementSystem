@@ -1,4 +1,4 @@
-﻿using api.Dtos.Transactions;
+﻿using Shared.Dtos.Transactions;
 using api.Models;
 
 namespace api.Interfaces
