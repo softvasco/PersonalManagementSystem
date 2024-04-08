@@ -441,6 +441,31 @@ namespace api.Repository
                     await CreditMoney(transaction);
                     await _context.SaveChangesAsync();
 
+                    transaction = await _context.Transactions.Include(x=> x.SubCategory).FirstAsync(x=> x.Id== transaction.Id);
+                    if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
+                    {
+                        Transaction? extraTransactions = await _context
+                            .Transactions
+                            .Include(x => x.SubCategory)
+                            .FirstOrDefaultAsync(z => z.SubCategory.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
+
+                        if (extraTransactions is not null)
+                        {
+                            extraTransactions.Amount -= transaction.Amount;
+                            if (extraTransactions.Amount < 0)
+                            {
+                                _context.Transactions.Remove(extraTransactions);
+                                await _context.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                extraTransactions.UpdatedDate = DateTime.UtcNow;
+                                _context.Entry(extraTransactions).State = EntityState.Modified;
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+
                     await UpdateFinanceGoal(transaction);
                     await _context.SaveChangesAsync();
                 }
