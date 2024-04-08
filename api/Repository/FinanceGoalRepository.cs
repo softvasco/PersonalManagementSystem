@@ -49,17 +49,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
             return financeGoalModel;
         }
-
-        public async Task<FinanceGoal> UpdateAsync(int id, FinanceGoal financeGoal)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<FinanceGoal> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
       
     }
 }

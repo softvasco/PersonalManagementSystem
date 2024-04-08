@@ -7,7 +7,5 @@ namespace api.Interfaces
     {
         Task<List<CreditDto>> Get();
         Task<Credit> CreateAsync(Credit credit);
-        Task<Credit> UpdateAsync(int id, Credit credit);
-        Task<Credit> DeleteAsync(int id);
     }
 }

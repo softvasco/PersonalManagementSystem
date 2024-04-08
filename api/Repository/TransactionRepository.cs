@@ -447,7 +447,7 @@ namespace api.Repository
 
                 await trans.CommitAsync();
             }
-            catch (Exception ex)
+            catch 
             {
                 await trans.RollbackAsync();
                 throw;

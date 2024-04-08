@@ -30,7 +30,7 @@ namespace api.Repository
                 await _context.SaveChangesAsync();
                 return user;
             }
-            catch (Exception ex)
+            catch 
             {
                 throw;
             }

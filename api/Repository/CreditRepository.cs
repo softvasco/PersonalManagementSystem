@@ -69,17 +69,6 @@ namespace api.Repository
             return credit;
         }
 
-        public async Task<Credit> UpdateAsync(int id, Credit credit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Credit> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-
         private async Task InsertTransactions(Credit credit)
         {
             DateTime indexData = Utils.CalculateNextPaymentDate(credit.OpenDate, credit.PayDay);

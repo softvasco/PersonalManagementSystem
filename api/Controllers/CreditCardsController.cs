@@ -77,7 +77,7 @@ namespace api.Controllers
             }
             catch (NotFoundException e)
             {
-                return NotFound();
+                return NotFound(e);
             }
             catch (Exception ex)
             {
