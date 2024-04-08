@@ -132,6 +132,9 @@ namespace api.Repository
             homeFinanceGoal.DebtAmount = await CalculateDebtAmount(userId, year);
             homeFinanceGoal.Goal = financeGoal.Goal;
             homeFinanceGoal.Diff = financeGoal.Goal - homeFinanceGoal.DebtAmount;
+            homeFinanceGoal.CarIndeminization = (decimal)10290.00;
+            homeFinanceGoal.DebtAmountWithCarIndeminization = homeFinanceGoal.DebtAmount + homeFinanceGoal.CarIndeminization;
+            homeFinanceGoal.DiffWithCarIndeminization = financeGoal.Goal - (homeFinanceGoal.DebtAmount + homeFinanceGoal.CarIndeminization);
 
             return homeFinanceGoal;
         }
