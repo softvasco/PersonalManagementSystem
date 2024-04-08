@@ -67,7 +67,8 @@ namespace api.Repository
                         DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                         Amount = expense.Amount,
                         UserId = expense.UserId,
-                        SubCategoryId = (subCategory != null) ? subCategory.Id : null
+                        SubCategoryId = (subCategory != null) ? subCategory.Id : null,
+                        FileName = string.Empty
                     });
                 }
 
@@ -133,7 +134,8 @@ namespace api.Repository
                             DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
                             Amount = expense.Amount,
                             Attachment = null,
-                            SubCategoryId = (subCategory != null) ? subCategory.Id : null
+                            SubCategoryId = (subCategory != null) ? subCategory.Id : null,
+                            FileName = string.Empty
                         });
                     }
 

@@ -3,8 +3,8 @@
     public class Credit : BaseEntity
     {
         public string Code { get; set; } = string.Empty;
-        public string? Description { get; set; } = string.Empty;
-        public string? AccountOrCardCodeToDebt { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string AccountOrCardCodeToDebt { get; set; } = string.Empty;
         public decimal StartingCapital { get; set; }
         public decimal DebtCapital { get; set; }
         public decimal Installment { get; set; }

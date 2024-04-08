@@ -97,6 +97,7 @@ namespace api.Repository
                     Attachment = null,
                     CreditId = credit.Id,
                     DestinationAccountOrCardCode = credit.Code,
+                    FileName = string.Empty
                 });
 
                 indexData = indexData.AddMonths(1);
@@ -129,7 +130,8 @@ namespace api.Repository
                     Amount = credit.DebtCapital / numbOfTrans,
                     Attachment = null,
                     CreditId = credit.Id,
-                    DestinationAccountOrCardCode = credit.Code
+                    DestinationAccountOrCardCode = credit.Code,
+                    FileName = string.Empty
                 });
 
                 indexData = indexData.AddMonths(1);

@@ -75,6 +75,7 @@ namespace api.Repository
                         DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
                         Amount = earning.Amount,
                         Attachment = null,
+                        FileName = string.Empty
                     });
                 }
 
@@ -136,6 +137,7 @@ namespace api.Repository
                             DestinationAccountOrCardCode = earning.DestinationAccountOrCardCode,
                             Amount = earning.Amount,
                             Attachment = null,
+                            FileName = string.Empty
                         });
                     }
 
