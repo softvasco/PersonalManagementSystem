@@ -389,26 +389,26 @@ namespace api.Repository
             if (sourceCreditCard != null)
             {
                 sourceCreditCard.UpdatedDate = DateTime.UtcNow;
-                sourceCreditCard.Balance = -transaction.Amount;
+                sourceCreditCard.Balance -= transaction.Amount;
                 _context.Entry(sourceCreditCard).State = EntityState.Modified;
             }
             else if (sourceBankAccount != null)
             {
                 sourceBankAccount.UpdatedDate = DateTime.UtcNow;
-                sourceBankAccount.Balance = -transaction.Amount;
+                sourceBankAccount.Balance -= transaction.Amount;
                 _context.Entry(sourceBankAccount).State = EntityState.Modified;
             }
 
             if (destinationCreditCard != null)
             {
                 destinationCreditCard.UpdatedDate = DateTime.UtcNow;
-                destinationCreditCard.Balance = -transaction.Amount;
+                destinationCreditCard.Balance -= transaction.Amount;
                 _context.Entry(destinationCreditCard).State = EntityState.Modified;
             }
             else if (destinationBankAccount != null && destinationBankAccount.Code != "BankinterCH")
             {
                 destinationBankAccount.UpdatedDate = DateTime.UtcNow;
-                destinationBankAccount.Balance = -transaction.Amount;
+                destinationBankAccount.Balance -= transaction.Amount;
                 _context.Entry(destinationBankAccount).State = EntityState.Modified;
             }
 
