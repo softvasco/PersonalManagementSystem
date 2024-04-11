@@ -63,8 +63,8 @@ namespace api.Repository
                         Description = expense.Description,
                         State = (int)TransactionState.Pending,
                         ExpenseId = expense.Id,
-                        SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
-                        DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
+                        SourceAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.SourceAccountOrCardCode) ? expense.SourceAccountOrCardCode : string.Empty,
+                        DestinationAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.DestinationAccountOrCardCode) ? expense.DestinationAccountOrCardCode : string.Empty,
                         Amount = expense.Amount,
                         UserId = expense.UserId,
                         SubCategoryId = (subCategory != null) ? subCategory.Id : null,
@@ -100,10 +100,10 @@ namespace api.Repository
             existingExpense.EndDate = expense.EndDate;
             existingExpense.StartDate = DateTime.Now;
             existingExpense.Amount = expense.Amount;
-            existingExpense.DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode;
+            existingExpense.DestinationAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.DestinationAccountOrCardCode) ? expense.DestinationAccountOrCardCode : string.Empty;
             existingExpense.UserId = expense.UserId;
             existingExpense.PayDay = expense.PayDay;
-            existingExpense.SourceAccountOrCardCode = expense.SourceAccountOrCardCode;
+            existingExpense.SourceAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.SourceAccountOrCardCode) ? expense.SourceAccountOrCardCode : string.Empty;
 
             SubCategory? subCategory = _context.SubCategories.FirstOrDefault(x => x.Description == existingExpense.Description);
 
@@ -119,8 +119,8 @@ namespace api.Repository
 
                 while (indexData < expense.EndDate)
                 {
-                    if (expense.Months.Contains(indexData.Month) 
-                        && expense.Amount > 0 
+                    if (expense.Months.Contains(indexData.Month)
+                        && expense.Amount > 0
                         && !_context.Transactions.Any(x => x.ExpenseId == existingExpense.Id && x.OperationDate == indexData))
                     {
                         await _context.Transactions.AddAsync(new Transaction
@@ -130,8 +130,8 @@ namespace api.Repository
                             State = (int)TransactionState.Pending,
                             UserId = expense.UserId,
                             ExpenseId = existingExpense.Id,
-                            SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
-                            DestinationAccountOrCardCode = expense.DestinationAccountOrCardCode,
+                            SourceAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.SourceAccountOrCardCode) ? expense.SourceAccountOrCardCode : string.Empty,
+                            DestinationAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.DestinationAccountOrCardCode) ? expense.DestinationAccountOrCardCode : string.Empty,
                             Amount = expense.Amount,
                             Attachment = null,
                             SubCategoryId = (subCategory != null) ? subCategory.Id : null,
@@ -183,6 +183,6 @@ namespace api.Repository
             return existingExpense;
         }
 
-       
+
     }
 }

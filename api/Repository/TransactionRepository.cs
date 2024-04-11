@@ -667,6 +667,9 @@ namespace api.Repository
         /// <returns></returns>
         private async Task InsertIgnoringRules(Transaction transaction)
         {
+            if (string.IsNullOrEmpty(transaction.FileName))
+                transaction.FileName = string.Empty;
+
             transaction.State = (int)TransactionState.Pending;
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
