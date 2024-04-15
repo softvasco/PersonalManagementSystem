@@ -7,7 +7,7 @@ namespace api.Interfaces
     {
         Task<List<TransactionDto>> GetAsync();
         Task<Transaction> GetByIdAsync(int id);
-        Task<Transaction> CreateAsync(Transaction transaction, bool? ignoreRules);
+        Task<Transaction> CreateAsync(Transaction transaction);
         Task<Transaction> UpdateAsync(int id, UpdateTransactionDto updateTransactionDto);
         Task<Transaction> DeleteAsync(int id);
         Task<Transaction> ConfirmTransactionAsync(int id);

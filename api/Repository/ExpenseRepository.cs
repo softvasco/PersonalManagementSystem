@@ -112,7 +112,11 @@ namespace api.Repository
                 _context.Entry(existingExpense).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                _context.Transactions.RemoveRange(_context.Transactions.Where(x => x.ExpenseId == existingExpense.Id && x.State == (int)TransactionState.Pending && x.Attachment == null));
+                _context.Transactions.RemoveRange(_context
+                    .Transactions
+                    .Where(x => x.ExpenseId == existingExpense.Id 
+                        && x.State == (int)TransactionState.Pending
+                        && (x.Attachment == null || x.Attachment.Length==0)));
                 await _context.SaveChangesAsync();
 
                 DateTime indexData = Utils.CalculateNextPaymentDate(existingExpense.StartDate, expense.PayDay);
@@ -134,7 +138,7 @@ namespace api.Repository
                             DestinationAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.DestinationAccountOrCardCode) ? expense.DestinationAccountOrCardCode : string.Empty,
                             Amount = expense.Amount,
                             Attachment = null,
-                            SubCategoryId = (subCategory != null) ? subCategory.Id : null,
+                            SubCategoryId = subCategory?.Id,
                             FileName = string.Empty
                         });
                     }

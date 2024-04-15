@@ -60,21 +60,59 @@ namespace api.Repository
         /// 
         /// </summary>
         /// <param name="transaction"></param>
-        /// <param name="ignoreRules"></param>
         /// <returns></returns>
-        public async Task<Transaction> CreateAsync(Transaction transaction, bool? ignoreRules)
+        public async Task<Transaction> CreateAsync(Transaction transaction)
         {
+            using var trans = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                if (ignoreRules.HasValue && ignoreRules.Value)
-                    await InsertIgnoringRules(transaction);
-                else
-                    await Insert(transaction);
+                await _context.Transactions.AddAsync(transaction);
+                await _context.SaveChangesAsync();
 
+                if (transaction.State == (int)TransactionState.Finished)
+                {
+                    await DebtMoney(transaction);
+                    await _context.SaveChangesAsync();
+
+                    await CreditMoney(transaction);
+                    await _context.SaveChangesAsync();
+
+                    transaction = await _context.Transactions.Include(x => x.SubCategory).FirstAsync(x => x.Id == transaction.Id);
+                    if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
+                    {
+                        Transaction? extraTransactions = await _context
+                            .Transactions
+                            .Include(x => x.SubCategory)
+                            .FirstOrDefaultAsync(z => z.SubCategory!.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
+
+                        if (extraTransactions is not null)
+                        {
+                            extraTransactions.Amount -= transaction.Amount;
+                            if (extraTransactions.Amount < 0)
+                            {
+                                _context.Transactions.Remove(extraTransactions);
+                                await _context.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                extraTransactions.UpdatedDate = DateTime.UtcNow;
+                                _context.Entry(extraTransactions).State = EntityState.Modified;
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    await UpdateFinanceGoal(transaction);
+                    await _context.SaveChangesAsync();
+                }
+
+                await trans.CommitAsync();
                 return transaction;
             }
             catch
             {
+                await trans.RollbackAsync();
                 throw;
             }
         }
@@ -419,66 +457,6 @@ namespace api.Repository
             await _context.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="transaction"></param>
-        /// <returns></returns>
-        private async Task Insert(Transaction transaction)
-        {
-            using var trans = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                await _context.Transactions.AddAsync(transaction);
-                await _context.SaveChangesAsync();
-
-                if (transaction.State == (int)TransactionState.Finished)
-                {
-                    await DebtMoney(transaction);
-                    await _context.SaveChangesAsync();
-
-                    await CreditMoney(transaction);
-                    await _context.SaveChangesAsync();
-
-                    transaction = await _context.Transactions.Include(x=> x.SubCategory).FirstAsync(x=> x.Id== transaction.Id);
-                    if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
-                    {
-                        Transaction? extraTransactions = await _context
-                            .Transactions
-                            .Include(x => x.SubCategory)
-                            .FirstOrDefaultAsync(z => z.SubCategory.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
-
-                        if (extraTransactions is not null)
-                        {
-                            extraTransactions.Amount -= transaction.Amount;
-                            if (extraTransactions.Amount < 0)
-                            {
-                                _context.Transactions.Remove(extraTransactions);
-                                await _context.SaveChangesAsync();
-                            }
-                            else
-                            {
-                                extraTransactions.UpdatedDate = DateTime.UtcNow;
-                                _context.Entry(extraTransactions).State = EntityState.Modified;
-                                await _context.SaveChangesAsync();
-                            }
-                        }
-                    }
-
-                    await UpdateFinanceGoal(transaction);
-                    await _context.SaveChangesAsync();
-                }
-
-                await trans.CommitAsync();
-            }
-            catch 
-            {
-                await trans.RollbackAsync();
-                throw;
-            }
-        }
-        
         /// <summary>
         /// 
         /// </summary>

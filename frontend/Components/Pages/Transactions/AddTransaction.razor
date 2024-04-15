@@ -245,7 +245,7 @@ else
 
     int maxFileSizeLimit = 1024 * 1024 * 20;
 
-    CreateTransactionDto createTransactionDto = new CreateTransactionDto { OperationDate = DateTime.Today, UserId = 1, IgnoreRules = false };
+    CreateTransactionDto createTransactionDto = new CreateTransactionDto { OperationDate = DateTime.Today, UserId = 1};
     UpdateTransactionDto updateTransactionDto = new();
 
     List<DropdownDto> transactionStates = new List<DropdownDto>();
@@ -338,9 +338,6 @@ else
         formData.Add(new StringContent(createTransactionDto.OperationDate.ToString()), "OperationDate");
         formData.Add(new StringContent(createTransactionDto.Amount.ToString()), "Amount");
         formData.Add(new StringContent(createTransactionDto.UserId.ToString()), "UserId");
-
-        if (createTransactionDto.IgnoreRules.HasValue)
-            formData.Add(new StringContent(createTransactionDto.IgnoreRules.Value.ToString()), "IgnoreRules");
 
         if (createTransactionDto.CreditId.HasValue)
             formData.Add(new StringContent(createTransactionDto.CreditId.Value.ToString()), "CreditId");

@@ -19,12 +19,11 @@ namespace Shared.Dtos.Transactions
         [Required]
         public int UserId { get; set; }
         public int? SubCategoryId { get; set; }
-        public bool? IgnoreRules { get; set; }
         public int State { get; set; }
 
         public IFormFile? File { get; set; } = null;
         public byte[]? Attachment { get; set; }
-        public string? FileName { get; set; }
+        public string? FileName { get; set; } = string.Empty;
         public string? ContentType { get; set; } = string.Empty;
     }
 }
