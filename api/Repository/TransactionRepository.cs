@@ -440,13 +440,13 @@ namespace api.Repository
             if (destinationCreditCard != null)
             {
                 destinationCreditCard.UpdatedDate = DateTime.UtcNow;
-                destinationCreditCard.Balance -= transaction.Amount;
+                destinationCreditCard.Balance += transaction.Amount;
                 _context.Entry(destinationCreditCard).State = EntityState.Modified;
             }
             else if (destinationBankAccount != null && destinationBankAccount.Code != "BankinterCH")
             {
                 destinationBankAccount.UpdatedDate = DateTime.UtcNow;
-                destinationBankAccount.Balance -= transaction.Amount;
+                destinationBankAccount.Balance += transaction.Amount;
                 _context.Entry(destinationBankAccount).State = EntityState.Modified;
             }
 
