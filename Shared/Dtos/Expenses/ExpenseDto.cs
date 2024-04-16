@@ -8,7 +8,7 @@ namespace Shared.Dtos.Expenses
         [Required]
         public string Code { get; set; } = string.Empty;
         [Required]
-        public string? Description { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         [Required]
         public string Months { get; set; } = string.Empty;
         [Required]
@@ -26,6 +26,9 @@ namespace Shared.Dtos.Expenses
         [Required]
         public int UserId { get; set; }
         public bool IsEditing { get; set; }
+
+        public int SubCategoryId { get; set; }
+        public string? SubCategoryName { get; set; } = string.Empty;
 
     }
 }

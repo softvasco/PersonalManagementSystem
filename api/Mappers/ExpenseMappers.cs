@@ -19,7 +19,9 @@ namespace api.Mappers
                 Months = string.Join(", ", expense.Months),
                 SourceAccountOrCardCode = expense.SourceAccountOrCardCode,
                 StartDate = expense.StartDate,
-                EndDate = expense.EndDate
+                EndDate = expense.EndDate,
+                SubCategoryName = "",
+                SubCategoryId = expense.SubCategoryId
 
             };
         }
@@ -37,7 +39,8 @@ namespace api.Mappers
                 Months = createExpenseDto.Months.ToString()!.Split(',').Select(int.Parse).ToList(),
                 SourceAccountOrCardCode = createExpenseDto.SourceAccountOrCardCode,
                 StartDate = createExpenseDto.StartDate,
-                EndDate = createExpenseDto.EndDate
+                EndDate = createExpenseDto.EndDate,
+                SubCategoryId = createExpenseDto.SubCategoryId
             };
         }
 
@@ -53,7 +56,8 @@ namespace api.Mappers
                 PayDay = updateExpenseDto.PayDay,
                 Months = updateExpenseDto.Months.Split(',').Select(int.Parse).ToList(),
                 SourceAccountOrCardCode = updateExpenseDto.SourceAccountOrCardCode,
-                EndDate = updateExpenseDto.EndDate
+                EndDate = updateExpenseDto.EndDate,
+                SubCategoryId = updateExpenseDto.SubCategoryId
             };
         }
     

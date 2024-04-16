@@ -28,6 +28,7 @@ else
                 <th>Amount</th>
                 <th>SourceAccountOrCardCode</th>
                 <th>DestinationAccountOrCardCode</th>
+                <th>SubCategory</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -128,6 +129,22 @@ else
                     <td>
                         @if (expense.IsEditing)
                         {
+                            <select @bind="expense.SubCategoryId" class="form-select">
+                                <option value="">-- Select an option --</option>
+                                @foreach (var option in subCategories)
+                                {
+                                    <option value="@option.Id">@option.Description</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @expense.SubCategoryName
+                        }
+                    </td>
+                    <td>
+                        @if (expense.IsEditing)
+                        {
                             <button class="btn btn-success" @onclick="() => Save(expense)">Save</button>
                             <button class="btn btn-secondary" @onclick="() => Cancel(expense)">Cancel</button>
                         }
@@ -148,10 +165,17 @@ else
 
 @code {
     private List<ExpenseDto> expenses;
-
+    List<DropdownDto> subCategories = new List<DropdownDto>();
 
     protected override async Task OnInitializedAsync()
     {
+        //Transaction SubCategories
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSubCategories");
+        if (response != null)
+        {
+            subCategories = response;
+        }
+
         expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("Expenses");
     }
 
@@ -187,6 +211,7 @@ else
             createExpenseDto.Amount = expense.Amount;
             createExpenseDto.EndDate = expense.EndDate;
             createExpenseDto.Months = expense.Months;
+            createExpenseDto.SubCategoryId = expense.SubCategoryId;
 
             var response = await Http.PostAsJsonAsync("Expenses", createExpenseDto);
             expense.IsEditing = false;
@@ -205,6 +230,7 @@ else
             updateExpenseDto.Amount = expense.Amount;
             updateExpenseDto.EndDate = expense.EndDate;
             updateExpenseDto.Months = expense.Months;
+            updateExpenseDto.SubCategoryId = expense.SubCategoryId;
 
             var response = await Http.PutAsJsonAsync("Expenses/" + expense.Id, updateExpenseDto);
             expense.IsEditing = false;

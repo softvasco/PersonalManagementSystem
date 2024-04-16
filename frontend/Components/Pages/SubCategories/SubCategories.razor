@@ -114,7 +114,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //Transaction States
+        //Transaction Categories
         var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetCategories");
         if (response != null)
         {
