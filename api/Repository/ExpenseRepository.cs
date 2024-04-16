@@ -29,7 +29,24 @@ namespace api.Repository
                 throw new NotFoundException("No expenses found for the specified user");
             }
 
-            return expenses.Select(c => c.ToExpenseDtoFromExpense()).ToList();
+            var subCategoryIds = expenses.Select(x => x.SubCategoryId).Distinct().ToList();
+            var subCategoryNames = await _context.SubCategories
+                .Where(x => subCategoryIds.Contains(x.Id))
+                .Select(x => new { Id = x.Id, Name = x.Description })
+                .ToDictionaryAsync(x => x.Id, x => x.Name);
+
+            // Add new item to the dictionary
+            if (!subCategoryNames.ContainsKey(0))
+            {
+                subCategoryNames[0] = "Other";
+            }
+
+            return expenses.Select(c =>
+            {
+                var expenseDto = c.ToExpenseDtoFromExpense();
+                expenseDto.SubCategoryName = subCategoryNames[c.SubCategoryId];
+                return expenseDto;
+            }).ToList();
         }
 
         public async Task<Expense> CreateAsync(Expense expense)
@@ -51,7 +68,7 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             DateTime indexData = Utils.CalculateNextPaymentDate(expense.StartDate, expense.PayDay);
-            SubCategory subCategory = await _context.SubCategories.FindAsync(expense.Id)!;
+            SubCategory subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId)!;
 
             while (indexData < expense.EndDate)
             {
@@ -105,8 +122,9 @@ namespace api.Repository
             existingExpense.UserId = expense.UserId;
             existingExpense.PayDay = expense.PayDay;
             existingExpense.SourceAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.SourceAccountOrCardCode) ? expense.SourceAccountOrCardCode : string.Empty;
+            existingExpense.SubCategoryId = expense.SubCategoryId;
 
-            SubCategory? subCategory = _context.SubCategories.FirstOrDefault(x => x.Description == existingExpense.Description);
+            SubCategory subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId)!;
 
             try
             {
