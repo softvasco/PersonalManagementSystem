@@ -44,6 +44,25 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("GetCategories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            try
+            {
+                var result = await _dropdownRepository.GetCategories();
+
+                return Ok(result);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("GetSubCategories")]
         public async Task<IActionResult> GetSubCategories()
         {

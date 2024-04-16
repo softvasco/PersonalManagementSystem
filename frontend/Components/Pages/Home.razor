@@ -52,17 +52,6 @@ else
         {
             <span style="color: green;">@homeDto.HomeFinanceGoal.Diff€.</span>
         }</label>
-    <br /><label>
-        This value include <b>@homeDto.HomeFinanceGoal.CarIndeminization€</b> of car indeminization.
-        <br />The real value will be <b>@homeDto.HomeFinanceGoal.DebtAmountWithCarIndeminization€.</b> The difference will be @if (@homeDto.HomeFinanceGoal.DiffWithCarIndeminization < 0)
-        {
-            <span style="color: red;">@homeDto.HomeFinanceGoal.DiffWithCarIndeminization€.</span>
-        }
-        else
-        {
-            <span style="color: green;">@homeDto.HomeFinanceGoal.DiffWithCarIndeminization€.</span>
-        }
-    </label>
     <br />
     <br />
 

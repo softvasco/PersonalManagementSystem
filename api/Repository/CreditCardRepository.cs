@@ -97,6 +97,7 @@ namespace api.Repository
                 existingCreditCard.IsActive = false;
             existingCreditCard.Balance = creditCard.Balance;
             existingCreditCard.IBAN = creditCard.IBAN;
+            existingCreditCard.TAN = creditCard.TAN;
             existingCreditCard.NIB = creditCard.NIB;
             existingCreditCard.Code = creditCard.Code;
             existingCreditCard.CloseExtractDay = creditCard.CloseExtractDay;

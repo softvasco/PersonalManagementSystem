@@ -17,5 +17,6 @@ namespace Shared.Dtos.CreditCards
         public decimal Plafon { get; set; }
         public decimal PercentageOfPayment { get; set; }
         public bool IsEditing { get; set; }
+        public decimal TAN { get; set; }
     }
 }

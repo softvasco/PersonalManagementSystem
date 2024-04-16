@@ -19,5 +19,6 @@ namespace Shared.Dtos.CreditCards
         public string? RefNumber { get; set; } = string.Empty;
         public decimal Plafon { get; set; }
         public decimal PercentageOfPayment { get; set; }
+        public decimal TAN { get; set; }
     }
 }

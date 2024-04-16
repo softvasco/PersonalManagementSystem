@@ -10,5 +10,6 @@ namespace api.Interfaces
         Task<List<DropdownDto>> GetEarnings();
         Task<List<DropdownDto>> GetExpenses();
         Task<List<DropdownDto>> GetCredits();
+        Task<List<DropdownDto>> GetCategories();
     }
 }

@@ -21,6 +21,7 @@ else
             <tr>
                 <th>Code</th>
                 <th>Description</th>
+                <th>TAN</th>
                 <th>IBAN</th>
                 <th>NIB</th>
                 <th>Balance</th>
@@ -55,6 +56,16 @@ else
                         else
                         {
                             @creditCard.Description
+                        }
+                    </td>
+                    <td>
+                        @if (creditCard.IsEditing)
+                        {
+                            <input @bind="creditCard.TAN" class="form-control" />
+                        }
+                        else
+                        {
+                            @creditCard.TAN
                         }
                     </td>
                     <td>
@@ -205,6 +216,7 @@ else
             createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
             createCreditCardDto.Code = creditCardDto.Code;
             createCreditCardDto.Description = creditCardDto.Description;
+            createCreditCardDto.TAN = creditCardDto.TAN;
             createCreditCardDto.IBAN = creditCardDto.IBAN;
             createCreditCardDto.NIB = creditCardDto.NIB;
             createCreditCardDto.Balance = creditCardDto.Balance;
@@ -226,6 +238,7 @@ else
             updateCreditCardDto.Code = creditCardDto.Code;
             updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
             updateCreditCardDto.Description = creditCardDto.Description;
+            updateCreditCardDto.TAN = creditCardDto.TAN;
             updateCreditCardDto.IBAN = creditCardDto.IBAN;
             updateCreditCardDto.NIB = creditCardDto.NIB;
             updateCreditCardDto.Balance = creditCardDto.Balance;
@@ -266,5 +279,4 @@ else
         StateHasChanged();
         creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
     }
-
 }

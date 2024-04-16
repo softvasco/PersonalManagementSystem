@@ -79,5 +79,10 @@ namespace api.Repository
             return credits.Select(x => new DropdownDto { Id = x.Id, Description = x.Description }).OrderBy(x => x.Description).ToList();
         }
 
+        public async Task<List<DropdownDto>> GetCategories()
+        {
+            var categories = await _context.Categories.Where(x => x.IsActive).ToListAsync();
+            return categories.Select(x => new DropdownDto { Id = x.Id, Description = x.Description }).OrderBy(x => x.Description).ToList();
+        }
     }
 }

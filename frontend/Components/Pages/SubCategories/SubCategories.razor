@@ -74,7 +74,13 @@ else
                     <td>
                         @if (subCategory.IsEditing)
                         {
-                            <input @bind="subCategory.CategoryName" class="form-control" />
+                            <select @bind="subCategory.CategoryId" class="form-select">
+                                <option value="">-- Select an option --</option>
+                                @foreach (var option in categories)
+                                {
+                                    <option value="@option.Id">@option.Description</option>
+                                }
+                            </select>
                         }
                         else
                         {
@@ -104,10 +110,16 @@ else
 
 @code {
     private List<SubCategoryDto> subCategories;
-
+    List<DropdownDto> categories = new List<DropdownDto>();
 
     protected override async Task OnInitializedAsync()
     {
+        //Transaction States
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetCategories");
+        if (response != null)
+        {
+            categories = response;
+        }
         subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
     }
 
@@ -128,34 +140,36 @@ else
 
     async Task Save(SubCategoryDto subCategoria)
     {
-        // if (categoria.Id == 0)
-        // {
-        //     CreateCategoryDto createCategoryDto = new CreateCategoryDto();
+        if (subCategoria.Id == 0)
+        {
+            CreateSubCategoryDto createSubCategoryDto = new CreateSubCategoryDto();
 
-        //     createCategoryDto.Id = categoria.Id;
-        //     createCategoryDto.UserID = 1; //TODO @VS - Change user id to current user
-        //     createCategoryDto.Code = categoria.Code;
-        //     createCategoryDto.Description = categoria.Description;
-        //     createCategoryDto.Subcategories = new List<SubCategoryDto>();
+            createSubCategoryDto.Id = subCategoria.Id;
+            createSubCategoryDto.Code = subCategoria.Code;
+            createSubCategoryDto.Description = subCategoria.Description;
+            createSubCategoryDto.CategoryId = subCategoria.CategoryId;
+            createSubCategoryDto.MonthlyPlafond = subCategoria.MonthlyPlafond;
+            createSubCategoryDto.AnnualPlafon = subCategoria.AnnualPlafon;
+            
 
-        //     var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
-        //     categoria.IsEditing = false;
-        //     StateHasChanged();
-        // }
-        // else
-        // {
-        //     UpdateCategoryDto updateCategoryDto = new UpdateCategoryDto();
+            var response = await Http.PostAsJsonAsync("SubCategories", createSubCategoryDto);
+            subCategoria.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateSubCategoryDto updateSubCategoryDto = new UpdateSubCategoryDto();
 
-        //     updateCategoryDto.Id = categoria.Id;
-        //     updateCategoryDto.UserID = categoria.UserId;
-        //     updateCategoryDto.Code = categoria.Code;
-        //     updateCategoryDto.Description = categoria.Description;
-        //     updateCategoryDto.Subcategories = categoria.SubCategories;
+            updateSubCategoryDto.Code = subCategoria.Code;
+            updateSubCategoryDto.Description = subCategoria.Description;
+            updateSubCategoryDto.CategoryId = subCategoria.CategoryId;
+            updateSubCategoryDto.MonthlyPlafond = subCategoria.MonthlyPlafond;
+            updateSubCategoryDto.AnnualPlafon = subCategoria.AnnualPlafon;
 
-        //     var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
-        //     categoria.IsEditing = false;
-        //     StateHasChanged();
-        // }
+            var response = await Http.PutAsJsonAsync("SubCategories/" + subCategoria.Id, updateSubCategoryDto);
+            subCategoria.IsEditing = false;
+            StateHasChanged();
+        }
     }
 
     async Task Cancel(SubCategoryDto subCategoria)
