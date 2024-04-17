@@ -151,34 +151,41 @@ else
 
     async Task Save(FinanceGoalDto financeGoalDto)
     {
-        // if (categoria.Id == 0)
-        // {
-        //     CreateCategoryDto createCategoryDto = new CreateCategoryDto();
+        if (financeGoalDto.Id == 0)
+        {
+            CreateFinanceGoalDto createFinanceGoalDto = new CreateFinanceGoalDto();
 
-        //     createCategoryDto.Id = categoria.Id;
-        //     createCategoryDto.UserID = 1; //TODO @VS - Change user id to current user
-        //     createCategoryDto.Code = categoria.Code;
-        //     createCategoryDto.Description = categoria.Description;
-        //     createCategoryDto.Subcategories = new List<SubCategoryDto>();
+            createFinanceGoalDto.Id = financeGoalDto.Id;
+            createFinanceGoalDto.UserId = 1; //TODO @VS - Change user id to current user
+            createFinanceGoalDto.Code = financeGoalDto.Code;
+            createFinanceGoalDto.Description = financeGoalDto.Description;
+            createFinanceGoalDto.EndGoalDate = financeGoalDto.EndGoalDate;
+            createFinanceGoalDto.StartGoalDate = financeGoalDto.StartGoalDate;
+            createFinanceGoalDto.CurrentDebtAmount = financeGoalDto.CurrentDebtAmount;
+            createFinanceGoalDto.Goal = financeGoalDto.Goal;
+            createFinanceGoalDto.OutstandingAmount = financeGoalDto.OutstandingAmount;
+          
+            var response = await Http.PostAsJsonAsync("FinanceGoals", createFinanceGoalDto);
+            financeGoalDto.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateFinanceGoalDto updateFinanceGoalDto = new UpdateFinanceGoalDto();
 
-        //     var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
-        //     categoria.IsEditing = false;
-        //     StateHasChanged();
-        // }
-        // else
-        // {
-        //     UpdateCategoryDto updateCategoryDto = new UpdateCategoryDto();
+            updateFinanceGoalDto.UserId = 1; //TODO @VS - Change user id to current user
+            updateFinanceGoalDto.Code = financeGoalDto.Code;
+            updateFinanceGoalDto.Description = financeGoalDto.Description;
+            updateFinanceGoalDto.EndGoalDate = financeGoalDto.EndGoalDate;
+            updateFinanceGoalDto.StartGoalDate = financeGoalDto.StartGoalDate;
+            updateFinanceGoalDto.CurrentDebtAmount = financeGoalDto.CurrentDebtAmount;
+            updateFinanceGoalDto.Goal = financeGoalDto.Goal;
+            updateFinanceGoalDto.OutstandingAmount = financeGoalDto.OutstandingAmount;
 
-        //     updateCategoryDto.Id = categoria.Id;
-        //     updateCategoryDto.UserID = categoria.UserId;
-        //     updateCategoryDto.Code = categoria.Code;
-        //     updateCategoryDto.Description = categoria.Description;
-        //     updateCategoryDto.Subcategories = categoria.SubCategories;
-
-        //     var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
-        //     categoria.IsEditing = false;
-        //     StateHasChanged();
-        // }
+            var response = await Http.PutAsJsonAsync("FinanceGoals/" + financeGoalDto.Id, updateFinanceGoalDto);
+            financeGoalDto.IsEditing = false;
+            StateHasChanged();
+        }
     }
 
     async Task Cancel(FinanceGoalDto financeGoalDto)

@@ -606,7 +606,12 @@ namespace api.Repository
             FinanceGoal? financeGoal = await _context
                 .FinanceGoals
                 .FirstOrDefaultAsync(x => x.IsActive
-                    && x.UserId == transaction.UserId);
+                    && x.UserId == transaction.UserId
+                    && transaction.OperationDate>= x.StartGoalDate 
+                    && transaction.OperationDate <= x.EndGoalDate);
+            
+            if (financeGoal == null)
+                throw new Exception("Finance Goal not found!");
 
             if (financeGoal != null)
             {
@@ -636,21 +641,6 @@ namespace api.Repository
                 _context.Entry(financeGoal).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="transaction"></param>
-        /// <returns></returns>
-        private async Task InsertIgnoringRules(Transaction transaction)
-        {
-            if (string.IsNullOrEmpty(transaction.FileName))
-                transaction.FileName = string.Empty;
-
-            transaction.State = (int)TransactionState.Pending;
-            await _context.Transactions.AddAsync(transaction);
-            await _context.SaveChangesAsync();
         }
 
         #endregion

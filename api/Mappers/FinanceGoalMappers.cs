@@ -20,6 +20,21 @@ namespace api.Mappers
             };
         }
 
+        public static FinanceGoal ToFinanceGoalFromUpdateFinanceGoalDto(this UpdateFinanceGoalDto updateFinanceGoalDto)
+        {
+            return new FinanceGoal
+            {
+                Description = updateFinanceGoalDto.Description,
+                Code = updateFinanceGoalDto.Code,
+                CurrentDebtAmount = updateFinanceGoalDto.CurrentDebtAmount,
+                OutstandingAmount = updateFinanceGoalDto.OutstandingAmount,
+                UserId = updateFinanceGoalDto.UserId,
+                Goal = updateFinanceGoalDto.Goal,
+                StartGoalDate = updateFinanceGoalDto.StartGoalDate,
+                EndGoalDate = updateFinanceGoalDto.EndGoalDate
+            };
+        }
+
         public static FinanceGoalDto ToFinanceGoalDtoFromFinanceGoal(this FinanceGoal financeGoal)
         {
             return new FinanceGoalDto

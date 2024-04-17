@@ -3,6 +3,8 @@ using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using api.Repository;
+using Shared.Dtos.Categories;
 
 namespace api.Controllers
 {
@@ -59,6 +61,48 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateFinanceGoalDto updateFinanceGoalDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var financeGoal = updateFinanceGoalDto.ToFinanceGoalFromUpdateFinanceGoalDto();
+                await _financeGoalRepository.UpdateAsync(id, financeGoal);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                await _financeGoalRepository.DeleteAsync(id);
+
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
 
