@@ -6,7 +6,7 @@
         public string Description { get; set; } = string.Empty;
         public decimal? MonthlyPlafond { get; set; }
         public decimal? AnnualPlafon { get; set; }
-
+        public bool IsVisibleInHomePage { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
