@@ -22,34 +22,41 @@ namespace api.Repository
         /// <summary>
         /// Gets the home data for a specific user and year.
         /// </summary>
-        /// <param name="UserId">The user ID.</param>
+        /// <param name="userId">The user ID.</param>
         /// <param name="year">The year.</param>
         /// <returns>The home data.</returns>
-        public async Task<HomeDto> GetAsync(int UserId, int year)
+        public async Task<HomeDto> GetAsync(int userId, int year)
         {
             HomeDto homeDto = new HomeDto();
             
-            var homeCategories = await CalculateCategories(UserId, year);
-            homeDto.HomeCategories = homeCategories;
+            var transactions = await _context.Transactions
+                                   .Include(sub => sub.SubCategory)
+                                   .Where(x => x.UserId == userId
+                                       && x.IsActive
+                                       && x.OperationDate.Year == year)
+                                   .ToListAsync();
 
-            var prevOfFinanceGoal = await CalculatePrevFinanceGoal(UserId, year);
+            var homeCategories = await CalculateCategories(transactions, userId);
+            homeDto.HomeCategories = homeCategories;
+            
+            var homeSubCategories = await CalculateSubCategories(transactions, userId);
+            homeDto.HomeSubCategories = homeSubCategories;
+
+            var prevOfFinanceGoal = await CalculatePrevFinanceGoal(userId, year);
             homeDto.HomeFinanceGoal = prevOfFinanceGoal;
 
             return homeDto;
         }
 
-        private async Task<List<HomeCategoryDto>> CalculateCategories(int UserId, int year)
+        private async Task<List<HomeCategoryDto>> CalculateCategories(List<Transaction> transactions,
+            int userId)
         {
             List<HomeCategoryDto> homeCategories = new();
 
-            var transactions = await _context.Transactions
-                                            .Include(sub => sub.SubCategory)
-                                            .Where(x => x.UserId == UserId
-                                                && x.IsActive
-                                                && x.OperationDate.Year == year)
-                                            .ToListAsync();
-
-            var categories = _context.Categories.Where(x => x.UserId == UserId && x.IsActive).ToList();
+            var categories = await _context
+                .Categories
+                .Where(x => x.UserId == userId && x.IsActive)
+                .ToListAsync();
 
             foreach (var category in categories)
             {
@@ -58,7 +65,7 @@ namespace api.Repository
 
                 for (int month = 1; month <= 12; month++)
                 {
-                    decimal realAmount = GetRealAmountForMonth(transactions, category.Id, UserId, month);
+                    decimal realAmount = GetRealAmountForMonth(transactions, category.Id, userId, month);
                     SetRealAmountForMonth(homeCategoryDto, month, realAmount);
                 }
 
@@ -189,6 +196,102 @@ namespace api.Repository
             decimal creditCardsDEbpts = creditCards.Sum(x => x.Plafon - x.Balance);
 
             return decimal.Round(banks + creditDebpts + creditCardsDEbpts, 2);
+        }
+
+        private async Task<List<HomeSubCategoryDto>> CalculateSubCategories(List<Transaction> transactions,
+            int userId)
+        {
+            List<HomeSubCategoryDto> listHomeSubCategoryDto = new();
+
+            var subCategories = await _context
+                .SubCategories
+                .OrderBy(x => x.CategoryId)
+                .ThenBy(x => x.Description)
+                .Include(x => x.Category)
+                .Where(x => !x.Description.Contains("joão"))
+                .ToListAsync();
+
+            foreach (var subCategory in subCategories)
+            {
+                HomeSubCategoryDto homeSubCategoryDto = new();
+                homeSubCategoryDto.SubCategoryName = subCategory.Description;
+                homeSubCategoryDto.CategoryName = subCategory.Category.Description;
+                for (int month = 1; month <= 12; month++)
+                {
+                    decimal realAmount = GetRealAmountForMonthBySubCategory(transactions, subCategory.Id, userId, month);
+                    SetRealAmountForMonthBySubCategory(homeSubCategoryDto, month, realAmount, subCategory.MonthlyPlafond);
+                }
+
+                listHomeSubCategoryDto.Add(homeSubCategoryDto);
+            }
+
+            return listHomeSubCategoryDto;
+        }
+
+        private decimal GetRealAmountForMonthBySubCategory(List<Transaction> transactions,
+            int subCategoryId, int userId, int month)
+        {
+            return transactions
+                .Where(x => (x.SubCategoryId == subCategoryId)
+                    && x.UserId == userId
+                    && x.OperationDate.Month == month)
+                .Sum(x => x.Amount);
+        }
+
+        private void SetRealAmountForMonthBySubCategory(HomeSubCategoryDto homeSubCategoryDto, 
+            int month, decimal amount, decimal? plafon)
+        {
+            switch (month)
+            {
+                case 1:
+                    homeSubCategoryDto.JanuaryExpenses = amount;
+                    homeSubCategoryDto.JanuaryExpensesPlafon = plafon ?? 0;
+                    break;
+                case 2:
+                    homeSubCategoryDto.FebruaryExpenses = amount;
+                    homeSubCategoryDto.FebruaryExpensesPlafon = plafon ?? 0;
+                    break;
+                case 3:
+                    homeSubCategoryDto.MarchExpenses = amount;
+                    homeSubCategoryDto.MarchExpensesPlafon = plafon ?? 0;
+                    break;
+                case 4:
+                    homeSubCategoryDto.AprilExpenses = amount;
+                    homeSubCategoryDto.AprilExpensesPlafon = plafon ?? 0;
+                    break;
+                case 5:
+                    homeSubCategoryDto.MayExpenses = amount;
+                    homeSubCategoryDto.MayExpensesPlafon = plafon ?? 0;
+                    break;
+                case 6:
+                    homeSubCategoryDto.JuneExpenses = amount;
+                    homeSubCategoryDto.JuneExpensesPlafon = plafon ?? 0;
+                    break;
+                case 7:
+                    homeSubCategoryDto.JulyExpenses = amount;
+                    homeSubCategoryDto.JulyExpensesPlafon = plafon ?? 0;
+                    break;
+                case 8:
+                    homeSubCategoryDto.AugustExpenses = amount;
+                    homeSubCategoryDto.AugustExpensesPlafon = plafon ?? 0;
+                    break;
+                case 9:
+                    homeSubCategoryDto.SeptemberExpenses = amount;
+                    homeSubCategoryDto.SeptemberExpensesPlafon = plafon ?? 0;
+                    break;
+                case 10:
+                    homeSubCategoryDto.OctoberExpenses = amount;
+                    homeSubCategoryDto.OctoberExpensesPlafon = plafon ?? 0;
+                    break;
+                case 11:
+                    homeSubCategoryDto.NovemberExpenses = amount;
+                    homeSubCategoryDto.NovemberExpensesPlafon = plafon ?? 0;
+                    break;
+                case 12:
+                    homeSubCategoryDto.DecemberExpenses = amount;
+                    homeSubCategoryDto.DecemberExpensesPlafon = plafon ?? 0;
+                    break;
+            }
         }
 
     }

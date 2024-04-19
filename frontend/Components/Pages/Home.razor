@@ -60,7 +60,7 @@ else
     <table class="centered-table-with-borders">
         <thead>
             <tr>
-                <th></th>
+                <th colspan="1">Category Name</th>
                 <th colspan="1">Jan</th>
                 <th colspan="1">Feb</th>
                 <th colspan="1">Mar</th>
@@ -94,6 +94,50 @@ else
                         <td>@homeCategory.DecemberExpenses</td>
                     </tr>
         }
+        </tbody>
+    </table>
+
+     <br />
+    <h4>Sub-Categories</h4>
+    <br />
+    <table class="centered-table-with-borders">
+        <thead>
+            <tr>
+                <th colspan="1">Sub Category</th>
+                <th colspan ="1">Category Name</th>
+                <th colspan="1">Jan</th>
+                <th colspan="1">Feb</th>
+                <th colspan="1">Mar</th>
+                <th colspan="1">April</th>
+                <th colspan="1">May</th>
+                <th colspan="1">June</th>
+                <th colspan="1">July</th>
+                <th colspan="1">August</th>
+                <th colspan="1">Sept</th>
+                <th colspan="1">Oct</th>
+                <th colspan="1">Nov</th>
+                <th colspan="1">Dec</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var homeSubCategory in @homeDto.HomeSubCategories)
+            {
+                <tr>
+                    <td>@homeSubCategory.SubCategoryName</td>
+                    <td>@homeSubCategory.CategoryName</td>
+                    <td>
+                        @if(homeSubCategory.JanuaryExpenses>homeSubCategory.JanuaryExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.JanuaryExpenses€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.JanuaryExpenses€</span>
+                        }
+                    </td>
+                   
+                </tr>
+            }
         </tbody>
     </table>
 }
