@@ -208,7 +208,7 @@ namespace api.Repository
                 .OrderBy(x => x.CategoryId)
                 .ThenBy(x => x.Description)
                 .Include(x => x.Category)
-                .Where(x => !x.Description.Contains("joão"))
+                .Where(x => x.IsVisibleInHomePage)
                 .ToListAsync();
 
             foreach (var subCategory in subCategories)
@@ -222,7 +222,11 @@ namespace api.Repository
                     SetRealAmountForMonthBySubCategory(homeSubCategoryDto, month, realAmount, subCategory.MonthlyPlafond);
                 }
 
-                listHomeSubCategoryDto.Add(homeSubCategoryDto);
+                if (homeSubCategoryDto.JanuaryExpenses + homeSubCategoryDto.FebruaryExpenses + homeSubCategoryDto.MarchExpenses +
+                    homeSubCategoryDto.AprilExpenses + homeSubCategoryDto.MayExpenses + homeSubCategoryDto.JuneExpenses +
+                    homeSubCategoryDto.JulyExpenses + homeSubCategoryDto.AugustExpenses + homeSubCategoryDto.SeptemberExpenses +
+                    homeSubCategoryDto.OctoberExpenses + homeSubCategoryDto.NovemberExpenses + homeSubCategoryDto.DecemberExpenses > 0)
+                    listHomeSubCategoryDto.Add(homeSubCategoryDto);
             }
 
             return listHomeSubCategoryDto;

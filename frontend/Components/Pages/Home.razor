@@ -32,7 +32,7 @@
 
 @if (homeDto == null)
 {
-        <p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
@@ -44,14 +44,16 @@ else
 
     <h4>Finance Goal</h4>
     <label>In <b>@homeDto.HomeFinanceGoal.StartGoalDate.ToString("dd-MM-yyyy")</b> the debt was <b>@homeDto.HomeFinanceGoal.OutstandingAmount€</b> and in <b>31/12/2024</b> will be <b>@homeDto.HomeFinanceGoal.DebtAmount€</b>.</label>
-            <label> The finance goal is @homeDto.HomeFinanceGoal.Goal. The difference will be @if (@homeDto.HomeFinanceGoal.Diff < 0)
+    <label>
+        The finance goal is @homeDto.HomeFinanceGoal.Goal. The difference will be @if (@homeDto.HomeFinanceGoal.Diff < 0)
         {
             <span style="color: red;">@homeDto.HomeFinanceGoal.Diff€.</span>
         }
         else
         {
             <span style="color: green;">@homeDto.HomeFinanceGoal.Diff€.</span>
-        }</label>
+        }
+    </label>
     <br />
     <br />
 
@@ -76,35 +78,35 @@ else
             </tr>
         </thead>
         <tbody>
-        @foreach (var homeCategory in @homeDto.HomeCategories)
-        {
-                    <tr>
-                        <td>@homeCategory.CategoryName</td>
-                        <td>@homeCategory.JanuaryExpenses</td>
-                        <td>@homeCategory.FebruaryExpenses</td>
-                        <td>@homeCategory.MarchExpenses</td>
-                        <td>@homeCategory.AprilExpenses</td>
-                        <td>@homeCategory.MayExpenses</td>
-                        <td>@homeCategory.JuneExpenses</td>
-                        <td>@homeCategory.JulyExpenses</td>
-                        <td>@homeCategory.AugustExpenses</td>
-                        <td>@homeCategory.SeptemberExpenses</td>
-                        <td>@homeCategory.OctoberExpenses</td>
-                        <td>@homeCategory.NovemberExpenses</td>
-                        <td>@homeCategory.DecemberExpenses</td>
-                    </tr>
-        }
+            @foreach (var homeCategory in @homeDto.HomeCategories)
+            {
+                <tr>
+                    <td>@homeCategory.CategoryName</td>
+                    <td>@homeCategory.JanuaryExpenses</td>
+                    <td>@homeCategory.FebruaryExpenses</td>
+                    <td>@homeCategory.MarchExpenses</td>
+                    <td>@homeCategory.AprilExpenses</td>
+                    <td>@homeCategory.MayExpenses</td>
+                    <td>@homeCategory.JuneExpenses</td>
+                    <td>@homeCategory.JulyExpenses</td>
+                    <td>@homeCategory.AugustExpenses</td>
+                    <td>@homeCategory.SeptemberExpenses</td>
+                    <td>@homeCategory.OctoberExpenses</td>
+                    <td>@homeCategory.NovemberExpenses</td>
+                    <td>@homeCategory.DecemberExpenses</td>
+                </tr>
+            }
         </tbody>
     </table>
 
-     <br />
+    <br />
     <h4>Sub-Categories</h4>
     <br />
     <table class="centered-table-with-borders">
         <thead>
             <tr>
                 <th colspan="1">Sub Category</th>
-                <th colspan ="1">Category Name</th>
+                <th colspan="1">Category Name</th>
                 <th colspan="1">Jan</th>
                 <th colspan="1">Feb</th>
                 <th colspan="1">Mar</th>
@@ -126,16 +128,269 @@ else
                     <td>@homeSubCategory.SubCategoryName</td>
                     <td>@homeSubCategory.CategoryName</td>
                     <td>
-                        @if(homeSubCategory.JanuaryExpenses>homeSubCategory.JanuaryExpensesPlafon)
+                        @if (homeSubCategory.JanuaryExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.JanuaryExpenses > homeSubCategory.JanuaryExpensesPlafon)
                         {
                             <span style="color: red;">@homeSubCategory.JanuaryExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JanuaryExpensesPlafon€</span>
                         }
                         else
                         {
                             <span style="color: green;">@homeSubCategory.JanuaryExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JanuaryExpensesPlafon€</span>
                         }
                     </td>
-                   
+                    <td>
+                        @if (homeSubCategory.FebruaryExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.FebruaryExpenses > homeSubCategory.FebruaryExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.FebruaryExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.FebruaryExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.FebruaryExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.FebruaryExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.MarchExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.MarchExpenses > homeSubCategory.MarchExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.MarchExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.MarchExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.MarchExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.MarchExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.AprilExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.AprilExpenses > homeSubCategory.AprilExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.AprilExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.AprilExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.AprilExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.AprilExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.MayExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.MayExpenses > homeSubCategory.MayExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.MayExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.MayExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.MayExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.MayExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.JuneExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.JuneExpenses > homeSubCategory.JuneExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.JuneExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JuneExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.JuneExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JuneExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.JulyExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.JulyExpenses > homeSubCategory.JulyExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.JulyExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JulyExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.JulyExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.JulyExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.AugustExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.AugustExpenses > homeSubCategory.AugustExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.AugustExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.AugustExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.AugustExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.AugustExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.SeptemberExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.SeptemberExpenses > homeSubCategory.SeptemberExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.SeptemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.SeptemberExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.SeptemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.SeptemberExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.OctoberExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.OctoberExpenses > homeSubCategory.OctoberExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.OctoberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.OctoberExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.OctoberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.OctoberExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.NovemberExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.NovemberExpenses > homeSubCategory.NovemberExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.NovemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.NovemberExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.NovemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.NovemberExpensesPlafon€</span>
+                        }
+                    </td>
+                    <td>
+                        @if (homeSubCategory.DecemberExpenses == 0)
+                        {
+                            <span>-</span>
+                        }
+                        else if (homeSubCategory.DecemberExpenses > homeSubCategory.DecemberExpensesPlafon)
+                        {
+                            <span style="color: red;">@homeSubCategory.DecemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.DecemberExpensesPlafon€</span>
+                        }
+                        else
+                        {
+                            <span style="color: green;">@homeSubCategory.DecemberExpenses€</span>
+
+                            <span>/</span>
+
+                            <span style="color: blue;">@homeSubCategory.DecemberExpensesPlafon€</span>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
