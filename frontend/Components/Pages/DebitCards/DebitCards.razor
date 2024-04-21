@@ -79,7 +79,7 @@ else
 
 
 @code {
-    private List<DebitCardDto> debitCards;
+    private List<DebitCardDto> debitCards = new();
 
 
     protected override async Task OnInitializedAsync()
@@ -100,55 +100,6 @@ else
     void Edit(DebitCardDto newDebitCard)
     {
         newDebitCard.IsEditing = true;
-    }
-
-    async Task Save(DebitCardDto debitCardDto)
-    {
-        if (debitCardDto.Id == 0)
-        {
-            // CreateCreditCardDto createCreditCardDto = new CreateCreditCardDto();
-
-            // createCreditCardDto.Id = creditCardDto.Id;
-            // createCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // createCreditCardDto.Code = creditCardDto.Code;
-            // createCreditCardDto.Description = creditCardDto.Description;
-            // createCreditCardDto.IBAN = creditCardDto.IBAN;
-            // createCreditCardDto.NIB = creditCardDto.NIB;
-            // createCreditCardDto.Balance = creditCardDto.Balance;
-            // createCreditCardDto.Plafon = creditCardDto.Plafon;
-            // createCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // createCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // createCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // createCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // createCreditCardDto.CloseDate = creditCardDto.CloseDate;
-
-            // var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
-        }
-        else
-        {
-            // UpdateCreditCardDto updateCreditCardDto = new UpdateCreditCardDto();
-
-            // updateCreditCardDto.Code = creditCardDto.Code;
-            // updateCreditCardDto.UserId = 1; //TODO @VS - Change user id to current user
-            // updateCreditCardDto.Description = creditCardDto.Description;
-            // updateCreditCardDto.IBAN = creditCardDto.IBAN;
-            // updateCreditCardDto.NIB = creditCardDto.NIB;
-            // updateCreditCardDto.Balance = creditCardDto.Balance;
-            // updateCreditCardDto.Plafon = creditCardDto.Plafon;
-            // updateCreditCardDto.PercentageOfPayment = creditCardDto.PercentageOfPayment;
-            // updateCreditCardDto.EntityNumber = creditCardDto.EntityNumber;
-            // updateCreditCardDto.RefNumber = creditCardDto.RefNumber;
-            // updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
-            // updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
-            // updateCreditCardDto.CloseDate = creditCardDto.CloseDate;
-
-            // var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
-            // creditCardDto.IsEditing = false;
-            // StateHasChanged();
-        }
     }
 
     async Task Cancel(DebitCardDto debitCardDto)

@@ -6,7 +6,7 @@
 
     public static class ByteArrayToFormFileExtensions
     {
-        public static IFormFile GetFormFile(this byte[] fileBytes, string fileName = null)
+        public static IFormFile GetFormFile(this byte[] fileBytes, string? fileName = null)
         {
             // Infer the file extension from the byte content
             string fileExtension = InferFileExtension(fileBytes);
