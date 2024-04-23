@@ -27,7 +27,7 @@ namespace api.Repository
         public async Task<List<TransactionDto>> GetAsync()
         {
             var transactions = await _context.Transactions
-                .Where(t => (t.OperationDate >= DateTime.Now.Date && t.OperationDate <= DateTime.Now.Date.AddMonths(1)) || (t.State==(int)TransactionState.Pending && t.OperationDate <= DateTime.Now.Date))
+                .Where(t => (t.OperationDate >= DateTime.Now.Date && t.OperationDate <= DateTime.Now.Date.AddMonths(1)) || (t.State == (int)TransactionState.Pending && t.OperationDate <= DateTime.Now.Date))
                 .OrderBy(t => t.OperationDate)
                 .ToListAsync();
 
@@ -78,30 +78,7 @@ namespace api.Repository
                     await CreditMoney(transaction);
                     await _context.SaveChangesAsync();
 
-                    transaction = await _context.Transactions.Include(x => x.SubCategory).FirstAsync(x => x.Id == transaction.Id);
-                    if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
-                    {
-                        Transaction? extraTransactions = await _context
-                            .Transactions
-                            .Include(x => x.SubCategory)
-                            .FirstOrDefaultAsync(z => z.SubCategory!.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
-
-                        if (extraTransactions is not null)
-                        {
-                            extraTransactions.Amount -= transaction.Amount;
-                            if (extraTransactions.Amount < 0)
-                            {
-                                _context.Transactions.Remove(extraTransactions);
-                                await _context.SaveChangesAsync();
-                            }
-                            else
-                            {
-                                extraTransactions.UpdatedDate = DateTime.UtcNow;
-                                _context.Entry(extraTransactions).State = EntityState.Modified;
-                                await _context.SaveChangesAsync();
-                            }
-                        }
-                    }
+                    transaction = await UpdateCartaoRefeicaoExtra(transaction);
 
                     await UpdateFinanceGoal(transaction);
                     await _context.SaveChangesAsync();
@@ -126,7 +103,7 @@ namespace api.Repository
         public async Task<Transaction> ConfirmTransactionAsync(int id)
         {
             Transaction? transaction
-                =  await _context
+                = await _context
                     .Transactions
                     .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -162,7 +139,7 @@ namespace api.Repository
         /// <exception cref="NotFoundException"></exception>
         public async Task<Transaction> UpdateAsync(int id, UpdateTransactionDto updateTransactionDto)
         {
-            Transaction? transaction = await _context.Transactions.FirstOrDefaultAsync(x=>x.Id == id);
+            Transaction? transaction = await _context.Transactions.FirstOrDefaultAsync(x => x.Id == id);
 
             if (transaction is null)
 
@@ -515,6 +492,11 @@ namespace api.Repository
                 }
 
                 await _context.SaveChangesAsync();
+
+                if (transaction.SourceAccountOrCardCode != null && transaction.SourceAccountOrCardCode == "UnicreDeco")
+                {
+                    await UpdateCashBackDeco();
+                }
             }
         }
 
@@ -585,7 +567,7 @@ namespace api.Repository
                 {
                     credit.DebtCapital = credit.DebtCapital + (credit.DebtCapital * (credit.TAN / 100 / 12)) - transaction.Amount;
                     credit.UpdatedDate = DateTime.UtcNow;
-                    if(credit.DebtCapital==0)
+                    if (credit.DebtCapital == 0)
                     {
                         credit.IsActive = false;
                     }
@@ -607,9 +589,9 @@ namespace api.Repository
                 .FinanceGoals
                 .FirstOrDefaultAsync(x => x.IsActive
                     && x.UserId == transaction.UserId
-                    && transaction.OperationDate>= x.StartGoalDate 
+                    && transaction.OperationDate >= x.StartGoalDate
                     && transaction.OperationDate <= x.EndGoalDate);
-            
+
             if (financeGoal == null)
                 throw new Exception("Finance Goal not found!");
 
@@ -639,6 +621,78 @@ namespace api.Repository
                 financeGoal.CurrentDebtAmount = bankDebpts + creditsDebpts + creditCardsDebpts;
                 financeGoal.UpdatedDate = DateTime.UtcNow;
                 _context.Entry(financeGoal).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        private async Task<Transaction> UpdateCartaoRefeicaoExtra(Transaction transaction)
+        {
+            transaction = await _context.Transactions.Include(x => x.SubCategory).FirstAsync(x => x.Id == transaction.Id);
+            if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
+            {
+                Transaction? extraTransactions = await _context
+                    .Transactions
+                    .Include(x => x.SubCategory)
+                    .FirstOrDefaultAsync(z => z.SubCategory!.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
+
+                if (extraTransactions is not null)
+                {
+                    extraTransactions.Amount -= transaction.Amount;
+                    if (extraTransactions.Amount < 0)
+                    {
+                        _context.Transactions.Remove(extraTransactions);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        extraTransactions.UpdatedDate = DateTime.UtcNow;
+                        _context.Entry(extraTransactions).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return transaction;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private async Task UpdateCashBackDeco()
+        {
+            var listOfCashBackTrans = await _context
+                .Transactions
+                .Where(x => x.Description == "Cashback"
+                            && x.DestinationAccountOrCardCode == "UnicreDeco"
+                            && x.State == (int)TransactionState.Pending)
+                .ToListAsync();
+
+            foreach (var cashBackTrans in listOfCashBackTrans)
+            {
+                int quarter = (int)Math.Ceiling(cashBackTrans.OperationDate.Month / 3.0);
+                int lastQuarter = quarter == 1 ? 4 : quarter - 1; 
+
+                DateTime lastQuarterStartDate = new DateTime(cashBackTrans.OperationDate.Year, (lastQuarter - 1) * 3 + 1, 1);
+                DateTime lastQuarterEndDate = lastQuarterStartDate.AddMonths(3).AddDays(-1);
+
+                decimal cashback = await _context
+                    .Transactions
+                    .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+                                && x.OperationDate >= lastQuarterStartDate
+                                && x.OperationDate <= lastQuarterEndDate
+                                && !x.Description.Equals("Movimento de saldo"))
+                    .SumAsync(x => x.Amount);
+
+                cashBackTrans.UpdatedDate = DateTime.UtcNow;
+                cashBackTrans.Amount = cashback * (decimal)0.01;
+                _context.Entry(cashBackTrans).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
         }
