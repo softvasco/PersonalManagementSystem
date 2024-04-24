@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CreditCardsController : ControllerBase
     {
         private readonly ILogger<CreditCardsController> _logger;

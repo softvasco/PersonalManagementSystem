@@ -3,13 +3,11 @@ using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using api.Repository;
-using Shared.Dtos.Categories;
 
 namespace api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FinanceGoalsController : ControllerBase
     {
         private readonly ILogger<FinanceGoalsController> _logger;

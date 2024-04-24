@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "5001:81"
+      - "5002:81"
     environment:
       - aspnetcore_environment=production
       - aspnetcore_urls=http://+:81
