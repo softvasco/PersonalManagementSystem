@@ -432,6 +432,11 @@ namespace api.Repository
             _context.Entry(transaction).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
+
+            if (transaction.SourceAccountOrCardCode != null && transaction.SourceAccountOrCardCode == "UnicreDeco")
+            {
+                await UpdateCashBackDeco();
+            }
         }
 
         /// <summary>
