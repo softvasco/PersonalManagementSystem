@@ -446,8 +446,8 @@ namespace api.Repository
                 DebitCard? debitCard = await _context
                     .DebitCards
                     .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
-                    && x.UserId == transaction.UserId
-                    && x.IsActive);
+                        && x.UserId == transaction.UserId
+                        && x.IsActive);
                 if (debitCard != null)
                 {
                     debitCard.Balance -= transaction.Amount;
@@ -456,22 +456,29 @@ namespace api.Repository
                 }
 
                 GiftCard? giftCard = await _context
-                .GiftCards
-                .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
-                && x.UserId == transaction.UserId
-                && x.IsActive);
+                    .GiftCards
+                    .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
+                        && x.UserId == transaction.UserId
+                        && x.IsActive);
                 if (giftCard != null)
                 {
                     giftCard.Balance -= transaction.Amount;
                     giftCard.UpdatedDate = DateTime.UtcNow;
+
+                    if (giftCard.Balance <= 0 && giftCard.Code != "MediaProbe")
+                    {
+                        giftCard.CloseDate = DateTime.UtcNow;
+                        giftCard.IsActive = false;
+                    }
+
                     _context.Entry(giftCard).State = EntityState.Modified;
                 }
 
                 CreditCard? crebitCard = await _context
                    .CreditCards
                    .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
-                   && x.UserId == transaction.UserId
-                   && x.IsActive);
+                       && x.UserId == transaction.UserId
+                       && x.IsActive);
                 if (crebitCard != null)
                 {
                     crebitCard.Balance -= transaction.Amount;
@@ -482,8 +489,8 @@ namespace api.Repository
                 BankAccount? bankAccount = await _context
                    .BankAccounts
                    .FirstOrDefaultAsync(x => x.Code == transaction.SourceAccountOrCardCode
-                   && x.UserId == transaction.UserId
-                   && x.IsActive);
+                       && x.UserId == transaction.UserId
+                       && x.IsActive);
                 if (bankAccount != null)
                 {
                     bankAccount.UpdatedDate = DateTime.UtcNow;
