@@ -138,7 +138,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        credits = await Http.GetFromJsonAsync<List<CreditDto>>("Credits");
+        credits = await Http.GetFromJsonAsync<List<CreditDto>>("api/Credits");
     } 
 
 }

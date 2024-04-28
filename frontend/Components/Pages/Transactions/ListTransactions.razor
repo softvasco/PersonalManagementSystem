@@ -135,7 +135,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
     }
 
     void AddTransaction()
@@ -165,9 +165,9 @@ else
 
     async Task Approve(TransactionDto transactionDto)
     {
-        var response = await Http.PutAsync($"Transactions/ConfirmTransaction/{transactionDto.Id}", null);
+        var response = await Http.PutAsync($"api/Transactions/ConfirmTransaction/{transactionDto.Id}", null);
         StateHasChanged();
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
     }
 
     void Edit(TransactionDto transactionDto)
@@ -187,9 +187,9 @@ else
 
     async Task Delete(int transactiondId)
     {
-        var response = await Http.DeleteAsync("Transactions/" + transactiondId);
+        var response = await Http.DeleteAsync("api/Transactions/" + transactiondId);
         StateHasChanged();
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transactions");
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
     }
 
 }

@@ -75,7 +75,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("api/Categories");
     }
 
     void AddNewCategory()
@@ -105,7 +105,7 @@ else
             createCategoryDto.Description = categoria.Description;
             createCategoryDto.Subcategories = new List<SubCategoryDto>();
 
-            var response = await Http.PostAsJsonAsync("Categories", createCategoryDto);
+            var response = await Http.PostAsJsonAsync("api/Categories", createCategoryDto);
             categoria.IsEditing = false;
             StateHasChanged();
         }
@@ -119,7 +119,7 @@ else
             updateCategoryDto.Description = categoria.Description;
             updateCategoryDto.Subcategories = categoria.SubCategories;
 
-            var response = await Http.PutAsJsonAsync("Categories/" + categoria.Id, updateCategoryDto);
+            var response = await Http.PutAsJsonAsync("api/Categories/" + categoria.Id, updateCategoryDto);
             categoria.IsEditing = false;
             StateHasChanged();
         }
@@ -128,7 +128,7 @@ else
     async Task Cancel(CategoryDto categoria)
     {
         categoria.IsEditing = false;
-        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("api/Categories");
         StateHasChanged();
     }
 
@@ -145,9 +145,9 @@ else
 
     async Task Delete(int categoryId)
     {
-        var response = await Http.DeleteAsync("Categories/" + categoryId);
+        var response = await Http.DeleteAsync("api/Categories/" + categoryId);
         StateHasChanged();
-        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("Categories");
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("api/Categories");
     }
 
 

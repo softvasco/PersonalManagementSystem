@@ -188,7 +188,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("api/CreditCards");
     }
 
     void AddNewEarning()
@@ -227,7 +227,7 @@ else
             createCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
             createCreditCardDto.OpenDate = creditCardDto.OpenDate;
 
-            var response = await Http.PostAsJsonAsync("creditCards", createCreditCardDto);
+            var response = await Http.PostAsJsonAsync("api/creditCards", createCreditCardDto);
             creditCardDto.IsEditing = false;
             StateHasChanged();
         }
@@ -249,7 +249,7 @@ else
             updateCreditCardDto.CloseExtractDay = creditCardDto.CloseExtractDay;
             updateCreditCardDto.OpenDate = creditCardDto.OpenDate;
 
-            var response = await Http.PutAsJsonAsync("CreditCards/" + creditCardDto.Id, updateCreditCardDto);
+            var response = await Http.PutAsJsonAsync("api/CreditCards/" + creditCardDto.Id, updateCreditCardDto);
             creditCardDto.IsEditing = false;
             StateHasChanged();
         }
@@ -258,7 +258,7 @@ else
     async Task Cancel(CreditCardDto creditCardDto)
     {
         creditCardDto.IsEditing = false;
-        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("api/CreditCards");
         StateHasChanged();
     }
 
@@ -275,8 +275,8 @@ else
 
     async Task Delete(int creditCardId)
     {
-        var response = await Http.DeleteAsync("CreditCards/" + creditCardId);
+        var response = await Http.DeleteAsync("api/CreditCards/" + creditCardId);
         StateHasChanged();
-        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("CreditCards");
+        creditCards = await Http.GetFromJsonAsync<List<CreditCardDto>>("api/CreditCards");
     }
 }

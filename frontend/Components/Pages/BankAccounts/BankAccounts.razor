@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+
 @rendermode @(new InteractiveServerRenderMode(prerender:false))
 
 <PageTitle>Personal Management - Bank Accounts</PageTitle>
@@ -161,7 +162,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("api/BankAccounts");
     }
 
     string DownloadAttachment(BankAccountDto bankAccount)
@@ -225,7 +226,7 @@ else
         //new
         if (bankAccountDto.Id == 0)
         {
-            var response = await Http.PostAsync("BankAccounts", formData);
+            var response = await Http.PostAsync("api/BankAccounts", formData);
             bankAccountDto.IsEditing = false;
             StateHasChanged();
 
@@ -237,7 +238,7 @@ else
         {
             formData.Add(new StringContent(bankAccountDto.Id.ToString()), "Id");
 
-            var response = await Http.PutAsync($"BankAccounts/{bankAccountDto.Id}", formData);
+            var response = await Http.PutAsync($"api/BankAccounts/{bankAccountDto.Id}", formData);
             bankAccountDto.IsEditing = false;
             StateHasChanged();
 
@@ -249,7 +250,7 @@ else
     async Task Cancel(BankAccountDto bankAccountDto)
     {
         bankAccountDto.IsEditing = false;
-        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("api/BankAccounts");
         StateHasChanged();
     }
 
@@ -266,9 +267,9 @@ else
 
     async Task Delete(int bankAccountId)
     {
-        var response = await Http.DeleteAsync("BankAccounts/" + bankAccountId);
+        var response = await Http.DeleteAsync("api/BankAccounts/" + bankAccountId);
         StateHasChanged();
-        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("BankAccounts");
+        bankAccounts = await Http.GetFromJsonAsync<List<BankAccountDto>>("api/BankAccounts");
     }
 
 }

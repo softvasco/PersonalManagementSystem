@@ -170,13 +170,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         //Transaction SubCategories
-        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSubCategories");
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetSubCategories");
         if (response != null)
         {
             subCategories = response;
         }
 
-        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("Expenses");
+        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("api/Expenses");
     }
 
     void AddNewExpense()
@@ -213,7 +213,7 @@ else
             createExpenseDto.Months = expense.Months;
             createExpenseDto.SubCategoryId = expense.SubCategoryId;
 
-            var response = await Http.PostAsJsonAsync("Expenses", createExpenseDto);
+            var response = await Http.PostAsJsonAsync("api/Expenses", createExpenseDto);
             expense.IsEditing = false;
             StateHasChanged();
         }
@@ -232,7 +232,7 @@ else
             updateExpenseDto.Months = expense.Months;
             updateExpenseDto.SubCategoryId = expense.SubCategoryId;
 
-            var response = await Http.PutAsJsonAsync("Expenses/" + expense.Id, updateExpenseDto);
+            var response = await Http.PutAsJsonAsync("api/Expenses/" + expense.Id, updateExpenseDto);
             expense.IsEditing = false;
             StateHasChanged();
         }
@@ -241,7 +241,7 @@ else
     async Task Cancel(ExpenseDto expense)
     {
         expense.IsEditing = false;
-        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("Expenses");
+        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("api/Expenses");
         StateHasChanged();
     }
 
@@ -258,9 +258,9 @@ else
 
     async Task Delete(int expenseId)
     {
-        var response = await Http.DeleteAsync("Expenses/" + expenseId);
+        var response = await Http.DeleteAsync("api/Expenses/" + expenseId);
         StateHasChanged();
-        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("Expenses");
+        expenses = await Http.GetFromJsonAsync<List<ExpenseDto>>("api/Expenses");
     }
 
 

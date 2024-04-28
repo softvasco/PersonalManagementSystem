@@ -84,7 +84,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("api/DebitCards");
     }
 
     void AddNewEarning()
@@ -105,7 +105,7 @@ else
     async Task Cancel(DebitCardDto debitCardDto)
     {
         debitCardDto.IsEditing = false;
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("api/DebitCards");
         StateHasChanged();
     }
 
@@ -122,9 +122,9 @@ else
 
     async Task Delete(int debitCardId)
     {
-        var response = await Http.DeleteAsync("DebitCards/" + debitCardId);
+        var response = await Http.DeleteAsync("api/DebitCards/" + debitCardId);
         StateHasChanged();
-        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("DebitCards");
+        debitCards = await Http.GetFromJsonAsync<List<DebitCardDto>>("api/DebitCards");
     }
 
 }

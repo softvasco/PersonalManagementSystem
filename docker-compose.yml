@@ -11,6 +11,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
+    networks:
+      - mynetwork
 
   personal_management_frontend:
     image: ${docker_registry-}personal_management_frontend
@@ -18,13 +20,15 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "5002:81"
+      - "5001:81"
     environment:
       - aspnetcore_environment=production
       - aspnetcore_urls=http://+:81
+    volumes:
+      - data-protection-keys:/app/DataProtectionKeys
     networks:
       - mynetwork
-
+      
   nginx:
     image: nginx
     volumes:
@@ -37,6 +41,9 @@ services:
     networks:
       - mynetwork
 
+volumes:
+  data-protection-keys:
+  
 networks:
   mynetwork:
     driver: bridge

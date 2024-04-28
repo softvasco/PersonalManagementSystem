@@ -115,12 +115,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         //Transaction Categories
-        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetCategories");
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetCategories");
         if (response != null)
         {
             categories = response;
         }
-        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("api/SubCategories");
     }
 
     void AddNewSubCategory()
@@ -152,7 +152,7 @@ else
             createSubCategoryDto.AnnualPlafon = subCategoria.AnnualPlafon;
             
 
-            var response = await Http.PostAsJsonAsync("SubCategories", createSubCategoryDto);
+            var response = await Http.PostAsJsonAsync("api/SubCategories", createSubCategoryDto);
             subCategoria.IsEditing = false;
             StateHasChanged();
         }
@@ -166,7 +166,7 @@ else
             updateSubCategoryDto.MonthlyPlafond = subCategoria.MonthlyPlafond;
             updateSubCategoryDto.AnnualPlafon = subCategoria.AnnualPlafon;
 
-            var response = await Http.PutAsJsonAsync("SubCategories/" + subCategoria.Id, updateSubCategoryDto);
+            var response = await Http.PutAsJsonAsync("api/SubCategories/" + subCategoria.Id, updateSubCategoryDto);
             subCategoria.IsEditing = false;
             StateHasChanged();
         }
@@ -175,7 +175,7 @@ else
     async Task Cancel(SubCategoryDto subCategoria)
     {
         subCategoria.IsEditing = false;
-        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("api/SubCategories");
         StateHasChanged();
     }
 
@@ -192,9 +192,9 @@ else
 
     async Task Delete(int subCategoryId)
     {
-        var response = await Http.DeleteAsync("SubCategories/" + subCategoryId);
+        var response = await Http.DeleteAsync("api/SubCategories/" + subCategoryId);
         StateHasChanged();
-        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("SubCategories");
+        subCategories = await Http.GetFromJsonAsync<List<SubCategoryDto>>("api/SubCategories");
     }
 
 

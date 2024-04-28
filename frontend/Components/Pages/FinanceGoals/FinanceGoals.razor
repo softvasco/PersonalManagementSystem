@@ -131,7 +131,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("api/FinanceGoals");
     }
 
     void AddNewFinanceGoal()
@@ -165,7 +165,7 @@ else
             createFinanceGoalDto.Goal = financeGoalDto.Goal;
             createFinanceGoalDto.OutstandingAmount = financeGoalDto.OutstandingAmount;
           
-            var response = await Http.PostAsJsonAsync("FinanceGoals", createFinanceGoalDto);
+            var response = await Http.PostAsJsonAsync("api/FinanceGoals", createFinanceGoalDto);
             financeGoalDto.IsEditing = false;
             StateHasChanged();
         }
@@ -182,7 +182,7 @@ else
             updateFinanceGoalDto.Goal = financeGoalDto.Goal;
             updateFinanceGoalDto.OutstandingAmount = financeGoalDto.OutstandingAmount;
 
-            var response = await Http.PutAsJsonAsync("FinanceGoals/" + financeGoalDto.Id, updateFinanceGoalDto);
+            var response = await Http.PutAsJsonAsync("api/FinanceGoals/" + financeGoalDto.Id, updateFinanceGoalDto);
             financeGoalDto.IsEditing = false;
             StateHasChanged();
         }
@@ -191,7 +191,7 @@ else
     async Task Cancel(FinanceGoalDto financeGoalDto)
     {
         financeGoalDto.IsEditing = false;
-        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("api/FinanceGoals");
         StateHasChanged();
     }
 
@@ -208,9 +208,9 @@ else
 
     async Task Delete(int financeGoalId)
     {
-        var response = await Http.DeleteAsync("FinanceGoals/" + financeGoalId);
+        var response = await Http.DeleteAsync("api/FinanceGoals/" + financeGoalId);
         StateHasChanged();
-        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("FinanceGoals");
+        financeGoalsDto = await Http.GetFromJsonAsync<List<FinanceGoalDto>>("api/FinanceGoals");
     }
 
 

@@ -134,7 +134,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("api/Earnings");
     }
 
     void AddNewEarning()
@@ -169,7 +169,7 @@ else
             createEarningDto.StartDate = earning.StartDate;
             createEarningDto.Months = earning.Months;
 
-            var response = await Http.PostAsJsonAsync("Earnings", createEarningDto);
+            var response = await Http.PostAsJsonAsync("api/Earnings", createEarningDto);
             earning.IsEditing = false;
             StateHasChanged();
         }
@@ -187,7 +187,7 @@ else
             updateEarningDto.StartDate = earning.StartDate;
             updateEarningDto.Months = earning.Months;
 
-            var response = await Http.PutAsJsonAsync("Earnings/" + earning.Id, updateEarningDto);
+            var response = await Http.PutAsJsonAsync("api/Earnings/" + earning.Id, updateEarningDto);
             earning.IsEditing = false;
             StateHasChanged();
         }
@@ -196,7 +196,7 @@ else
     async Task Cancel(EarningDto earningDto)
     {
         earningDto.IsEditing = false;
-        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("api/Earnings");
         StateHasChanged();
     }
 
@@ -213,9 +213,9 @@ else
 
     async Task Delete(int earningId)
     {
-        var response = await Http.DeleteAsync("Earnings/" + earningId);
+        var response = await Http.DeleteAsync("api/Earnings/" + earningId);
         StateHasChanged();
-        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("Earnings");
+        earnings = await Http.GetFromJsonAsync<List<EarningDto>>("api/Earnings");
     }
 
 }

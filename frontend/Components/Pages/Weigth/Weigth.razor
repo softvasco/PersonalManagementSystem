@@ -87,7 +87,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("Weigths");
+        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
     }
 
     void AddNewWeigth()
@@ -117,7 +117,7 @@ else
             createWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
             createWeigthDto.Kg = weigthDto.Kg;
 
-            var response = await Http.PostAsJsonAsync("Weigths", createWeigthDto);
+            var response = await Http.PostAsJsonAsync("api/Weigths", createWeigthDto);
             weigthDto.IsEditing = false;
             StateHasChanged();
         }
@@ -131,7 +131,7 @@ else
             updateWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
             updateWeigthDto.Kg = weigthDto.Kg;
 
-            var response = await Http.PutAsJsonAsync("Weigths/" + weigthDto.Id, updateWeigthDto);
+            var response = await Http.PutAsJsonAsync("api/Weigths/" + weigthDto.Id, updateWeigthDto);
             weigthDto.IsEditing = false;
             StateHasChanged();
         }
@@ -140,7 +140,7 @@ else
     async Task Cancel(WeigthDto weigthDto)
     {
         weigthDto.IsEditing = false;
-        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("Weigths");
+        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
         StateHasChanged();
     }
 
@@ -157,9 +157,9 @@ else
 
     async Task Delete(int weigthId)
     {
-        var response = await Http.DeleteAsync("Weigths/" + weigthId);
+        var response = await Http.DeleteAsync("api/Weigths/" + weigthId);
         StateHasChanged();
-        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("Weigths");
+        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
     }
 
 

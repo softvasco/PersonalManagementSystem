@@ -261,7 +261,7 @@ else
         if (!string.IsNullOrEmpty(Id))
         {
             // Load the object from the ID
-            var updateDto = await Http.GetFromJsonAsync<UpdateTransactionDto>("Transactions/GetAsync/" + Id);
+            var updateDto = await Http.GetFromJsonAsync<UpdateTransactionDto>("api/Transactions/GetAsync/" + Id);
             if (updateDto != null)
             {
                 // Do something with the loaded object
@@ -270,49 +270,49 @@ else
         }
 
         //Transaction States
-        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetTransactionsStates");
+        var response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetTransactionsStates");
         if (response != null)
         {
             transactionStates = response;
         }
 
         //subcategories
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSubCategories");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetSubCategories");
         if (response != null)
         {
             subcategories = response;
         }
 
         //listOfSources
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetSourceAccountOrCardCode");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetSourceAccountOrCardCode");
         if (response != null)
         {
             listOfSources = response;
         }
 
         //listOfDestination
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetDestinationAccountOrCardCode");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetDestinationAccountOrCardCode");
         if (response != null)
         {
             listOfDestination = response;
         }
 
         //listOfEarnings
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetEarnings");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetEarnings");
         if (response != null)
         {
             listOfEarnings = response;
         }
 
         //listOfExpenses
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetExpenses");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetExpenses");
         if (response != null)
         {
             listOfExpenses = response;
         }
 
         //listOfCredits
-        response = await Http.GetFromJsonAsync<List<DropdownDto>>("Dropdown/GetCredits");
+        response = await Http.GetFromJsonAsync<List<DropdownDto>>("api/Dropdown/GetCredits");
         if (response != null)
         {
             listOfCredits = response;
@@ -365,7 +365,7 @@ else
             formData.Add(new StringContent(createTransactionDto.File.FileName), "FileName");
         }
 
-        var response = await Http.PostAsync("Transactions", formData);
+        var response = await Http.PostAsync("api/Transactions", formData);
 
         if (response.IsSuccessStatusCode)
         {
@@ -413,7 +413,7 @@ else
             formData.Add(new StringContent(updateTransactionDto.File.FileName), "FileName");
         }
 
-        var response = await Http.PutAsync($"Transactions/{Id}", formData);
+        var response = await Http.PutAsync($"api/Transactions/{Id}", formData);
 
         if (response.IsSuccessStatusCode)
         {

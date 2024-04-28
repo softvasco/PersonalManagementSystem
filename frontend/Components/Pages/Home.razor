@@ -402,7 +402,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        homeDto = await Http.GetFromJsonAsync<HomeDto>("Home");
+        homeDto = await Http.GetFromJsonAsync<HomeDto>("api/Home");
     }
 
 }

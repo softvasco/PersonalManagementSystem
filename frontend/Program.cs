@@ -1,4 +1,6 @@
 using frontend.Components;
+using Microsoft.AspNetCore.DataProtection;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,12 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/app/DataProtectionKeys"));
+
 // Adicionar HttpClient
 builder.Services.AddScoped(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
-    var apiUrl = !builder.Environment.IsEnvironment("Development") ? "personal_management_api:5000/" : "http://localhost:5192/";
-    return new HttpClient { BaseAddress = new Uri(apiUrl!) };
+    var apiUrl = !builder.Environment.IsEnvironment("Development") ? "http://personal_management_api/" : "http://localhost:5192/";
+    return new HttpClient { BaseAddress = new Uri(apiUrl) };
 });
 
 var app = builder.Build();
