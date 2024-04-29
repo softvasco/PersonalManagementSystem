@@ -645,12 +645,12 @@ namespace api.Repository
         private async Task<Transaction> UpdateCartaoRefeicaoExtra(Transaction transaction)
         {
             transaction = await _context.Transactions.Include(x => x.SubCategory).FirstAsync(x => x.Id == transaction.Id);
-            if (transaction.SubCategory != null && transaction.SubCategory.Description == "Compras extra cartão refeição")
+            if (transaction.SubCategory != null && transaction.SubCategory.Code == "ExtraAliSuper")
             {
                 Transaction? extraTransactions = await _context
                     .Transactions
                     .Include(x => x.SubCategory)
-                    .FirstOrDefaultAsync(z => z.SubCategory!.Description == "Compras extra cartão refeição" && z.OperationDate.Month == transaction.OperationDate.Month);
+                    .FirstOrDefaultAsync(z => z.SubCategory!.Code == "ExtraAliSuper" && z.OperationDate.Month == transaction.OperationDate.Month);
 
                 if (extraTransactions is not null)
                 {
