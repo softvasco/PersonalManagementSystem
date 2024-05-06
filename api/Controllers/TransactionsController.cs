@@ -22,11 +22,15 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromQuery] string? description,
+            [FromQuery] string? state,
+            [FromQuery] string? startDate,
+            [FromQuery] string? endDate)
         {
             try
             {
-                var transactions = await _transactionRepository.GetAsync();
+                var transactions = await _transactionRepository.GetAsync(description, state, startDate, endDate);
                 return Ok(transactions);
             }
             catch (NotFoundException)

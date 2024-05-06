@@ -24,12 +24,27 @@ namespace api.Repository
         /// </summary>
         /// <returns>A list of TransactionDto objects representing the retrieved transactions.</returns>
         /// <exception cref="NotFoundException">Thrown when no transactions are found for the specified user.</exception>
-        public async Task<List<TransactionDto>> GetAsync()
+        public async Task<List<TransactionDto>> GetAsync(string description, string state, string startDate, string endDate)
         {
-            var transactions = await _context.Transactions
-                .Where(t => (t.OperationDate >= DateTime.Now.Date && t.OperationDate <= DateTime.Now.Date.AddMonths(1)) || (t.State == (int)TransactionState.Pending && t.OperationDate <= DateTime.Now.Date))
-                .OrderBy(t => t.OperationDate)
-                .ToListAsync();
+            // Parse the state parameter to an integer
+            int stateValue = int.TryParse(state, out int result) ? result : -1;
+
+            // Parse the startDate and endDate parameters to DateTime
+            DateTime startDateValue = DateTime.TryParse(startDate, out DateTime startResult) ? startResult : DateTime.MinValue;
+            DateTime endDateValue = DateTime.TryParse(endDate, out DateTime endResult) ? endResult : DateTime.MaxValue;
+
+            var transactionsQuery = _context.Transactions
+                .Where(t =>
+                    (string.IsNullOrEmpty(description) || t.Description.Contains(description)) &&
+                    ((stateValue == -1 && (t.State == 1 || t.State == 2)) || t.State == stateValue));
+
+            // Filter by date only if startDate and endDate are not minimum values
+            if (startDateValue != DateTime.MinValue && endDateValue != DateTime.MaxValue)
+            {
+                transactionsQuery = transactionsQuery.Where(t => t.OperationDate >= startDateValue && t.OperationDate <= endDateValue);
+            }
+
+            var transactions = await transactionsQuery.OrderBy(t => t.OperationDate).ToListAsync();
 
             // Check if any transactions were found
             if (transactions == null || !transactions.Any())
