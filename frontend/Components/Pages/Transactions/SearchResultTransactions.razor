@@ -1,4 +1,4 @@
-﻿@page "/transactions"
+﻿@* @page "/transactions"
 @using Shared.Enum
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
@@ -229,4 +229,4 @@ else
         transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
     }
 
-}
+} *@
