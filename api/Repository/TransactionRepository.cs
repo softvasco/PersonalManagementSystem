@@ -265,6 +265,11 @@ namespace api.Repository
 
                         await UpdateFinanceGoal(transaction);
                     }
+                    
+                    if (transaction.SourceAccountOrCardCode != null && transaction.SourceAccountOrCardCode == "UnicreDeco")
+                    {
+                        await UpdateCashBackDeco();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
