@@ -204,7 +204,7 @@ else
     {
         var response = await Http.PutAsync($"api/Transactions/ConfirmTransaction/{transactionDto.Id}", null);
         StateHasChanged();
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
+        await Search();
     }
 
     void Edit(TransactionDto transactionDto)
