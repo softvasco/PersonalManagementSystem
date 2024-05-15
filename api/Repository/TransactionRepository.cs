@@ -41,10 +41,10 @@ namespace api.Repository
             // Filter by date only if startDate and endDate are not minimum values
             if (startDateValue != DateTime.MinValue && endDateValue != DateTime.MaxValue)
             {
-                transactionsQuery = transactionsQuery.Where(t => t.OperationDate >= startDateValue && t.OperationDate <= endDateValue);
+                transactionsQuery = transactionsQuery.Where(t => t.OperationDate >= startDateValue && t.OperationDate <= endDateValue || t.State==1);
             }
 
-            var transactions = await transactionsQuery.OrderBy(t => t.OperationDate).ToListAsync();
+            var transactions = await transactionsQuery.OrderBy(t => t.OperationDate).Take(30).ToListAsync();
 
             // Check if any transactions were found
             if (transactions == null || !transactions.Any())
