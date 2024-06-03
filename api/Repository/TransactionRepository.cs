@@ -670,7 +670,8 @@ namespace api.Repository
                 Transaction? extraTransactions = await _context
                     .Transactions
                     .Include(x => x.SubCategory)
-                    .FirstOrDefaultAsync(z => z.SubCategory!.Code == "ExtraAliSuper" && z.OperationDate.Month == transaction.OperationDate.Month);
+                    .FirstOrDefaultAsync(z => z.SubCategory!.Code == "ExtraAliSuper" && z.OperationDate.Month == transaction.OperationDate.Month
+                        && z.OperationDate.Year == transaction.OperationDate.Year);
 
                 if (extraTransactions is not null)
                 {
