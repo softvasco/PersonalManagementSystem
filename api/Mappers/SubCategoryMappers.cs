@@ -14,6 +14,7 @@ namespace api.Mappers
                 CategoryId = createSubCategoryDto.CategoryId,
                 MonthlyPlafond = createSubCategoryDto.MonthlyPlafond,
                 AnnualPlafon = createSubCategoryDto.AnnualPlafon,
+                IsVisibleInHomePage = true
             };
         }
 
