@@ -153,16 +153,16 @@ namespace api.Repository
                                     .OrderBy(x => x.OperationDate)
                                     .ToList();
 
-            BankAccount bankAccount = await _context.BankAccounts.FirstAsync(x => x.Code != "BankinterCH");
+            List<BankAccount> bankAccounts = await _context.BankAccounts.Where(x => x.Code != "BankinterCH").ToListAsync();
             List<Credit> credits = await _context.Credits.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
             List<CreditCard> creditCards = await _context.CreditCards.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
 
             foreach (var transaction in transactions)
             {
                 //Debit
-                if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && transaction.SourceAccountOrCardCode == bankAccount.Code)
+                if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && bankAccounts.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
                 {
-                    bankAccount.Balance -= transaction.Amount;
+                    bankAccounts.FirstOrDefault(x => x.Code == transaction.SourceAccountOrCardCode)!.Balance -= transaction.Amount;
                 }
                 if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
                 {
@@ -170,9 +170,9 @@ namespace api.Repository
                 }
 
                 //Credit
-                if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && transaction.DestinationAccountOrCardCode == bankAccount.Code)
+                if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && bankAccounts.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
                 {
-                    bankAccount.Balance += transaction.Amount;
+                    bankAccounts.FirstOrDefault(x => x.Code == transaction.DestinationAccountOrCardCode)!.Balance += transaction.Amount;
                 }
                 if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && credits.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
                 {
@@ -191,7 +191,7 @@ namespace api.Repository
                 }
             }
 
-            decimal banks = bankAccount.Balance < 0 ? bankAccount.Balance * -1 : -1 * bankAccount.Balance;
+            decimal banks = bankAccounts.Sum(x => x.Balance) < 0 ? bankAccounts.Sum(x => x.Balance) * -1 : -1 * bankAccounts.Sum(x => x.Balance);
             decimal creditDebpts = credits.Sum(x => x.DebtCapital);
             decimal creditCardsDEbpts = creditCards.Sum(x => x.Plafon - x.Balance);
 
