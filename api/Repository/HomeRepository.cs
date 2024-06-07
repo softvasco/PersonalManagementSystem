@@ -153,7 +153,7 @@ namespace api.Repository
                                     .OrderBy(x => x.OperationDate)
                                     .ToList();
 
-            BankAccount bankAccount = await _context.BankAccounts.FirstAsync(x => x.Code == "BancoCTT");
+            BankAccount bankAccount = await _context.BankAccounts.FirstAsync(x => x.Code != "BankinterCH");
             List<Credit> credits = await _context.Credits.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
             List<CreditCard> creditCards = await _context.CreditCards.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
 
