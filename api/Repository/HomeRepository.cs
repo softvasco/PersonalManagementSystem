@@ -208,7 +208,7 @@ namespace api.Repository
                 .OrderBy(x => x.CategoryId)
                 .ThenBy(x => x.Description)
                 .Include(x => x.Category)
-                .Where(x => x.IsVisibleInHomePage)
+                .Where(x => x.IsVisibleInHomePage && x.IsActive)
                 .ToListAsync();
 
             foreach (var subCategory in subCategories)
@@ -238,7 +238,7 @@ namespace api.Repository
             return transactions
                 .Where(x => (x.SubCategoryId == subCategoryId)
                     && x.UserId == userId
-                    && x.OperationDate.Month == month)
+                    && x.OperationDate.Month == month && x.OperationDate.Year == DateTime.Now.Year)
                 .Sum(x => x.Amount);
         }
 
