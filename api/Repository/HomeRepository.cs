@@ -86,44 +86,44 @@ namespace api.Repository
 
         private void SetRealAmountForMonth(HomeCategoryDto homeCategoryDto, int month, decimal amount)
         {
+            var monthName = GetMonthName(month);
+            var propertyInfo = homeCategoryDto.GetType().GetProperty(monthName);
+            if (propertyInfo != null)
+            {
+                propertyInfo.SetValue(homeCategoryDto, amount);
+            }
+        }
+
+        private string GetMonthName(int month)
+        {
             switch (month)
             {
                 case 1:
-                    homeCategoryDto.JanuaryExpenses = amount;
-                    break;
+                    return "JanuaryExpenses";
                 case 2:
-                    homeCategoryDto.FebruaryExpenses = amount;
-                    break;
+                    return "FebruaryExpenses";
                 case 3:
-                    homeCategoryDto.MarchExpenses = amount;
-                    break;
+                    return "MarchExpenses";
                 case 4:
-                    homeCategoryDto.AprilExpenses = amount;
-                    break;
+                    return "AprilExpenses";
                 case 5:
-                    homeCategoryDto.MayExpenses = amount;
-                    break;
+                    return "MayExpenses";
                 case 6:
-                    homeCategoryDto.JuneExpenses = amount;
-                    break;
+                    return "JuneExpenses";
                 case 7:
-                    homeCategoryDto.JulyExpenses = amount;
-                    break;
+                    return "JulyExpenses";
                 case 8:
-                    homeCategoryDto.AugustExpenses = amount;
-                    break;
+                    return "AugustExpenses";
                 case 9:
-                    homeCategoryDto.SeptemberExpenses = amount;
-                    break;
+                    return "SeptemberExpenses";
                 case 10:
-                    homeCategoryDto.OctoberExpenses = amount;
-                    break;
+                    return "OctoberExpenses";
                 case 11:
-                    homeCategoryDto.NovemberExpenses = amount;
-                    break;
+                    return "NovemberExpenses";
                 case 12:
-                    homeCategoryDto.DecemberExpenses = amount;
-                    break;
+                    return "DecemberExpenses";
+                default:
+                    throw new ArgumentException("Invalid month", nameof(month));
             }
         }
 
