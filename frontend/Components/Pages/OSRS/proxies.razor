@@ -1,4 +1,4 @@
-﻿@page "/proxies"
+﻿@* @page "/proxies"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
@@ -10,3 +10,157 @@
 <br />
 <h2>OSRS Proxies</h2>
 <br />
+
+@if (proxies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>RegistrationDate</th>
+                <th>Kg</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var weigth in weigths)
+            {
+                <tr>
+                    <td>
+                        @if (weigth.IsEditing)
+                        {
+                            <input @bind="weigth.Description" class="form-control" />
+                        }
+                        else
+                        {
+                            @weigth.Description
+                        }
+                    </td>
+                    <td>
+                        @if (weigth.IsEditing)
+                        {
+                            <input @bind="weigth.RegistrationDate" class="form-control" />
+                        }
+                        else
+                        {
+                            @weigth.RegistrationDate.ToString("dd-MM-yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (weigth.IsEditing)
+                        {
+                            <input @bind="weigth.Kg" class="form-control" />
+                        }
+                        else
+                        {
+                            @weigth.Kg
+                        }
+                    </td>
+                    <td>
+                        @if (weigth.IsEditing)
+                        {
+                            <button class="btn btn-success" @onclick="() => Save(weigth)">Save</button>
+                            <button class="btn btn-secondary" @onclick="() => Cancel(weigth)">Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="() => Edit(weigth)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => ConfirmDelete(weigth.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="AddNewWeigth">Add</button>
+}
+
+
+
+@code {
+    private List<ProxyDto> proxies;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        proxies = await Http.GetFromJsonAsync<List<WeigthDto>>("api/OSRS/GetProxies");
+    }
+
+    void AddNewProxy()
+    {
+        var newProxy = new ProxyDto();
+        weigths.Add(newWeigth);
+
+        Edit(newWeigth);
+
+        StateHasChanged();
+    }
+
+    void Edit(WeigthDto weigth)
+    {
+        weigth.IsEditing = true;
+    }
+
+    async Task Save(WeigthDto weigthDto)
+    {
+        if (weigthDto.Id == 0)
+        {
+            CreateWeigthDto createWeigthDto = new CreateWeigthDto();
+
+            createWeigthDto.Id = weigthDto.Id;
+            createWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
+            createWeigthDto.Description = weigthDto.Description;
+            createWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
+            createWeigthDto.Kg = weigthDto.Kg;
+
+            var response = await Http.PostAsJsonAsync("api/Weigths", createWeigthDto);
+            weigthDto.IsEditing = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateWeigthDto updateWeigthDto = new UpdateWeigthDto();
+
+            updateWeigthDto.Id = weigthDto.Id;
+            updateWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
+            updateWeigthDto.Description = weigthDto.Description;
+            updateWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
+            updateWeigthDto.Kg = weigthDto.Kg;
+
+            var response = await Http.PutAsJsonAsync("api/Weigths/" + weigthDto.Id, updateWeigthDto);
+            weigthDto.IsEditing = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task Cancel(WeigthDto weigthDto)
+    {
+        weigthDto.IsEditing = false;
+        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
+        StateHasChanged();
+    }
+
+
+    async Task ConfirmDelete(int weigthId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this weigth?" });
+
+        if (confirmed)
+        {
+            await Delete(weigthId);
+        }
+    }
+
+    async Task Delete(int weigthId)
+    {
+        var response = await Http.DeleteAsync("api/Weigths/" + weigthId);
+        StateHasChanged();
+        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
+    }
+
+
+} *@

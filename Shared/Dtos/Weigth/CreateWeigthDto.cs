@@ -1,4 +1,4 @@
-﻿namespace Shared.Dtos.Categories
+﻿namespace Shared.Dtos.Weigth
 {
     public class CreateWeigthDto
     {
