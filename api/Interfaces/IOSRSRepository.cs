@@ -6,8 +6,8 @@ namespace api.Interfaces
     public interface IOSRSRepository
     {
         Task<List<ProxyDto>> GetProxiesAsync();
-        //Task<Weigth> CreateAsync(Weigth weigth);
-        //Task<Weigth> UpdateAsync(int id, Weigth weigth);
-        //Task<Weigth> DeleteAsync(int id);
+        //Task<Weigths> CreateAsync(Weigths weigth);
+        //Task<Weigths> UpdateAsync(int id, Weigths weigth);
+        //Task<Weigths> DeleteAsync(int id);
     }
 }

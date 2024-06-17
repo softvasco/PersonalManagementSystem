@@ -664,7 +664,7 @@ namespace api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("api.Models.Weigth", b =>
+            modelBuilder.Entity("api.Models.Weigths", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -698,7 +698,7 @@ namespace api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Weigth");
+                    b.ToTable("Weigths");
                 });
 
             modelBuilder.Entity("api.Models.BankAccount", b =>
@@ -846,7 +846,7 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("api.Models.Weigth", b =>
+            modelBuilder.Entity("api.Models.Weigths", b =>
                 {
                     b.HasOne("api.Models.User", "User")
                         .WithMany()

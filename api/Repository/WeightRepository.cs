@@ -23,9 +23,9 @@ namespace api.Repository
         /// <returns>A list of `WeigthDto` representing the last 7 registered weights.</returns>
         public async Task<List<WeigthDto>> GetAsync()
         {
-            // Filter the Weigth entities based on the user ID and active status
+            // Filter the Weigths entities based on the user ID and active status
             var weigths = await _context
-                .Weigth
+                .Weigths
                 .Where(x => x.UserId == 1 && x.IsActive)
                 .ToListAsync();
 
@@ -48,7 +48,7 @@ namespace api.Repository
         /// <returns></returns>
         public async Task<Weigth> CreateAsync(Weigth weigth)
         {
-            await _context.Weigth.AddAsync(weigth);
+            await _context.Weigths.AddAsync(weigth);
             await _context.SaveChangesAsync();
 
             return weigth;
@@ -62,11 +62,11 @@ namespace api.Repository
         /// <exception cref="NotFoundException"></exception>
         public async Task<Weigth> DeleteAsync(int id)
         {
-            Weigth? Weigth = await _context.Weigth.FindAsync(id);
+            Weigth? Weigth = await _context.Weigths.FindAsync(id);
 
             if (Weigth is null)
             {
-                throw new NotFoundException("Weigth not found");
+                throw new NotFoundException("Weigths not found");
             }
             else
             {
@@ -97,12 +97,12 @@ namespace api.Repository
         public async Task<Weigth> UpdateAsync(int id, Weigth weigth)
         {
             var existingWeigth = await _context
-               .Weigth
+               .Weigths
                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
             if (existingWeigth == null)
             {
-                throw new NotFoundException("Weigth not found");
+                throw new NotFoundException("Weigths not found");
             }
 
             existingWeigth.UpdatedDate = DateTime.UtcNow;

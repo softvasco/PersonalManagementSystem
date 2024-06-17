@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240326170711_AddWeigthTableChange")]
-    partial class AddWeigthTableChange
+    [Migration("20240617131146_AddOSRSTables")]
+    partial class AddOSRSTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,7 @@ namespace api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccountOrCardCodeToDebt")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CloseDate")
@@ -146,6 +147,7 @@ namespace api.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Installment")
@@ -230,6 +232,9 @@ namespace api.Migrations
                     b.Property<string>("RefNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("TAN")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -306,6 +311,7 @@ namespace api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DestinationAccountOrCardCode")
@@ -360,6 +366,7 @@ namespace api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DestinationAccountOrCardCode")
@@ -383,6 +390,9 @@ namespace api.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -478,10 +488,10 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsVoucher")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OpenDate")
@@ -500,20 +510,83 @@ namespace api.Migrations
                     b.ToTable("GiftCards");
                 });
 
-            modelBuilder.Entity("api.Models.OSRSWorld", b =>
+            modelBuilder.Entity("api.Models.OSRSAccount", b =>
                 {
-                    b.Property<int>("World")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("World"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsF2P")
+                    b.Property<string>("BankPin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.HasKey("World");
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
 
-                    b.ToTable("OSRSWorlds");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RSName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OSRSAccounts");
+                });
+
+            modelBuilder.Entity("api.Models.OSRSProxy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Port")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OSRSProxies");
                 });
 
             modelBuilder.Entity("api.Models.SubCategory", b =>
@@ -542,6 +615,9 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisibleInHomePage")
                         .HasColumnType("bit");
 
                     b.Property<decimal?>("MonthlyPlafond")
@@ -578,6 +654,7 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DestinationAccountOrCardCode")
@@ -662,7 +739,7 @@ namespace api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("api.Models.Weigths", b =>
+            modelBuilder.Entity("api.Models.Weigth", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -844,7 +921,7 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("api.Models.Weigths", b =>
+            modelBuilder.Entity("api.Models.Weigth", b =>
                 {
                     b.HasOne("api.Models.User", "User")
                         .WithMany()

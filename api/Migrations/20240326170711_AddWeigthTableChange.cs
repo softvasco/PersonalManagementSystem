@@ -11,7 +11,7 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Weigth",
+                name: "Weigths",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,7 +37,7 @@ namespace api.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Weigth_UserId",
-                table: "Weigth",
+                table: "Weigths",
                 column: "UserId");
         }
 
@@ -45,7 +45,7 @@ namespace api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Weigth");
+                name: "Weigths");
         }
     }
 }
