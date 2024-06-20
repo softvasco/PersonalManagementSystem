@@ -22,19 +22,27 @@ namespace api.Repository
 
             foreach (string _proxy in _proxies)
             {
-
                 try
                 {
-                    lstOfOSRSProxies.Add(new OSRSProxy()
+                    string[] _proxyParts = _proxy.Split(",");
+                    string _ip = _proxyParts[0];
+                    string _port = _proxyParts[1];
+                    string _username = _proxyParts[2];
+                    string _password = _proxyParts[3];
+
+                    if (!_context.OSRSProxies.Any(p => p.IP == _ip))
                     {
-                        CreatedDate = DateTime.Now,
-                        IP = _proxy.Split(",")[0],
-                        Port = _proxy.Split(",")[1],
-                        IsActive = true,
-                        Username = _proxy.Split(",")[2],
-                        Password = _proxy.Split(",")[3],
-                        UpdatedDate = DateTime.Now,
-                    });
+                        lstOfOSRSProxies.Add(new OSRSProxy()
+                        {
+                            CreatedDate = DateTime.Now,
+                            IP = _ip,
+                            Port = _port,
+                            IsActive = true,
+                            Username = _username,
+                            Password = _password,
+                            UpdatedDate = DateTime.Now,
+                        });
+                    }
                 }
                 catch { }
             }
