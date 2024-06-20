@@ -1,0 +1,149 @@
+﻿@page "/addproxies"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<PageTitle>Personal Management - Add OSRS Proxies</PageTitle>
+
+<br />
+<br />
+<h2>Add OSRS Proxies</h2>
+<br />
+
+<EditForm Model="@createTransactionDto" OnSubmit="HandleSubmit">
+    <div class="row">
+        <div class="col-2">
+            <label>Description:</label>
+            <input type="text" class="form-control" @bind="createTransactionDto.Description" />
+        </div>
+        <div class="col-2">
+            <label>State:</label>
+            <select @bind="createTransactionDto.State" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in transactionStates)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Sub Category:</label>
+            <select @bind="createTransactionDto.SubCategoryId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in subcategories)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Operation date:</label>
+            <input type="date" class="form-control" @bind="createTransactionDto.OperationDate" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <label>Source:</label>
+            <select @bind="createTransactionDto.SourceAccountOrCardCode" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfSources)
+                {
+                    <option value="@option.Code">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Destination:</label>
+            <select @bind="createTransactionDto.DestinationAccountOrCardCode" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfDestination)
+                {
+                    <option value="@option.Code">@option.Description</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-2">
+            <label>Amount:</label>
+            <div class="input-group">
+                <span class="input-group-text">€</span>
+                <input type="number" step="0.01" class="form-control" @bind="createTransactionDto.Amount" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <label>Earning:</label>
+            <select @bind="createTransactionDto.EarningId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfEarnings)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Expense:</label>
+            <select @bind="createTransactionDto.ExpenseId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfExpenses)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <label>Credit:</label>
+            <select @bind="createTransactionDto.CreditId" class="form-select">
+                <option value="">-- Select an option --</option>
+                @foreach (var option in listOfCredits)
+                {
+                    <option value="@option.Id">@option.Description</option>
+                }
+            </select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-2">
+            <InputFile id="fileInput" Bind-Value="@createTransactionDto.File" OnChange="HandleFileSelected" />
+        </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+}
+
+@code {
+
+    CreateTransactionDto createTransactionDto = new CreateTransactionDto { OperationDate = DateTime.Today, UserId = 1 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+   
+
+    async Task HandleSubmit()
+    {
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent(createTransactionDto.Description), "Description");
+       
+
+        var response = await Http.PostAsync("api/Transactions", formData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Redirect to another page upon successful processing
+            NavigationManager.NavigateTo("/proxies");
+        }
+
+    }
+
+   
+
+}
