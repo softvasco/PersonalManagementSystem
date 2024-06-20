@@ -1,7 +1,7 @@
 using api.Helpers;
 using api.Interfaces;
-using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.OSRS;
 
 namespace api.Controllers
 {
@@ -20,13 +20,14 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("GetProxies")]
-        public async Task<IActionResult> GetProxies()
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] AddOSRSAccountsDto addOSRSAccountsDto)
         {
             try
             {
-                var proxies = await _oSRSRepository.GetProxiesAsync();
-                return Ok(proxies);
+                await _oSRSRepository.CreateAsync(addOSRSAccountsDto);
+
+                return Created();
             }
             catch (NotFoundException)
             {
@@ -37,6 +38,24 @@ namespace api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //[HttpGet("GetProxies")]
+        //public async Task<IActionResult> GetProxies()
+        //{
+        //    try
+        //    {
+        //        var proxies = await _oSRSRepository.GetProxiesAsync();
+        //        return Ok(proxies);
+        //    }
+        //    catch (NotFoundException)
+        //    {
+        //        return NotFound();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         //[HttpPost]
         //public async Task<IActionResult> Create([FromBody] CreateWeigthDto createWeigthDto)

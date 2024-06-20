@@ -10,6 +10,6 @@
 
         public bool IsBanned { get; set; }
 
-        public OSRSProxy Proxy { get; set; }
+        public OSRSProxy? Proxy { get; set; }
     }
 }

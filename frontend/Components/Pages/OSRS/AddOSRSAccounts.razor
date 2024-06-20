@@ -1,0 +1,48 @@
+﻿@page "/addosrsaccounts"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+<PageTitle>Personal Management - Add OSRS Accounts</PageTitle>
+
+<br />
+<br />
+<h2>Add OSRS Accounts</h2>
+<br />
+
+<EditForm Model="@addAccountsDto" OnSubmit="HandleSubmit">
+    <div class="row">
+        <div class="col-2">
+            <label>Accounts:</label>
+            <textarea class="form-control" rows="10" @bind="addAccountsDto.AccountsInfo"></textarea>
+        </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+
+    AddOSRSAccountsDto addAccountsDto = new AddOSRSAccountsDto { };
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    async Task HandleSubmit()
+    {
+        var formData = new MultipartFormDataContent();
+
+        formData.Add(new StringContent(addAccountsDto.AccountsInfo), "AccountsInfo");
+
+        var response = await Http.PostAsync("api/OSRS", formData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Redirect to another page upon successful processing
+            NavigationManager.NavigateTo("/osrsaccounts");
+        }
+    }
+}

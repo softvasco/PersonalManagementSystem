@@ -4,6 +4,7 @@ namespace api.Interfaces
 {
     public interface IOSRSRepository
     {
-        Task<List<ProxyDto>> GetProxiesAsync();
+        Task CreateAsync(AddOSRSAccountsDto addOSRSAccountsDto);
+        //Task<List<ProxyDto>> GetProxiesAsync();
     }
 }

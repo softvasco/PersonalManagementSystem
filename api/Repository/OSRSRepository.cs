@@ -1,6 +1,6 @@
 ﻿using api.Data;
 using api.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using api.Models;
 using Shared.Dtos.OSRS;
 
 namespace api.Repository
@@ -14,12 +14,49 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<List<ProxyDto>> GetProxiesAsync()
+        public async Task CreateAsync(AddOSRSAccountsDto addOSRSAccountsDto)
         {
-            await _context.OSRSProxies.ToListAsync();
+            string[] _accounts = addOSRSAccountsDto.AccountsInfo.Split('\n');
 
-            return null!;
+            List<OSRSAccount> lstOfOSRSAccount = [];
+
+            foreach (string account in _accounts)
+            {
+                try
+                {
+                    string[] _accountParts = account.Split(":");
+                    string _email = _accountParts[0];
+                    string _password = _accountParts[1];
+                    string _bankpin = _accountParts[2];
+
+                    if (!_context.OSRSAccounts.Any(p => p.Email == _email))
+                    {
+                        lstOfOSRSAccount.Add(new OSRSAccount()
+                        {
+                            CreatedDate= DateTime.Now,
+                            IsActive= false,
+                            IsBanned=false,
+                            UpdatedDate = DateTime.Now,
+                            Email= _email,
+                            Password= _password,
+                            BankPin= _bankpin
+
+                        });
+                    }
+                }
+                catch { }
+            }
+
+            await _context.OSRSAccounts.AddRangeAsync(lstOfOSRSAccount);
+            await _context.SaveChangesAsync();
         }
+
+        //public async Task<List<ProxyDto>> GetProxiesAsync()
+        //{
+        //    await _context.OSRSProxies.ToListAsync();
+
+        //    return null!;
+        //}
 
         ///// <summary>
         ///// Retrieves the last 7 registered weights for the specified user and active status.
