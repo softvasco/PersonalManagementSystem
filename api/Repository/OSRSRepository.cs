@@ -1,9 +1,5 @@
 ﻿using api.Data;
-using Shared.Dtos.Weigth;
-using api.Helpers;
 using api.Interfaces;
-using api.Mappers;
-using api.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.OSRS;
 

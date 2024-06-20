@@ -39,6 +39,8 @@ builder.Services.AddScoped<ISimulatorRepository, SimulatorRepository>();
 builder.Services.AddScoped<IHomeRepository, HomeRepository>();
 builder.Services.AddScoped<IWeightRepository, WeightRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+builder.Services.AddScoped<IOSRSRepository, OSRSRepository>();
+builder.Services.AddScoped<IProxyRepository, ProxyRepository>();
 
 var app = builder.Build();
 
