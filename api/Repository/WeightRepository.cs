@@ -24,13 +24,13 @@ namespace api.Repository
         public async Task<List<WeigthDto>> GetAsync()
         {
             // Filter the Weigths entities based on the user ID and active status
-            var weigths = await _context
+            var weigthsList = await _context
                 .Weigths
                 .Where(x => x.UserId == 1 && x.IsActive)
                 .ToListAsync();
 
             // Select only the necessary properties and convert to WeigthDto
-            var weigthDtos = weigths.Select(z => z.ToWeigthDtoFromWeigth()).ToList();
+            var weigthDtos = weigthsList.Select(z => z.ToWeigthDtoFromWeigth()).ToList();
 
             // Order the selected entities by RegistrationDate in descending order
             weigthDtos = weigthDtos.OrderByDescending(x => x.RegistrationDate).ToList();
