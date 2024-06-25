@@ -13,6 +13,7 @@ namespace Shared.Dtos.Transactions
         public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
         [Required]
         public decimal Amount { get; set; }
+        public bool IsHalfTransaction { get; set; }
         public int? EarningId { get; set; }
         public int? ExpenseId { get; set; }
         public int? CreditId { get; set; }

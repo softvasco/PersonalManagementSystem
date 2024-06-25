@@ -8,7 +8,7 @@
         public string? SourceAccountOrCardCode { get; set; } = string.Empty;
         public string? DestinationAccountOrCardCode { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-
+        public bool IsHalfTransaction { get; set; }
         public int? EarningId { get; set; }
         public Earning? Earning { get; set; }
 

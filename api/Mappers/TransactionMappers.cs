@@ -32,7 +32,8 @@ namespace api.Mappers
                 OperationDate = createTransactionDto.OperationDate,
                 Attachment = fileContent,
                 State = createTransactionDto.State,
-                FileName = createTransactionDto.FileName
+                FileName = createTransactionDto.FileName,
+                IsHalfTransaction = createTransactionDto.IsHalfTransaction
             };
         }
 

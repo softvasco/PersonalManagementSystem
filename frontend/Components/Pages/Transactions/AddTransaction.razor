@@ -76,6 +76,11 @@
                     <input type="number" step="0.01" class="form-control" @bind="createTransactionDto.Amount" />
                 </div>
             </div>
+            <div class="col-2">
+                <label>Is Half transaction:</label>
+                <br />
+                <input type="checkbox" class="form-check-input" @bind="createTransactionDto.IsHalfTransaction" />
+            </div>
         </div>
         <br />
         <div class="row">
@@ -337,6 +342,7 @@ else
         formData.Add(new StringContent(createTransactionDto.State.ToString()), "State");
         formData.Add(new StringContent(createTransactionDto.OperationDate.ToString()), "OperationDate");
         formData.Add(new StringContent(createTransactionDto.Amount.ToString()), "Amount");
+        formData.Add(new StringContent(createTransactionDto.IsHalfTransaction.ToString()), "IsHalfTransaction");
         formData.Add(new StringContent(createTransactionDto.UserId.ToString()), "UserId");
 
         if (createTransactionDto.CreditId.HasValue)

@@ -44,7 +44,7 @@ namespace api.Repository
                 transactionsQuery = transactionsQuery.Where(t => t.OperationDate >= startDateValue && t.OperationDate <= endDateValue || t.State==1);
             }
 
-            var transactions = await transactionsQuery.OrderBy(t => t.OperationDate).Take(30).ToListAsync();
+            var transactions = await transactionsQuery.OrderBy(t => t.OperationDate).Take(60).ToListAsync();
 
             // Check if any transactions were found
             if (transactions == null || !transactions.Any())
@@ -83,6 +83,24 @@ namespace api.Repository
             try
             {
                 await _context.Transactions.AddAsync(transaction);
+                if (transaction.IsHalfTransaction)
+                {
+                    await _context.Transactions.AddAsync(new Transaction()
+                    {
+                        Amount = transaction.Amount / 2,
+                        IsActive = transaction.IsActive,
+                        CreatedDate = transaction.CreatedDate,
+                        SourceAccountOrCardCode = null,
+                        IsHalfTransaction = false,
+                        Description = "Ajuda Ana: " + transaction.Description,
+                        DestinationAccountOrCardCode = "BancoCTT",
+                        OperationDate = transaction.OperationDate,
+                        UpdatedDate = transaction.UpdatedDate,
+                        UserId = transaction.UserId,
+                        Attachment = null,
+                        State = (int)TransactionState.Pending
+                    });
+                }
                 await _context.SaveChangesAsync();
 
                 if (transaction.State == (int)TransactionState.Finished)
