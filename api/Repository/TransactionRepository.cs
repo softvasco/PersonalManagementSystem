@@ -118,6 +118,12 @@ namespace api.Repository
                 }
 
                 await trans.CommitAsync();
+
+                if (transaction.SourceAccountOrCardCode != null && transaction.SourceAccountOrCardCode == "UnicreDeco")
+                {
+                    await UpdateCashBackDeco();
+                }
+
                 return transaction;
             }
             catch
