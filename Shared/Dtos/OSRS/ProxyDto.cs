@@ -2,6 +2,6 @@
 {
     public class ProxyDto
     {
-       
+       public bool IsEditing { get; set; }
     }
 }

@@ -10,7 +10,7 @@
 <br />
 <h2>OSRS Proxies</h2>
 <br />
-@*
+
 @if (proxies == null)
 {
     <p><em>Loading...</em></p>
@@ -76,7 +76,7 @@ else
             }
         </tbody>
     </table>
-    <button class="btn btn-primary" @onclick="AddNewWeigth">Add</button>
+    <button class="btn btn-primary" @onclick="AddNewProxy">Add</button>
 }
 
 
@@ -87,80 +87,80 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        proxies = await Http.GetFromJsonAsync<List<WeigthDto>>("api/OSRS/GetProxies");
+        proxies = await Http.GetFromJsonAsync<List<ProxyDto>>("api/OSRS/GetProxies");
     }
 
     void AddNewProxy()
     {
         var newProxy = new ProxyDto();
-        weigths.Add(newWeigth);
+        proxies.Add(newProxy);
 
-        Edit(newWeigth);
+        Edit(newProxy);
 
         StateHasChanged();
     }
 
-    void Edit(WeigthDto weigth)
+    void Edit(ProxyDto newProxy)
     {
-        weigth.IsEditing = true;
+        newProxy.IsEditing = true;
     }
 
-    async Task Save(WeigthDto weigthDto)
+    async Task Save(ProxyDto proxyDto)
     {
-        if (weigthDto.Id == 0)
-        {
-            CreateWeigthDto createWeigthDto = new CreateWeigthDto();
+        // if (proxyDto.Id == 0)
+        // {
+        //     CreateWeigthDto createWeigthDto = new CreateWeigthDto();
 
-            createWeigthDto.Id = weigthDto.Id;
-            createWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
-            createWeigthDto.Description = weigthDto.Description;
-            createWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
-            createWeigthDto.Kg = weigthDto.Kg;
+        //     createWeigthDto.Id = weigthDto.Id;
+        //     createWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
+        //     createWeigthDto.Description = weigthDto.Description;
+        //     createWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
+        //     createWeigthDto.Kg = weigthDto.Kg;
 
-            var response = await Http.PostAsJsonAsync("api/Weigths", createWeigthDto);
-            weigthDto.IsEditing = false;
-            StateHasChanged();
-        }
-        else
-        {
-            UpdateWeigthDto updateWeigthDto = new UpdateWeigthDto();
+        //     var response = await Http.PostAsJsonAsync("api/Weigths", createWeigthDto);
+        //     weigthDto.IsEditing = false;
+        //     StateHasChanged();
+        // }
+        // else
+        // {
+        //     UpdateWeigthDto updateWeigthDto = new UpdateWeigthDto();
 
-            updateWeigthDto.Id = weigthDto.Id;
-            updateWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
-            updateWeigthDto.Description = weigthDto.Description;
-            updateWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
-            updateWeigthDto.Kg = weigthDto.Kg;
+        //     updateWeigthDto.Id = weigthDto.Id;
+        //     updateWeigthDto.UserId = 1; //TODO @VS - Change user id to current user
+        //     updateWeigthDto.Description = weigthDto.Description;
+        //     updateWeigthDto.RegistrationDate = weigthDto.RegistrationDate;
+        //     updateWeigthDto.Kg = weigthDto.Kg;
 
-            var response = await Http.PutAsJsonAsync("api/Weigths/" + weigthDto.Id, updateWeigthDto);
-            weigthDto.IsEditing = false;
-            StateHasChanged();
-        }
+        //     var response = await Http.PutAsJsonAsync("api/Weigths/" + weigthDto.Id, updateWeigthDto);
+        //     weigthDto.IsEditing = false;
+        //     StateHasChanged();
+        // }
     }
 
-    async Task Cancel(WeigthDto weigthDto)
+    async Task Cancel(ProxyDto proxyDto)
     {
-        weigthDto.IsEditing = false;
-        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
+        proxyDto.IsEditing = false;
+        proxies = await Http.GetFromJsonAsync<List<ProxyDto>>("api/OSRS/GetProxies");
         StateHasChanged();
     }
 
 
-    async Task ConfirmDelete(int weigthId)
+    async Task ConfirmDelete(int proxyId)
     {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this weigth?" });
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new string[] { "Are you sure you want to delete this proxy?" });
 
         if (confirmed)
         {
-            await Delete(weigthId);
+            await Delete(proxyId);
         }
     }
 
-    async Task Delete(int weigthId)
+    async Task Delete(int proxyId)
     {
-        var response = await Http.DeleteAsync("api/Weigths/" + weigthId);
+        var response = await Http.DeleteAsync("api/OSRS/DeleteProxy" + proxyId);
         StateHasChanged();
-        weigths = await Http.GetFromJsonAsync<List<WeigthDto>>("api/Weigths");
+        proxies = await Http.GetFromJsonAsync<List<ProxyDto>>("api/OSRS/GetProxies");
     }
 
 
-} *@ 
+}
