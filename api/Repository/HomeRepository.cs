@@ -139,6 +139,7 @@ namespace api.Repository
             homeFinanceGoal.DebtAmount = await CalculateDebtAmount(userId, year);
             homeFinanceGoal.Goal = financeGoal.Goal;
             homeFinanceGoal.Diff = financeGoal.Goal - homeFinanceGoal.DebtAmount;
+            homeFinanceGoal.FinalDebtDate = await CalculateFinalDebtDate(userId);
 
             return homeFinanceGoal;
         }
@@ -198,6 +199,83 @@ namespace api.Repository
             return decimal.Round(banks + creditDebpts + creditCardsDEbpts, 2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private async Task<DateTime> CalculateFinalDebtDate(int userId)
+        {
+            DateTime result = DateTime.Now;
+
+            var transactions = _context
+                                  .Transactions
+                                  .Where(x => x.UserId == userId
+                                      && x.State == (int)TransactionState.Pending)
+                                  .OrderBy(x => x.OperationDate)
+                                  .ToList();
+
+            List<BankAccount> bankAccounts = await _context.BankAccounts.Where(x => x.Code != "BankinterCH").ToListAsync();
+            List<Credit> credits = await _context.Credits.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
+            List<CreditCard> creditCards = await _context.CreditCards.Where(x => x.UserId == 1 && x.IsActive).ToListAsync();
+
+            foreach (var transaction in transactions)
+            {
+                decimal banks = bankAccounts.Sum(x => x.Balance) < 0 ? bankAccounts.Sum(x => x.Balance) * -1 : -1 * bankAccounts.Sum(x => x.Balance);
+                decimal creditDebpts = credits.Sum(x => x.DebtCapital);
+                decimal creditCardsDEbpts = creditCards.Sum(x => x.Plafon - x.Balance);
+
+                if (decimal.Round(banks + creditDebpts + creditCardsDEbpts, 2) > 0)
+                {
+                    //Debit
+                    if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && bankAccounts.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
+                    {
+                        bankAccounts.FirstOrDefault(x => x.Code == transaction.SourceAccountOrCardCode)!.Balance -= transaction.Amount;
+                    }
+                    if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
+                    {
+                        creditCards.First(x => x.Code == transaction.SourceAccountOrCardCode).Balance -= transaction.Amount;
+                    }
+
+                    //Credit
+                    if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && bankAccounts.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
+                    {
+                        bankAccounts.FirstOrDefault(x => x.Code == transaction.DestinationAccountOrCardCode)!.Balance += transaction.Amount;
+                    }
+                    if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && credits.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
+                    {
+                        if (transaction.Description.Contains("Ana - Cofidis"))
+                        {
+                            credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital -= transaction.Amount;
+                        }
+                        else
+                        {
+                            credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital = credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital + (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital * (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).TAN / 100 / 12)) - credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).Installment;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
+                    {
+                        creditCards.First(x => x.Code == transaction.DestinationAccountOrCardCode).Balance += transaction.Amount;
+                    }
+
+                    result = transaction.OperationDate;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transactions"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private async Task<List<HomeSubCategoryDto>> CalculateSubCategories(List<Transaction> transactions,
             int userId)
         {
