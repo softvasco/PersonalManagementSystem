@@ -27,8 +27,8 @@ namespace api.Repository
         /// <returns>The home data.</returns>
         public async Task<HomeDto> GetAsync(int userId, int year)
         {
-            HomeDto homeDto = new HomeDto();
-            
+            HomeDto homeDto = new();
+
             var transactions = await _context.Transactions
                                    .Include(sub => sub.SubCategory)
                                    .Where(x => x.UserId == userId
@@ -38,7 +38,7 @@ namespace api.Repository
 
             var homeCategories = await CalculateCategories(transactions, userId);
             homeDto.HomeCategories = homeCategories;
-            
+
             var homeSubCategories = await CalculateSubCategories(transactions, userId);
             homeDto.HomeSubCategories = homeSubCategories;
 
@@ -48,10 +48,16 @@ namespace api.Repository
             return homeDto;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transactions"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private async Task<List<HomeCategoryDto>> CalculateCategories(List<Transaction> transactions,
             int userId)
         {
-            List<HomeCategoryDto> homeCategories = new();
+            List<HomeCategoryDto> homeCategories = [];
 
             var categories = await _context
                 .Categories
@@ -60,8 +66,10 @@ namespace api.Repository
 
             foreach (var category in categories)
             {
-                HomeCategoryDto homeCategoryDto = new();
-                homeCategoryDto.CategoryName = category.Description;
+                HomeCategoryDto homeCategoryDto = new()
+                {
+                    CategoryName = category.Description
+                };
 
                 for (int month = 1; month <= 12; month++)
                 {
@@ -75,15 +83,29 @@ namespace api.Repository
             return homeCategories;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transactions"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         private decimal GetRealAmountForMonth(List<Transaction> transactions, int categoryId, int userId, int month)
         {
             return transactions
                 .Where(x => (x.SubCategory is not null && x.SubCategory.CategoryId == categoryId)
                     && x.UserId == userId
-                    && x.OperationDate.Month == month )
+                    && x.OperationDate.Month == month)
                 .Sum(x => x.Amount);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="homeCategoryDto"></param>
+        /// <param name="month"></param>
+        /// <param name="amount"></param>
         private void SetRealAmountForMonth(HomeCategoryDto homeCategoryDto, int month, decimal amount)
         {
             var monthName = GetMonthName(month);
@@ -94,42 +116,38 @@ namespace api.Repository
             }
         }
 
-        private string GetMonthName(int month)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private string GetMonthName(int month) => month switch
         {
-            switch (month)
-            {
-                case 1:
-                    return "JanuaryExpenses";
-                case 2:
-                    return "FebruaryExpenses";
-                case 3:
-                    return "MarchExpenses";
-                case 4:
-                    return "AprilExpenses";
-                case 5:
-                    return "MayExpenses";
-                case 6:
-                    return "JuneExpenses";
-                case 7:
-                    return "JulyExpenses";
-                case 8:
-                    return "AugustExpenses";
-                case 9:
-                    return "SeptemberExpenses";
-                case 10:
-                    return "OctoberExpenses";
-                case 11:
-                    return "NovemberExpenses";
-                case 12:
-                    return "DecemberExpenses";
-                default:
-                    throw new ArgumentException("Invalid month", nameof(month));
-            }
-        }
+            1 => "JanuaryExpenses",
+            2 => "FebruaryExpenses",
+            3 => "MarchExpenses",
+            4 => "AprilExpenses",
+            5 => "MayExpenses",
+            6 => "JuneExpenses",
+            7 => "JulyExpenses",
+            8 => "AugustExpenses",
+            9 => "SeptemberExpenses",
+            10 => "OctoberExpenses",
+            11 => "NovemberExpenses",
+            12 => "DecemberExpenses",
+            _ => throw new ArgumentException("Invalid month", nameof(month)),
+        };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         private async Task<HomeFinanceGoal> CalculatePrevFinanceGoal(int userId, int year)
         {
-            HomeFinanceGoal homeFinanceGoal = new HomeFinanceGoal();
+            HomeFinanceGoal homeFinanceGoal = new();
 
             var financeGoal = _context.FinanceGoals.First(x => x.UserId == userId);
 
@@ -144,6 +162,12 @@ namespace api.Repository
             return homeFinanceGoal;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         private async Task<decimal> CalculateDebtAmount(int userId, int year)
         {
             var transactions = _context
@@ -279,7 +303,7 @@ namespace api.Repository
         private async Task<List<HomeSubCategoryDto>> CalculateSubCategories(List<Transaction> transactions,
             int userId)
         {
-            List<HomeSubCategoryDto> listHomeSubCategoryDto = new();
+            List<HomeSubCategoryDto> listHomeSubCategoryDto = [];
 
             var subCategories = await _context
                 .SubCategories
@@ -291,9 +315,11 @@ namespace api.Repository
 
             foreach (var subCategory in subCategories)
             {
-                HomeSubCategoryDto homeSubCategoryDto = new();
-                homeSubCategoryDto.SubCategoryName = subCategory.Description;
-                homeSubCategoryDto.CategoryName = subCategory.Category.Description;
+                HomeSubCategoryDto homeSubCategoryDto = new()
+                {
+                    SubCategoryName = subCategory.Description,
+                    CategoryName = subCategory.Category.Description
+                };
                 for (int month = 1; month <= 12; month++)
                 {
                     decimal realAmount = GetRealAmountForMonthBySubCategory(transactions, subCategory.Id, userId, month);
@@ -310,6 +336,14 @@ namespace api.Repository
             return listHomeSubCategoryDto;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transactions"></param>
+        /// <param name="subCategoryId"></param>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         private decimal GetRealAmountForMonthBySubCategory(List<Transaction> transactions,
             int subCategoryId, int userId, int month)
         {
@@ -320,7 +354,7 @@ namespace api.Repository
                 .Sum(x => x.Amount);
         }
 
-        private void SetRealAmountForMonthBySubCategory(HomeSubCategoryDto homeSubCategoryDto, 
+        private void SetRealAmountForMonthBySubCategory(HomeSubCategoryDto homeSubCategoryDto,
             int month, decimal amount, decimal? plafon)
         {
             switch (month)
