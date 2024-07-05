@@ -21,6 +21,7 @@ namespace api.Repository
         {
             var bankAccounts = await _context.BankAccounts
               .Where(x => x.IsActive)
+              .OrderBy(x => x.Code)
               .ToListAsync();
 
             if (bankAccounts == null || !bankAccounts.Any())
