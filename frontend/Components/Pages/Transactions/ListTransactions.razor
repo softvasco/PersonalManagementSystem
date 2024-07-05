@@ -226,7 +226,7 @@ else
     {
         var response = await Http.DeleteAsync("api/Transactions/" + transactiondId);
         StateHasChanged();
-        CallSearch();
+        await Search();
 
     }
 
