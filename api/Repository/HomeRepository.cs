@@ -228,7 +228,6 @@ namespace api.Repository
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private async Task<DateTime> CalculateFinalDebtDate(int userId)
         {
             DateTime result = DateTime.Now;
