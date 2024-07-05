@@ -248,9 +248,9 @@ namespace api.Repository
             {
                 decimal banks = bankAccounts.Sum(x => x.Balance) < 0 ? bankAccounts.Sum(x => x.Balance) * -1 : -1 * bankAccounts.Sum(x => x.Balance);
                 decimal creditDebpts = credits.Sum(x => x.DebtCapital);
-                decimal creditCardsDEbpts = creditCards.Sum(x => x.Plafon - x.Balance);
+                decimal creditCardsDebpts = creditCards.Sum(x => x.Plafon - x.Balance);
 
-                if (decimal.Round(banks + creditDebpts + creditCardsDEbpts, 2) > 0)
+                if (decimal.Round(banks + creditDebpts + creditCardsDebpts, 2) > 0)
                 {
                     //Debit
                     if (!string.IsNullOrEmpty(transaction.SourceAccountOrCardCode) && bankAccounts.Select(x => x.Code).Contains(transaction.SourceAccountOrCardCode))
