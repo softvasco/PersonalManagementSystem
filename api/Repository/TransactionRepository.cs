@@ -728,29 +728,37 @@ namespace api.Repository
                 .Transactions
                 .Where(x => x.Description == "Cashback"
                             && x.DestinationAccountOrCardCode == "UnicreDeco"
-                            && x.State == (int)TransactionState.Pending)
+                            && x.State == (int)TransactionState.Pending
+                            && x.OperationDate >= DateTime.Now)
                 .ToListAsync();
 
             foreach (var cashBackTrans in listOfCashBackTrans)
             {
                 int quarter = (int)Math.Ceiling(cashBackTrans.OperationDate.Month / 3.0);
-                int lastQuarter = quarter == 1 ? 4 : quarter - 1; 
+                int lastQuarter = quarter == 1 ? 4 : quarter - 1;
 
-                DateTime lastQuarterStartDate = new DateTime(cashBackTrans.OperationDate.Year, (lastQuarter - 1) * 3 + 1, 1);
+                DateTime lastQuarterStartDate = new(cashBackTrans.OperationDate.Year, (lastQuarter - 1) * 3 + 1, 1);
                 DateTime lastQuarterEndDate = lastQuarterStartDate.AddMonths(3).AddDays(-1);
 
-                decimal cashback = await _context
-                    .Transactions
-                    .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
-                                && x.OperationDate >= lastQuarterStartDate
-                                && x.OperationDate <= lastQuarterEndDate
-                                && !x.Description.Equals("Movimento de saldo"))
-                    .SumAsync(x => x.Amount);
+                if (DateTime.Now <= lastQuarterEndDate)
+                {
+                    decimal cashback = await _context
+                        .Transactions
+                        .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+                                    && x.OperationDate >= lastQuarterStartDate
+                                    && x.OperationDate <= lastQuarterEndDate
+                                    && !x.Description.Equals("Movimento de saldo"))
+                        .SumAsync(x => x.Amount);
 
-                cashBackTrans.UpdatedDate = DateTime.UtcNow;
-                cashBackTrans.Amount = cashback * (decimal)0.01;
-                _context.Entry(cashBackTrans).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                    if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
+                    {
+                        cashBackTrans.UpdatedDate = DateTime.UtcNow;
+                        cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
+
+                        _context.Entry(cashBackTrans).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
+                }
             }
         }
 

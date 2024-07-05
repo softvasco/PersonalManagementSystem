@@ -225,8 +225,8 @@ else
     async Task Delete(int transactiondId)
     {
         var response = await Http.DeleteAsync("api/Transactions/" + transactiondId);
+        CallSearch();
         StateHasChanged();
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions");
     }
 
 }
