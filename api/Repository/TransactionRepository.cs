@@ -22,6 +22,10 @@ namespace api.Repository
         /// <summary>
         /// Retrieves a list of transactions for the current user, filtered by active status, operation date range, and pending state.
         /// </summary>
+        /// <param name="description"></param>
+        /// <param name="state"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <returns>A list of TransactionDto objects representing the retrieved transactions.</returns>
         /// <exception cref="NotFoundException">Thrown when no transactions are found for the specified user.</exception>
         public async Task<List<TransactionDto>> GetAsync(string description, string state, string startDate, string endDate)

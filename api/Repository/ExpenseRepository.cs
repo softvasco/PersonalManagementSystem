@@ -68,7 +68,7 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             DateTime indexData = Utils.CalculateNextPaymentDate(expense.StartDate, expense.PayDay);
-            SubCategory subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId)!;
+            SubCategory? subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId);
 
             while (indexData < expense.EndDate)
             {
@@ -124,7 +124,7 @@ namespace api.Repository
             existingExpense.SourceAccountOrCardCode = !string.IsNullOrWhiteSpace(expense.SourceAccountOrCardCode) ? expense.SourceAccountOrCardCode : string.Empty;
             existingExpense.SubCategoryId = expense.SubCategoryId;
 
-            SubCategory subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId)!;
+            SubCategory? subCategory = await _context.SubCategories.FindAsync(expense.SubCategoryId);
 
             try
             {
