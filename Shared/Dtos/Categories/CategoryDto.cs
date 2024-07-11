@@ -9,6 +9,6 @@ namespace Shared.Dtos.Categories
         public string Description { get; set; } = string.Empty;
         public int UserId { get; set; }
         public bool IsEditing { get; set; }
-        public List<SubCategoryDto> SubCategories { get; set; } = new List<SubCategoryDto>();
+        public List<SubCategoryDto> SubCategories { get; set; } = [];
     }
 }
