@@ -122,22 +122,25 @@ namespace api.Repository
         /// <param name="month"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        private string GetMonthName(int month) => month switch
+        private string GetMonthName(int month)
         {
-            1 => "JanuaryExpenses",
-            2 => "FebruaryExpenses",
-            3 => "MarchExpenses",
-            4 => "AprilExpenses",
-            5 => "MayExpenses",
-            6 => "JuneExpenses",
-            7 => "JulyExpenses",
-            8 => "AugustExpenses",
-            9 => "SeptemberExpenses",
-            10 => "OctoberExpenses",
-            11 => "NovemberExpenses",
-            12 => "DecemberExpenses",
-            _ => throw new ArgumentException("Invalid month", nameof(month)),
-        };
+            return month switch
+            {
+                1 => "JanuaryExpenses",
+                2 => "FebruaryExpenses",
+                3 => "MarchExpenses",
+                4 => "AprilExpenses",
+                5 => "MayExpenses",
+                6 => "JuneExpenses",
+                7 => "JulyExpenses",
+                8 => "AugustExpenses",
+                9 => "SeptemberExpenses",
+                10 => "OctoberExpenses",
+                11 => "NovemberExpenses",
+                12 => "DecemberExpenses",
+                _ => throw new ArgumentException("Invalid month", nameof(month)),
+            };
+        }
 
         /// <summary>
         /// 
