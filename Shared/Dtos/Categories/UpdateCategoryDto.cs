@@ -13,7 +13,7 @@ namespace Shared.Dtos.Categories
         [Required]
         public int UserID { get; set; }
 
-        public List<SubCategoryDto> Subcategories { get; set; }
+        public List<SubCategoryDto> Subcategories { get; set; } = [];
 
     }
 }
