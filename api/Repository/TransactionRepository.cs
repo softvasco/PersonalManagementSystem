@@ -725,7 +725,6 @@ namespace api.Repository
         /// 
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private async Task UpdateCashBackDeco()
         {
             var listOfCashBackTrans = await _context
