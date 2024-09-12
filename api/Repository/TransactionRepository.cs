@@ -97,7 +97,7 @@ namespace api.Repository
                         SourceAccountOrCardCode = null,
                         IsHalfTransaction = false,
                         Description = "Ajuda Ana: " + transaction.Description,
-                        DestinationAccountOrCardCode = "BancoCTT",
+                        DestinationAccountOrCardCode = "UnicreDeco",
                         OperationDate = transaction.OperationDate,
                         UpdatedDate = transaction.UpdatedDate,
                         UserId = transaction.UserId,
