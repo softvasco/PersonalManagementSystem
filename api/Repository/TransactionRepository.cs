@@ -443,11 +443,13 @@ namespace api.Repository
         /// <returns></returns>
         private async Task HandleWithNormalTransactions(Transaction transaction)
         {
-            CreditCard? sourceCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.ToUpper() == transaction.SourceAccountOrCardCode!.ToUpper());
-            BankAccount? sourceBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.ToUpper() == transaction.SourceAccountOrCardCode!.ToUpper());
+            CreditCard? sourceCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            BankAccount? sourceBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            DebitCard? sourceDebitCard = _context.DebitCards.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
 
-            CreditCard? destinationCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.ToUpper() == transaction.DestinationAccountOrCardCode!.ToUpper());
-            BankAccount? destinationBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.ToUpper() == transaction.DestinationAccountOrCardCode!.ToUpper());
+            CreditCard? destinationCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            BankAccount? destinationBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            DebitCard? destinationDebitCard = _context.DebitCards.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
 
             if (sourceCreditCard != null)
             {
@@ -461,6 +463,12 @@ namespace api.Repository
                 sourceBankAccount.Balance -= transaction.Amount;
                 _context.Entry(sourceBankAccount).State = EntityState.Modified;
             }
+            else if (sourceDebitCard != null)
+            {
+                sourceDebitCard.UpdatedDate = DateTime.UtcNow;
+                sourceDebitCard.Balance -= transaction.Amount;
+                _context.Entry(sourceDebitCard).State = EntityState.Modified;
+            }
 
             if (destinationCreditCard != null)
             {
@@ -473,6 +481,12 @@ namespace api.Repository
                 destinationBankAccount.UpdatedDate = DateTime.UtcNow;
                 destinationBankAccount.Balance += transaction.Amount;
                 _context.Entry(destinationBankAccount).State = EntityState.Modified;
+            }
+            else if (destinationDebitCard != null)
+            {
+                destinationDebitCard.UpdatedDate = DateTime.UtcNow;
+                destinationDebitCard.Balance += transaction.Amount;
+                _context.Entry(destinationDebitCard).State = EntityState.Modified;
             }
 
             transaction.State = (int)TransactionState.Finished;
