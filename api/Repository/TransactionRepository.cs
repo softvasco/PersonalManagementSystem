@@ -443,13 +443,25 @@ namespace api.Repository
         /// <returns></returns>
         private async Task HandleWithNormalTransactions(Transaction transaction)
         {
-            CreditCard? sourceCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            BankAccount? sourceBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            DebitCard? sourceDebitCard = _context.DebitCards.FirstOrDefault(x => x.Code.Equals(transaction.SourceAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            CreditCard? sourceCreditCard = null;
+            BankAccount? sourceBankAccount = null;
+            DebitCard? sourceDebitCard = null;
+            if (transaction.SourceAccountOrCardCode != null)
+            {
+                sourceCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+                sourceBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+                sourceDebitCard = await _context.DebitCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+            }
 
-            CreditCard? destinationCreditCard = _context.CreditCards.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            BankAccount? destinationBankAccount = _context.BankAccounts.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
-            DebitCard? destinationDebitCard = _context.DebitCards.FirstOrDefault(x => x.Code.Equals(transaction.DestinationAccountOrCardCode, StringComparison.CurrentCultureIgnoreCase));
+            CreditCard? destinationCreditCard = null;
+            BankAccount? destinationBankAccount = null;
+            DebitCard? destinationDebitCard = null;
+            if (transaction.DestinationAccountOrCardCode != null)
+            {
+                destinationCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
+                destinationBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
+                destinationDebitCard = await _context.DebitCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
+            }
 
             if (sourceCreditCard != null)
             {
