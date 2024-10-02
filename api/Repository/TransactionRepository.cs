@@ -760,6 +760,7 @@ namespace api.Repository
                 .Where(x => x.Description == "Cashback"
                             && x.DestinationAccountOrCardCode == "UnicreDeco"
                             && x.State == (int)TransactionState.Pending
+                            && x.OperationDate.Month != DateTime.Now.Month
                             && x.OperationDate >= DateTime.Now)
                 .ToListAsync();
 
