@@ -446,21 +446,25 @@ namespace api.Repository
             CreditCard? sourceCreditCard = null;
             BankAccount? sourceBankAccount = null;
             DebitCard? sourceDebitCard = null;
+            GiftCard? sourceGiftCard = null;
             if (transaction.SourceAccountOrCardCode != null)
             {
                 sourceCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
                 sourceBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
                 sourceDebitCard = await _context.DebitCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
+                sourceGiftCard = await _context.GiftCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.SourceAccountOrCardCode.ToLower());
             }
 
             CreditCard? destinationCreditCard = null;
             BankAccount? destinationBankAccount = null;
             DebitCard? destinationDebitCard = null;
+            GiftCard? destinationGiftCard = null;
             if (transaction.DestinationAccountOrCardCode != null)
             {
                 destinationCreditCard = await _context.CreditCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
                 destinationBankAccount = await _context.BankAccounts.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
                 destinationDebitCard = await _context.DebitCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
+                destinationGiftCard = await _context.GiftCards.FirstOrDefaultAsync(x => x.Code.ToLower() == transaction.DestinationAccountOrCardCode.ToLower());
             }
 
             if (sourceCreditCard != null)
@@ -481,6 +485,12 @@ namespace api.Repository
                 sourceDebitCard.Balance -= transaction.Amount;
                 _context.Entry(sourceDebitCard).State = EntityState.Modified;
             }
+            else if (sourceGiftCard != null)
+            {
+                sourceGiftCard.UpdatedDate = DateTime.UtcNow;
+                sourceGiftCard.Balance -= transaction.Amount;
+                _context.Entry(sourceGiftCard).State = EntityState.Modified;
+            }
 
             if (destinationCreditCard != null)
             {
@@ -499,6 +509,12 @@ namespace api.Repository
                 destinationDebitCard.UpdatedDate = DateTime.UtcNow;
                 destinationDebitCard.Balance += transaction.Amount;
                 _context.Entry(destinationDebitCard).State = EntityState.Modified;
+            }
+            else if (destinationGiftCard != null)
+            {
+                destinationGiftCard.UpdatedDate = DateTime.UtcNow;
+                destinationGiftCard.Balance += transaction.Amount;
+                _context.Entry(destinationGiftCard).State = EntityState.Modified;
             }
 
             transaction.State = (int)TransactionState.Finished;
