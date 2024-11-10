@@ -739,7 +739,8 @@ namespace api.Repository
             {
                 Transaction? extraTransactions = await _context
                     .Transactions
-                    .Include(x => x.SubCategory)
+                    //.Include(x => x.SubCategory)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(z => z.SubCategory!.Code == "ExtraAliSuper" 
                         && z.OperationDate.Month == transaction.OperationDate.Month
                         && z.Description == "Alimentação Extra cartão refeição"
@@ -750,6 +751,7 @@ namespace api.Repository
                     extraTransactions.Amount -= transaction.Amount;
                     if (extraTransactions.Amount < 0)
                     {
+                        _context.Entry(extraTransactions).State = EntityState.Detached;
                         _context.Transactions.Remove(extraTransactions);
                         await _context.SaveChangesAsync();
                     }

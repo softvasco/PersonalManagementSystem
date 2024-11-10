@@ -10,12 +10,12 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class DropdownController : ControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<DropdownController> _logger;
         private readonly IDropdownRepository _dropdownRepository;
 
         public DropdownController(
             IDropdownRepository dropdownRepository,
-            ILogger<UsersController> logger)
+            ILogger<DropdownController> logger)
         {
             _dropdownRepository = dropdownRepository;
             _logger = logger;
