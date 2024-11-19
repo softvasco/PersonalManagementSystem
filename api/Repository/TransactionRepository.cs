@@ -560,7 +560,7 @@ namespace api.Repository
                     giftCard.Balance -= transaction.Amount;
                     giftCard.UpdatedDate = DateTime.UtcNow;
 
-                    if (giftCard.Balance <= 0 && giftCard.Code != "MediaProbe")
+                    if (giftCard.Balance <= 0 && giftCard.Code != "MediaProbe" && giftCard.Code != "CartaoContinente")
                     {
                         giftCard.CloseDate = DateTime.UtcNow;
                         giftCard.IsActive = false;
