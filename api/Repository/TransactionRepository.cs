@@ -773,105 +773,105 @@ namespace api.Repository
         /// <returns></returns>
         private async Task UpdateCashBackDeco()
         {
-            var listOfCashBackTrans = await _context
-                .Transactions
-                .Where(x => x.Description == "Cashback"
-                            && x.DestinationAccountOrCardCode == "UnicreDeco"
-                            && x.State == (int)TransactionState.Pending)
-                .OrderBy(x=>x.OperationDate)
-                .ToListAsync();
+            //var listOfCashBackTrans = await _context
+            //    .Transactions
+            //    .Where(x => x.Description == "Cashback"
+            //                && x.DestinationAccountOrCardCode == "UnicreDeco"
+            //                && x.State == (int)TransactionState.Pending)
+            //    .OrderBy(x=>x.OperationDate)
+            //    .ToListAsync();
 
-            foreach (var cashBackTrans in listOfCashBackTrans)
-            {
-                if (cashBackTrans.OperationDate.Month == 1)
-                {
-                    DateTime startDate = new(day: 1, month: 10, year: cashBackTrans.OperationDate.Year-1);
-                    DateTime endDate = new(day: 31, month: 12, year: cashBackTrans.OperationDate.Year-1);
+            //foreach (var cashBackTrans in listOfCashBackTrans)
+            //{
+            //    if (cashBackTrans.OperationDate.Month == 1)
+            //    {
+            //        DateTime startDate = new(day: 1, month: 10, year: cashBackTrans.OperationDate.Year-1);
+            //        DateTime endDate = new(day: 31, month: 12, year: cashBackTrans.OperationDate.Year-1);
 
-                    decimal cashback = await _context
-                        .Transactions
-                        .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
-                                    && x.OperationDate >= startDate
-                                    && x.OperationDate <= endDate
-                                    && !x.Description.Equals("Movimento de saldo"))
-                        .SumAsync(x => x.Amount);
+            //        decimal cashback = await _context
+            //            .Transactions
+            //            .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+            //                        && x.OperationDate >= startDate
+            //                        && x.OperationDate <= endDate
+            //                        && !x.Description.Equals("Movimento de saldo"))
+            //            .SumAsync(x => x.Amount);
 
-                    if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
-                    {
-                        cashBackTrans.UpdatedDate = DateTime.UtcNow;
-                        cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
+            //        if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
+            //        {
+            //            cashBackTrans.UpdatedDate = DateTime.UtcNow;
+            //            cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
 
-                        _context.Entry(cashBackTrans).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                    }
-                }
-                else if (cashBackTrans.OperationDate.Month == 4)
-                {
-                    DateTime startDate = new(day: 1, month: 1, year: cashBackTrans.OperationDate.Year);
-                    DateTime endDate = new(day: 31, month: 3, year: cashBackTrans.OperationDate.Year);
+            //            _context.Entry(cashBackTrans).State = EntityState.Modified;
+            //            await _context.SaveChangesAsync();
+            //        }
+            //    }
+            //    else if (cashBackTrans.OperationDate.Month == 4)
+            //    {
+            //        DateTime startDate = new(day: 1, month: 1, year: cashBackTrans.OperationDate.Year);
+            //        DateTime endDate = new(day: 31, month: 3, year: cashBackTrans.OperationDate.Year);
 
-                    decimal cashback = await _context
-                        .Transactions
-                        .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
-                                    && x.OperationDate >= startDate
-                                    && x.OperationDate <= endDate
-                                    && !x.Description.Equals("Movimento de saldo"))
-                        .SumAsync(x => x.Amount);
+            //        decimal cashback = await _context
+            //            .Transactions
+            //            .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+            //                        && x.OperationDate >= startDate
+            //                        && x.OperationDate <= endDate
+            //                        && !x.Description.Equals("Movimento de saldo"))
+            //            .SumAsync(x => x.Amount);
 
-                    if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
-                    {
-                        cashBackTrans.UpdatedDate = DateTime.UtcNow;
-                        cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
+            //        if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
+            //        {
+            //            cashBackTrans.UpdatedDate = DateTime.UtcNow;
+            //            cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
 
-                        _context.Entry(cashBackTrans).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                    }
-                }
-                else if (cashBackTrans.OperationDate.Month == 7)
-                {
-                    DateTime startDate = new(day: 1, month: 4, year: cashBackTrans.OperationDate.Year);
-                    DateTime endDate = new(day: 30, month: 6, year: cashBackTrans.OperationDate.Year);
+            //            _context.Entry(cashBackTrans).State = EntityState.Modified;
+            //            await _context.SaveChangesAsync();
+            //        }
+            //    }
+            //    else if (cashBackTrans.OperationDate.Month == 7)
+            //    {
+            //        DateTime startDate = new(day: 1, month: 4, year: cashBackTrans.OperationDate.Year);
+            //        DateTime endDate = new(day: 30, month: 6, year: cashBackTrans.OperationDate.Year);
 
-                    decimal cashback = await _context
-                        .Transactions
-                        .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
-                                    && x.OperationDate >= startDate
-                                    && x.OperationDate <= endDate
-                                    && !x.Description.Equals("Movimento de saldo"))
-                        .SumAsync(x => x.Amount);
+            //        decimal cashback = await _context
+            //            .Transactions
+            //            .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+            //                        && x.OperationDate >= startDate
+            //                        && x.OperationDate <= endDate
+            //                        && !x.Description.Equals("Movimento de saldo"))
+            //            .SumAsync(x => x.Amount);
 
-                    if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
-                    {
-                        cashBackTrans.UpdatedDate = DateTime.UtcNow;
-                        cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
+            //        if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
+            //        {
+            //            cashBackTrans.UpdatedDate = DateTime.UtcNow;
+            //            cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
 
-                        _context.Entry(cashBackTrans).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                    }
-                }
-                else if (cashBackTrans.OperationDate.Month == 10)
-                {
-                    DateTime startDate = new(day: 1, month: 7, year: cashBackTrans.OperationDate.Year);
-                    DateTime endDate = new(day: 30, month: 9, year: cashBackTrans.OperationDate.Year);
+            //            _context.Entry(cashBackTrans).State = EntityState.Modified;
+            //            await _context.SaveChangesAsync();
+            //        }
+            //    }
+            //    else if (cashBackTrans.OperationDate.Month == 10)
+            //    {
+            //        DateTime startDate = new(day: 1, month: 7, year: cashBackTrans.OperationDate.Year);
+            //        DateTime endDate = new(day: 30, month: 9, year: cashBackTrans.OperationDate.Year);
 
-                    decimal cashback = await _context
-                        .Transactions
-                        .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
-                                    && x.OperationDate >= startDate
-                                    && x.OperationDate <= endDate
-                                    && !x.Description.Equals("Movimento de saldo"))
-                        .SumAsync(x => x.Amount);
+            //        decimal cashback = await _context
+            //            .Transactions
+            //            .Where(x => x.SourceAccountOrCardCode == "UnicreDeco"
+            //                        && x.OperationDate >= startDate
+            //                        && x.OperationDate <= endDate
+            //                        && !x.Description.Equals("Movimento de saldo"))
+            //            .SumAsync(x => x.Amount);
 
-                    if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
-                    {
-                        cashBackTrans.UpdatedDate = DateTime.UtcNow;
-                        cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
+            //        if (cashBackTrans.Amount != decimal.Round(cashback * (decimal)0.01, 2))
+            //        {
+            //            cashBackTrans.UpdatedDate = DateTime.UtcNow;
+            //            cashBackTrans.Amount = decimal.Round(cashback * (decimal)0.01, 2);
 
-                        _context.Entry(cashBackTrans).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
-                    }
-                }
-            }
+            //            _context.Entry(cashBackTrans).State = EntityState.Modified;
+            //            await _context.SaveChangesAsync();
+            //        }
+            //    }
+            //}
         }
 
         #endregion
