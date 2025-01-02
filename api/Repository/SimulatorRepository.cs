@@ -32,7 +32,7 @@ namespace api.Repository
                 await _transactionRepository.ConfirmTransactionAsync(transaction.Id);
             }
 
-            decimal currentDebtAmount = _context.FinanceGoals.FirstOrDefault(x=>x.Code== "2024DecreaseDebt")!.CurrentDebtAmount;
+            decimal currentDebtAmount = _context.FinanceGoals.FirstOrDefault(x=>x.Code== "2025DecreaseDebt")!.CurrentDebtAmount;
 
             await trans.RollbackAsync();
 

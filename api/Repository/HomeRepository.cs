@@ -152,7 +152,7 @@ namespace api.Repository
         {
             HomeFinanceGoal homeFinanceGoal = new();
 
-            var financeGoal = _context.FinanceGoals.First(x => x.UserId == userId);
+            var financeGoal = _context.FinanceGoals.First(x => x.UserId == userId && x.StartGoalDate.Year == DateTime.Now.Year);
 
             homeFinanceGoal.StartGoalDate = financeGoal.StartGoalDate;
             homeFinanceGoal.EndGoalDate = financeGoal.EndGoalDate;
