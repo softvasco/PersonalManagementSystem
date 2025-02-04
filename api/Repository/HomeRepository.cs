@@ -204,14 +204,7 @@ namespace api.Repository
                 }
                 if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && credits.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
                 {
-                    if (transaction.Description.Contains("Ana - Cofidis"))
-                    {
-                        credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital -= transaction.Amount;
-                    }
-                    else
-                    {
-                        credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital = credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital + (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital * (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).TAN / 100 / 12)) - credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).Installment;
-                    }
+                    credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital = credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital + (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).DebtCapital * (credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).TAN / 100 / 12)) - credits.First(x => x.Code == transaction.DestinationAccountOrCardCode).Installment;
                 }
                 if (!string.IsNullOrEmpty(transaction.DestinationAccountOrCardCode) && creditCards.Select(x => x.Code).Contains(transaction.DestinationAccountOrCardCode))
                 {
